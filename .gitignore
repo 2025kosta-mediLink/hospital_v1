@@ -1,7 +1,7 @@
-.smarttomcat/
+﻿.smarttomcat/
 .SmartTomcat/
-.idea/
-*.iml
-out/
-target/
+**/.idea/
+**/*.iml
+**/out/
+**/target/
 !.mvn/wrapper/maven-wrapper.jar
