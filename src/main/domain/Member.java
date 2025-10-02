@@ -1,4 +1,4 @@
-package src.main.member.domain;
+package domain;
 
 public class Member {
 }
