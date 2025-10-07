@@ -32,4 +32,26 @@ public class DepartmentDAO {
     }
     return list;
   }
+
+  // ✅ 추가: ID로 단일 조회
+  public DepartmentDTO findById(Long departmentId) {
+    String sql = "SELECT department_id, name FROM department WHERE department_id = ?";
+    DepartmentDTO dto = null;
+
+    try (Connection conn = DBConnectionUtil.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+      ps.setLong(1, departmentId);
+
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          dto = new DepartmentDTO();
+          dto.setDepartmentId(rs.getLong("department_id"));
+          dto.setName(rs.getString("name"));
+        }
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return dto;
+  }
 }

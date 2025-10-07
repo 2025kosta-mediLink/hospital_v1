@@ -1,100 +1,165 @@
 package controller;
 
+import dto.ReceptionDetailDTO;
 import dto.SymptomDTO;
 import service.DepartmentService;
-import service.SymptomService;
+import service.DoctorService;
 import service.ReceptionService;
+import service.SymptomService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @WebServlet("/v1/reception/*")
 public class ReceptionController extends HttpServlet {
-  private SymptomService symptomService;
-  private ReceptionService receptionService;
-  private DepartmentService departmentService;
+    private SymptomService symptomService;
+    private ReceptionService receptionService;
+    private DepartmentService departmentService;
 
-  @Override
-  public void init() throws ServletException {
-    symptomService = new SymptomService();
-    receptionService = new ReceptionService();
-    departmentService = new DepartmentService();
-  }
+    private DoctorService doctorService;
 
-  @Override
-  protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
-    String path = req.getPathInfo(); // /symptom, /confirm, /done
-    System.out.println("symptoms size = " + symptomService.getSymptoms().size());
-
-    if (path == null || path.equals("/symptom")) {
-      // 증상 선택 화면
-      req.setAttribute("symptoms", symptomService.getSymptoms());
-      req.setAttribute("departmentId", req.getParameter("departmentId"));
-      req.setAttribute("doctorId", req.getParameter("doctorId"));
-      req.getRequestDispatcher("/WEB-INF/views/reception/receptionSymptom.jsp").forward(req, resp);
-
-    } else if (path.equals("/done")) {
-      // 완료 화면
-      String receptionId = req.getParameter("receptionId");
-      req.setAttribute("receptionId", receptionId);
-      req.getRequestDispatcher("/WEB-INF/views/reception/receptionDone.jsp").forward(req, resp);
+    @Override
+    public void init() throws ServletException {
+        symptomService = new SymptomService();
+        receptionService = new ReceptionService();
+        departmentService = new DepartmentService();
+        doctorService = new DoctorService();
     }
-  }
 
-  @Override
-  protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-      throws ServletException, IOException {
-    String path = req.getPathInfo();
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
 
-    if ("/confirm".equals(path)) {
-      // 증상 입력 후 → 확인 화면
-      String departmentId = req.getParameter("departmentId");
-//      String departmentName = departmentService.findNameById(Long.parseLong(departmentId));
+        String path = req.getPathInfo(); // 예: "/symptom", "/done"
 
-      String doctorId = req.getParameter("doctorId");
-      String[] symptomIds = req.getParameterValues("symptomIds");
-      String noteToDoctor = req.getParameter("noteToDoctor");
-      boolean consentNotice = "true".equals(req.getParameter("consentNotice"));
+        if (path == null || path.equals("/symptom")) {
+            // 🩺 증상 선택 화면
+            req.setAttribute("symptoms", symptomService.getSymptoms());
+            req.setAttribute("departmentId", req.getParameter("departmentId"));
+            req.setAttribute("doctorId", req.getParameter("doctorId"));
 
-      // 증상명 조회
-      List<SymptomDTO> allSymptoms = symptomService.getSymptoms();
-      List<String> selectedNames = new ArrayList<>();
-      if (symptomIds != null) {
-        for (String idStr : symptomIds) {
-          Long id = Long.parseLong(idStr);
-          allSymptoms.stream()
-              .filter(s -> s.getSymptomId().equals(id))
-              .findFirst()
-              .ifPresent(s -> selectedNames.add(s.getName()));
+            req.getRequestDispatcher("/WEB-INF/views/reception/receptionSymptom.jsp").forward(req, resp);
+
+        } else if (path.equals("/done")) {
+            req.setCharacterEncoding("UTF-8");
+
+            // 1️⃣ 쿼리 파라미터 확인
+            String receptionIdParam = req.getParameter("receptionId");
+            if (receptionIdParam == null || receptionIdParam.isEmpty()) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing receptionId parameter");
+                return;
+            }
+
+            Long receptionId;
+            try {
+                receptionId = Long.parseLong(receptionIdParam);
+            } catch (NumberFormatException e) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid receptionId format");
+                return;
+            }
+
+            // 2️⃣ DB에서 접수 상세 조회
+            ReceptionDetailDTO detail = receptionService.getReceptionDetail(receptionId);
+
+            // 3️⃣ 존재하지 않으면 404 처리
+            if (detail == null) {
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Reception not found");
+                return;
+            }
+
+            // 4️⃣ JSP에 데이터 전달
+            req.setAttribute("reception", detail);
+
+            // 5️⃣ JSP forward
+            req.getRequestDispatcher("/WEB-INF/views/reception/receptionDone.jsp").forward(req, resp);
         }
-      }
-
-      req.setAttribute("departmentId", departmentId);
-      req.setAttribute("doctorId", doctorId);
-      req.setAttribute("symptomIds", symptomIds);
-      req.setAttribute("symptomNames", selectedNames);
-      req.setAttribute("noteToDoctor", noteToDoctor);
-      req.setAttribute("consentNotice", consentNotice);
-      req.setAttribute("departmentName", departmentName);
-
-      req.getRequestDispatcher("/WEB-INF/views/reception/receptionConfirm.jsp").forward(req, resp);
-
-    } else if ("/done".equals(path)) {
-      // 최종 접수 DB 저장
-      Long departmentId = Long.parseLong(req.getParameter("departmentId"));
-      Long doctorId = Long.parseLong(req.getParameter("doctorId"));
-      String[] symptomIds = req.getParameterValues("symptomIds");
-      String noteToDoctor = req.getParameter("noteToDoctor");
-      boolean consentNotice = "true".equals(req.getParameter("consentNotice"));
-
-      Long receptionId = receptionService.createReception(
-          departmentId, doctorId, symptomIds, noteToDoctor, consentNotice);
-
-      resp.sendRedirect(req.getContextPath() + "/v1/reception/done?receptionId=" + receptionId);
     }
-  }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+
+        req.setCharacterEncoding("UTF-8"); // ✅ 한글 깨짐 방지
+
+        String path = req.getPathInfo();
+
+        // [확인 화면 이동]
+        if ("/confirm".equals(path)) {
+            String departmentId = req.getParameter("departmentId");
+            String doctorId = req.getParameter("doctorId");
+            String[] symptomIds = req.getParameterValues("symptomIds");
+            String noteToDoctor = req.getParameter("noteToDoctor");
+            boolean consentNotice = "true".equals(req.getParameter("consentNotice"));
+
+            // 선택 증상명 조회
+            List<String> selectedNames = new ArrayList<>();
+            for (SymptomDTO s : symptomService.getSymptoms()) {
+                if (symptomIds != null) {
+                    for (String sid : symptomIds) {
+                        if (s.getSymptomId().equals(Long.parseLong(sid))) {
+                            selectedNames.add(s.getName());
+                        }
+                    }
+                }
+            }
+
+            // ✅ 이름 표시용 데이터 (선택)
+            String departmentName = departmentService.findNameById(Long.parseLong(departmentId));
+            String doctorName = doctorService.findNameById(Long.parseLong(doctorId));
+
+            req.setAttribute("departmentId", departmentId);
+            req.setAttribute("doctorId", doctorId);
+            req.setAttribute("symptomIds", symptomIds);
+            req.setAttribute("symptomNames", selectedNames);
+            req.setAttribute("noteToDoctor", noteToDoctor);
+            req.setAttribute("consentNotice", consentNotice);
+            req.setAttribute("departmentName", departmentName);
+            req.setAttribute("doctorName", doctorName);
+
+            req.getRequestDispatcher("/WEB-INF/views/reception/receptionConfirm.jsp").forward(req, resp);
+
+        } else if ("/done".equals(path)) {
+            req.setCharacterEncoding("UTF-8");
+
+            Long departmentId = Long.parseLong(req.getParameter("departmentId"));
+            Long doctorId = Long.parseLong(req.getParameter("doctorId"));
+            String[] symptomIds = req.getParameterValues("symptomIds");
+            String noteToDoctor = req.getParameter("noteToDoctor");
+            boolean consentNotice = "true".equals(req.getParameter("consentNotice"));
+
+            // ✅ (임시) 회원 기능이 없으므로 고정 memberId 사용
+            // 나중에 로그인 기능이 완성되면 세션에서 꺼내는 코드로 교체하면 됨
+            Long memberId = 1L;
+
+            // 서버 측 검증
+            if (!consentNotice) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "consentNotice required");
+                return;
+            }
+
+            // ✅ 접수 생성
+            Long receptionId = receptionService.createReception(
+                    memberId,
+                    doctorId,
+                    symptomIds,
+                    noteToDoctor,
+                    consentNotice
+            );
+
+            if (receptionId == null) {
+                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Reception creation failed");
+                return;
+            }
+
+            // ✅ 완료 페이지로 리다이렉트 (receptionId 전달)
+            resp.sendRedirect(req.getContextPath() + "/v1/reception/done?receptionId=" + receptionId);
+        }
+
+    }
 }

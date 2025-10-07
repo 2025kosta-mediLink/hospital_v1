@@ -10,19 +10,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DoctorDAO {
+
+  // 진료과별 의사 목록 조회
   public List<DoctorDTO> findByDepartment(Long departmentId) {
     List<DoctorDTO> list = new ArrayList<>();
-    String sql = "SELECT d.doctor_id,\n" +
-        "       d.name,\n" +
-        "       d.department_id,\n" +
-        "       dep.name AS department_name\n" +
-        "FROM doctor d\n" +
-        "JOIN department dep ON d.department_id = dep.department_id\n" +
-        "WHERE d.department_id = ?;";
+
+    // department_id로 doctor 조회 + department 테이블 조인
+    String sql = "SELECT d.doctor_id, " +
+            "d.name, " +
+            "d.department_id, " +
+            "dep.name AS department_name " +
+            "FROM doctor d " +
+            "JOIN department dep ON d.department_id = dep.department_id " +
+            "WHERE d.department_id = ?;";
 
     try (Connection conn = DBConnectionUtil.getConnection();
          PreparedStatement ps = conn.prepareStatement(sql)) {
+
+      // ? 바인딩
       ps.setLong(1, departmentId);
+
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
           DoctorDTO dto = new DoctorDTO();
@@ -34,8 +41,35 @@ public class DoctorDAO {
         }
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      e.printStackTrace(); // 👉 실서비스라면 로깅으로 교체 필요
     }
     return list;
+  }
+
+  // ✅ 추가: ID로 단일 조회
+  public DoctorDTO findById(Long doctorId) {
+    String sql = "SELECT d.doctor_id, d.name, d.department_id, dep.name AS department_name " +
+            "FROM doctor d " +
+            "JOIN department dep ON d.department_id = dep.department_id " +
+            "WHERE d.doctor_id = ?";
+
+    DoctorDTO dto = null;
+
+    try (Connection conn = DBConnectionUtil.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+      ps.setLong(1, doctorId);
+      try (ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          dto = new DoctorDTO();
+          dto.setDoctorId(rs.getLong("doctor_id"));
+          dto.setName(rs.getString("name"));
+          dto.setDepartmentId(rs.getLong("department_id"));
+          dto.setDepartmentName(rs.getString("department_name"));
+        }
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return dto;
   }
 }
