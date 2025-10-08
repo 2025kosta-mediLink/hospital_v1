@@ -11,6 +11,9 @@ public class ReceptionDAO {
                                           String[] symptomIds,
                                           String noteToDoctor,
                                           boolean consentNotice) {
+    // 전체 병원 기준으로 다음 접수번호 조회
+    String selectReceptionNoSql = "SELECT COALESCE(MAX(reception_no), 1000) + 1 AS next_no FROM reception";
+
     String insertReceptionSql = "INSERT INTO reception " +
             "(reservation_id, member_id, doctor_id, reception_no, type, status, " +
             "consent_notice, consent_at, note_to_doctor, created_at, updated_at) " +
@@ -26,12 +29,20 @@ public class ReceptionDAO {
       conn = DBConnectionUtil.getConnection();
       conn.setAutoCommit(false); // 트랜잭션 시작
 
-      // 1️⃣ reception 테이블 insert
+      // 1️⃣ 다음 접수번호 조회
+      int nextReceptionNo = 1001;
+      try (PreparedStatement ps = conn.prepareStatement(selectReceptionNoSql);
+           ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+          nextReceptionNo = rs.getInt("next_no");
+        }
+      }
+
+      // 2️⃣ reception 테이블에 insert
       try (PreparedStatement ps = conn.prepareStatement(insertReceptionSql, Statement.RETURN_GENERATED_KEYS)) {
-        int receptionNo = (int) (Math.random() * 10000);
         ps.setLong(1, memberId);
         ps.setLong(2, doctorId);
-        ps.setInt(3, receptionNo);
+        ps.setInt(3, nextReceptionNo);
         ps.setBoolean(4, consentNotice);
         ps.setString(5, noteToDoctor);
         ps.executeUpdate();
@@ -43,7 +54,7 @@ public class ReceptionDAO {
         }
       }
 
-      // 2️⃣ 선택된 증상 매핑 저장
+      // 3️⃣ 선택된 증상 매핑 저장
       if (symptomIds != null && symptomIds.length > 0 && receptionId != null) {
         try (PreparedStatement ps2 = conn.prepareStatement(insertSymptomSql)) {
           for (String sid : symptomIds) {
@@ -55,7 +66,7 @@ public class ReceptionDAO {
         }
       }
 
-      conn.commit(); // 둘 다 성공 시 커밋
+      conn.commit(); // 성공 시 커밋
     } catch (Exception e) {
       if (conn != null) try { conn.rollback(); } catch (Exception ignored) {}
       e.printStackTrace();
@@ -65,6 +76,8 @@ public class ReceptionDAO {
 
     return receptionId;
   }
+
+
 
   // ✅ receptionId로 접수 상세 조회
   public ReceptionDetailDTO findReceptionDetail(Long receptionId) {

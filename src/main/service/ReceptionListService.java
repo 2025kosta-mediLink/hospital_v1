@@ -1,6 +1,7 @@
 package service;
 
 import dao.ReceptionListDAO;
+import dto.ReceptionListDetailDTO;
 import dto.ReceptionListItemDTO;
 
 import java.time.LocalDate;
@@ -14,5 +15,13 @@ public class ReceptionListService {
                                             LocalDate from,
                                             LocalDate to) {
     return dao.findList(memberId, status, from, to);
+  }
+
+  public ReceptionListDetailDTO getReceptionListDetail(Long receptionId) {
+    return dao.getReceptionListDetail(receptionId);
+  }
+
+  public boolean cancelReception(Long receptionId) {
+    return dao.cancelReception(receptionId);
   }
 }

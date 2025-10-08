@@ -61,6 +61,8 @@
 
         /* 선택 효과 */
         .radio:checked + .card{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.12);transform:translateY(-1px)}
+        .card-wrap.active .card{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.12);transform:translateY(-1px)}
+        .chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
 
         /* 하단 버튼 */
         .footer{margin-top:16px;display:flex;gap:10px}
@@ -83,18 +85,19 @@
     </style>
 
     <script>
-        // 라디오 선택 시 칩 하이라이트 + 버튼 활성화, 초기 상태 동기화 포함
+        // 라디오 선택 시 칩 하이라이트 + 카드 선택 동기화 + 버튼 활성화, 초기 상태 동기화 포함
         document.addEventListener('DOMContentLoaded', function(){
             const form    = document.getElementById('doctorForm');
             const nextBtn = document.getElementById('nextBtn');
             const chipEls = document.querySelectorAll('.chip');
+            const cardEls = document.querySelectorAll('.card-wrap');
             if (!form || !nextBtn) return;
 
-            // 변경 시
+            // 변경 시 (라디오 선택 시)
             form.addEventListener('change', function(e){
                 if (e.target && e.target.name === 'doctorId') {
                     nextBtn.disabled = false;
-                    syncChips(e.target.value);
+                    syncSelection(e.target.value);
                 }
             });
 
@@ -102,13 +105,13 @@
             const checked = form.querySelector('input[name="doctorId"]:checked');
             if (checked) {
                 nextBtn.disabled = false;
-                syncChips(checked.value);
+                syncSelection(checked.value);
             }
 
-            function syncChips(val){
-                chipEls.forEach(ch => ch.classList.remove('active'));
-                const act = document.querySelector('.chip[data-doc="'+ val +'"]');
-                if (act) act.classList.add('active');
+            // 칩 + 카드 동기화 함수
+            function syncSelection(value){
+                chipEls.forEach(ch => ch.classList.toggle('active', ch.dataset.doc === value));
+                cardEls.forEach(cd => cd.classList.toggle('active', cd.dataset.doc === value));
             }
         });
 
@@ -169,7 +172,7 @@
                 <!-- 카드 리스트 -->
                 <div class="grid">
                     <c:forEach var="doc" items="${doctors}">
-                        <label class="item">
+                        <label class="item card-wrap" data-doc="${doc.doctorId}">
                             <!-- 칩과 동일 name이라 어느 쪽을 클릭해도 동일 선택 -->
                             <input class="radio" type="radio" name="doctorId" value="${doc.doctorId}" required aria-label="${doc.name}" />
                             <div class="card">

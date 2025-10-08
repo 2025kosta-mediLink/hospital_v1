@@ -154,7 +154,9 @@
             <c:choose>
               <%-- 대기/진료중/완료: 모두 '상세보기' 노출 --%>
               <c:when test="${r.status=='WAITING' || r.status=='IN_SERVICE' || r.status=='DONE'}">
-                <a class="btn btn-primary" href="${pageContext.request.contextPath}/v1/reception/${r.receptionId}">
+                <!-- 상세보기 링크 수정 -->
+                <a class="btn btn-primary"
+                   href="${pageContext.request.contextPath}/v1/reception/detail?id=${r.receptionId}">
                   상세보기
                 </a>
                 <c:if test="${r.status=='DONE'}">
@@ -166,7 +168,9 @@
 
               <%-- 취소 등 기타: 상세보기만 --%>
               <c:otherwise>
-                <a class="btn btn-ghost" href="${pageContext.request.contextPath}/v1/reception/${r.receptionId}">
+                <!-- 상세보기 링크 수정 -->
+                <a class="btn btn-ghost"
+                   href="${pageContext.request.contextPath}/v1/reception/detail?id=${r.receptionId}">
                   상세보기
                 </a>
               </c:otherwise>

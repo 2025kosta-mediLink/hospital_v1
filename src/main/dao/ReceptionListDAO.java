@@ -1,6 +1,7 @@
 package dao;
 
 import common.DBConnectionUtil;
+import dto.ReceptionListDetailDTO;
 import dto.ReceptionListItemDTO;
 
 import java.sql.*;
@@ -100,5 +101,72 @@ public class ReceptionListDAO {
         }
 
         return list;
+    }
+
+    public ReceptionListDetailDTO getReceptionListDetail(Long receptionId) {
+        String sql = """
+            SELECT
+                r.reception_id              AS receptionId,
+                r.reception_no              AS receptionNo,
+                r.type                      AS type,
+                r.status                    AS status,  
+                r.consent_notice            AS consentNotice,
+                DATE_FORMAT(r.consent_at,  '%Y-%m-%d %H:%i') AS consentAt,
+                r.note_to_doctor            AS noteToDoctor,
+                DATE_FORMAT(r.created_at,  '%Y-%m-%d %H:%i') AS createdAt,
+                DATE_FORMAT(r.updated_at,  '%Y-%m-%d %H:%i') AS updatedAt,
+                doc.name                    AS doctorName,
+                d.name                      AS departmentName,
+                GROUP_CONCAT(s.name ORDER BY s.name SEPARATOR ', ') AS symptomNames
+            FROM reception r
+            JOIN doctor doc       ON r.doctor_id = doc.doctor_id
+            JOIN department d     ON doc.department_id = d.department_id
+            LEFT JOIN reception_symptom rs ON r.reception_id = rs.reception_id
+            LEFT JOIN symptom s           ON rs.symptom_id = s.symptom_id
+            WHERE r.reception_id = ?
+            GROUP BY r.reception_id
+        """;
+
+        ReceptionListDetailDTO dto = null;
+
+        try (Connection conn = DBConnectionUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setLong(1, receptionId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    dto = new ReceptionListDetailDTO();
+                    dto.setReceptionId(rs.getLong("receptionId"));
+                    dto.setReceptionNo(rs.getInt("receptionNo"));
+                    dto.setType(rs.getString("type"));
+                    dto.setStatus(rs.getString("status"));
+                    dto.setConsentNotice(rs.getBoolean("consentNotice"));
+                    dto.setConsentAt(rs.getString("consentAt"));
+                    dto.setNoteToDoctor(rs.getString("noteToDoctor"));
+                    dto.setCreatedAt(rs.getString("createdAt"));
+                    dto.setUpdatedAt(rs.getString("updatedAt"));
+                    dto.setDoctorName(rs.getString("doctorName"));
+                    dto.setDepartmentName(rs.getString("departmentName"));
+                    dto.setSymptomNames(rs.getString("symptomNames"));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return dto;
+    }
+
+    // (선택) 취소 로직도 camelCase 별칭 불필요
+    public boolean cancelReception(Long receptionId) {
+        String sql = "UPDATE reception SET status='CANCELLED', updated_at=NOW() WHERE reception_id=?";
+        try (Connection conn = DBConnectionUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setLong(1, receptionId);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

@@ -1,7 +1,9 @@
 package controller;
 
 import dto.ReceptionListItemDTO;
+import dto.ReceptionListDetailDTO;
 import service.ReceptionListService;
+import service.ReceptionService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,13 +13,14 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 
-@WebServlet("/v1/reception/list")
+@WebServlet(urlPatterns = {"/v1/reception/list", "/v1/reception/detail"})
 public class ReceptionListController extends HttpServlet {
-    private ReceptionListService service;
+
+    private ReceptionListService receptionListService;
 
     @Override
     public void init() throws ServletException {
-        service = new ReceptionListService();
+        receptionListService = new ReceptionListService();
     }
 
     @Override
@@ -25,6 +28,20 @@ public class ReceptionListController extends HttpServlet {
             throws ServletException, IOException {
 
         req.setCharacterEncoding("UTF-8");
+        String servletPath = req.getServletPath();
+
+        if ("/v1/reception/list".equals(servletPath)) {
+            handleList(req, resp);
+        } else if ("/v1/reception/detail".equals(servletPath)) {
+            handleDetail(req, resp);
+        } else {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+        }
+    }
+
+    // ===================== 리스트 처리 =====================
+    private void handleList(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
 
         // (임시) 로그인 미구현 → 고정 memberId
         Long memberId = 1L;
@@ -61,7 +78,7 @@ public class ReceptionListController extends HttpServlet {
         }
 
         // ====== 서비스 조회 ======
-        List<ReceptionListItemDTO> list = service.getList(memberId, status, from, to);
+        List<ReceptionListItemDTO> list = receptionListService.getList(memberId, status, from, to);
 
         // ====== 뷰 바인딩 ======
         req.setAttribute("receptions", list);
@@ -76,7 +93,36 @@ public class ReceptionListController extends HttpServlet {
                 .forward(req, resp);
     }
 
-    // ---------- helpers ----------
+    // ===================== 상세 처리 =====================
+    private void handleDetail(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+
+        String idParam = req.getParameter("id");
+        if (idParam == null || idParam.isEmpty()) {
+            resp.sendRedirect(req.getContextPath() + "/v1/reception/list");
+            return;
+        }
+
+        Long receptionId;
+        try {
+            receptionId = Long.parseLong(idParam);
+        } catch (NumberFormatException e) {
+            resp.sendRedirect(req.getContextPath() + "/v1/reception/list");
+            return;
+        }
+
+        ReceptionListDetailDTO dto = receptionListService.getReceptionListDetail(receptionId);
+        if (dto == null) {
+            req.setAttribute("error", "해당 접수 내역을 찾을 수 없습니다.");
+        } else {
+            req.setAttribute("reception", dto);
+        }
+
+        req.getRequestDispatcher("/WEB-INF/views/reception/receptionDetail.jsp")
+                .forward(req, resp);
+    }
+
+    // ===================== helpers =====================
     /** null/빈 문자열이면 기본값 반환 */
     private String nv(String v, String def) {
         return (v == null || v.isEmpty()) ? def : v;

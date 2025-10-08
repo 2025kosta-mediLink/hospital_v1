@@ -3,6 +3,7 @@ package service;
 import dao.ReceptionDAO;
 import dao.ReceptionListDAO;
 import dto.ReceptionDetailDTO;
+import dto.ReceptionListDetailDTO;
 import dto.ReceptionListItemDTO;
 
 import java.time.LocalDate;
@@ -37,4 +38,6 @@ public class ReceptionService {
                                             LocalDate to) {
     return receptionListDAO.findList(memberId, status, from, to);
   }
+
+
 }
