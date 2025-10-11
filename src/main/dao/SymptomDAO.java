@@ -1,7 +1,7 @@
 package dao;
 
 import common.DBConnectionUtil;
-import dto.SymptomDTO;
+import dto.SymptomListItemDTO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SymptomDAO {
-  public List<SymptomDTO> findAll() {
-    List<SymptomDTO> list = new ArrayList<>();
+  public List<SymptomListItemDTO> findAll() {
+    List<SymptomListItemDTO> list = new ArrayList<>();
     String sql = "SELECT symptom_id, name FROM symptom ORDER BY symptom_id";
 
     try (Connection conn = DBConnectionUtil.getConnection();
@@ -19,7 +19,7 @@ public class SymptomDAO {
          ResultSet rs = ps.executeQuery()) {
 
       while (rs.next()) {
-        SymptomDTO dto = new SymptomDTO();
+        SymptomListItemDTO dto = new SymptomListItemDTO();
         dto.setSymptomId(rs.getLong("symptom_id"));
         dto.setName(rs.getString("name"));
         list.add(dto);

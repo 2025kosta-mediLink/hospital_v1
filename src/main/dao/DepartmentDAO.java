@@ -2,7 +2,7 @@
 package dao;
 
 import common.DBConnectionUtil;
-import dto.DepartmentDTO;
+import dto.DepartmentListItemDTO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,8 +12,8 @@ import java.util.List;
 
 public class DepartmentDAO {
 
-  public List<DepartmentDTO> findAll() {
-    List<DepartmentDTO> list = new ArrayList<>();
+  public List<DepartmentListItemDTO> findAll() {
+    List<DepartmentListItemDTO> list = new ArrayList<>();
     String sql = "SELECT department_id, name FROM department ORDER BY name ASC";
 
     try (Connection conn = DBConnectionUtil.getConnection();
@@ -21,7 +21,7 @@ public class DepartmentDAO {
          ResultSet rs = ps.executeQuery()) {
 
       while (rs.next()) {
-        DepartmentDTO d = new DepartmentDTO();
+        DepartmentListItemDTO d = new DepartmentListItemDTO();
         d.setDepartmentId(rs.getLong("department_id"));
         d.setName(rs.getString("name"));
         list.add(d);
@@ -34,9 +34,9 @@ public class DepartmentDAO {
   }
 
   // ✅ 추가: ID로 단일 조회
-  public DepartmentDTO findById(Long departmentId) {
+  public DepartmentListItemDTO findById(Long departmentId) {
     String sql = "SELECT department_id, name FROM department WHERE department_id = ?";
-    DepartmentDTO dto = null;
+    DepartmentListItemDTO dto = null;
 
     try (Connection conn = DBConnectionUtil.getConnection();
          PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -44,7 +44,7 @@ public class DepartmentDAO {
 
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
-          dto = new DepartmentDTO();
+          dto = new DepartmentListItemDTO();
           dto.setDepartmentId(rs.getLong("department_id"));
           dto.setName(rs.getString("name"));
         }

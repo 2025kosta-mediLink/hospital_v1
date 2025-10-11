@@ -12,13 +12,20 @@
       --bg:#f5f7fb; --card:#fff; --text:#111827; --muted:#6b7280;
       --line:#e5e7eb; --primary:#2563eb; --primary-weak:#eff6ff;
       --shadow:0 6px 18px rgba(0,0,0,.06); --radius:16px;
+      --wrap-max:640px;   /* 컨텐츠 최대 폭 */
+      --tabbar-h:72px;    /* 하단바 높이 */
     }
     *{box-sizing:border-box}
     body{
       margin:0; background:var(--bg); color:var(--text);
       font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,AppleSDGothicNeo,"Noto Sans KR","Malgun Gothic",sans-serif;
     }
-    .wrap{max-width:640px; margin:24px auto; padding:0 16px 84px;}
+    .wrap{
+      max-width:640px;
+      margin:20px auto;
+      /* 기존: padding:0 16px 84px; */
+      padding:0 16px calc(var(--tabbar-h) + 24px + env(safe-area-inset-bottom));
+    }
 
     /* 헤더/탭 */
     .topbar{display:flex; align-items:center; gap:12px; margin-bottom:12px;}
@@ -63,10 +70,20 @@
     .empty{background:var(--card); border:1px dashed var(--line); padding:24px; border-radius:12px; color:var(--muted); text-align:center;}
 
     /* 하단 네비 */
+    /* 공통 하단 네비 */
     .nav{
-      position:sticky; bottom:0; left:0; right:0; background:var(--card);
-      box-shadow:0 -6px 18px rgba(0,0,0,.06); border-top:1px solid var(--line);
-      padding:calc(8px + env(safe-area-inset-bottom)) 6px 8px; display:flex; justify-content:space-around; z-index:50;
+      /* 기존: position:sticky; bottom:0; left:0; right:0; ... */
+      position:fixed;
+      left:50%; transform:translateX(-50%);
+      bottom:0;
+      width:min(var(--wrap-max), 100vw);
+      background:var(--card);
+      border-top:1px solid var(--line);
+      box-shadow:0 -6px 18px rgba(0,0,0,.06);
+      padding:8px 6px calc(8px + env(safe-area-inset-bottom));
+      display:flex; justify-content:space-around; align-items:center;
+      height:var(--tabbar-h);
+      z-index:999;
     }
     .nav a{color:#4b5563; text-decoration:none; font-weight:700; padding:8px 10px; border-radius:10px;}
     .nav a.active{color:var(--primary); background:#eff6ff;}
@@ -185,7 +202,7 @@
   <!-- 하단 네비 -->
   <div class="nav">
     <a href="${pageContext.request.contextPath}/">홈</a>
-    <a href="${pageContext.request.contextPath}/v1/departments">접수</a>
+    <a href="${pageContext.request.contextPath}/v1/reception/departments">접수</a>
     <a class="active" href="${pageContext.request.contextPath}/v1/reception/list">접수내역</a>
   </div>
 

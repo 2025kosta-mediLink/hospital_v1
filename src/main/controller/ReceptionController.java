@@ -1,7 +1,9 @@
 package controller;
 
+import dto.DepartmentListItemDTO;
+import dto.DoctorListItemDTO;
 import dto.ReceptionDetailDTO;
-import dto.SymptomDTO;
+import dto.SymptomListItemDTO;
 import service.DepartmentService;
 import service.DoctorService;
 import service.ReceptionService;
@@ -21,7 +23,6 @@ public class ReceptionController extends HttpServlet {
     private SymptomService symptomService;
     private ReceptionService receptionService;
     private DepartmentService departmentService;
-
     private DoctorService doctorService;
 
     @Override
@@ -39,17 +40,51 @@ public class ReceptionController extends HttpServlet {
         String path = req.getPathInfo(); // 예: "/symptom", "/done"
 
         if (path == null || path.equals("/symptom")) {
-            // 🩺 증상 선택 화면
+            // 증상 선택 화면
             req.setAttribute("symptoms", symptomService.getSymptoms());
             req.setAttribute("departmentId", req.getParameter("departmentId"));
             req.setAttribute("doctorId", req.getParameter("doctorId"));
 
             req.getRequestDispatcher("/WEB-INF/views/reception/receptionSymptom.jsp").forward(req, resp);
 
+        } else if (path.equals("/departments")) {
+            // 1. 진료과 전체 목록 조회 (DAO → DB)
+            List<DepartmentListItemDTO> list = departmentService.getDepartments();
+
+            // 2. 조회한 결과를 request 객체에 담아서 JSP로 전달
+            req.setAttribute("departments", list);
+
+            // 3. Forward 방식으로 JSP 렌더링 (요청/응답이 이어짐)
+            req.getRequestDispatcher("/WEB-INF/views/reception/departmentList.jsp")
+                    .forward(req, resp);
+
+        } else if (path.equals("/doctors")) {
+
+            // 1. departmentId 파라미터를 GET으로 받음 (이전 화면에서 전달됨)
+            String departmentIdStr = req.getParameter("departmentId");
+
+            // 2. 진료과 ID가 없을 경우 400 Bad Request 에러 반환
+            if (departmentIdStr == null) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "departmentId is required");
+                return;
+            }
+
+            // 3. 문자열 → Long 타입 변환
+            Long departmentId = Long.parseLong(departmentIdStr);
+
+            // 4. 해당 진료과 소속 의사 목록 조회 (Service → DAO → DB)
+            List<DoctorListItemDTO> list = doctorService.getDoctorsByDepartment(departmentId);
+
+            // 5. 조회된 의사 목록을 JSP로 전달
+            req.setAttribute("doctors", list);
+
+            // 6. Forward로 JSP 렌더링 (request 유지)
+            req.getRequestDispatcher("/WEB-INF/views/reception/doctorList.jsp").forward(req, resp);
+
         } else if (path.equals("/done")) {
             req.setCharacterEncoding("UTF-8");
 
-            // 1️⃣ 쿼리 파라미터 확인
+            // 1. 쿼리 파라미터 확인
             String receptionIdParam = req.getParameter("receptionId");
             if (receptionIdParam == null || receptionIdParam.isEmpty()) {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing receptionId parameter");
@@ -64,19 +99,19 @@ public class ReceptionController extends HttpServlet {
                 return;
             }
 
-            // 2️⃣ DB에서 접수 상세 조회
+            // 2. DB에서 접수 상세 조회
             ReceptionDetailDTO detail = receptionService.getReceptionDetail(receptionId);
 
-            // 3️⃣ 존재하지 않으면 404 처리
+            // 3. 존재하지 않으면 404 처리
             if (detail == null) {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Reception not found");
                 return;
             }
 
-            // 4️⃣ JSP에 데이터 전달
+            // 4. JSP에 데이터 전달
             req.setAttribute("reception", detail);
 
-            // 5️⃣ JSP forward
+            // 5. JSP forward
             req.getRequestDispatcher("/WEB-INF/views/reception/receptionDone.jsp").forward(req, resp);
         }
     }
@@ -85,7 +120,7 @@ public class ReceptionController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        req.setCharacterEncoding("UTF-8"); // ✅ 한글 깨짐 방지
+        req.setCharacterEncoding("UTF-8"); // 한글 깨짐 방지
 
         String path = req.getPathInfo();
 
@@ -99,7 +134,7 @@ public class ReceptionController extends HttpServlet {
 
             // 선택 증상명 조회
             List<String> selectedNames = new ArrayList<>();
-            for (SymptomDTO s : symptomService.getSymptoms()) {
+            for (SymptomListItemDTO s : symptomService.getSymptoms()) {
                 if (symptomIds != null) {
                     for (String sid : symptomIds) {
                         if (s.getSymptomId().equals(Long.parseLong(sid))) {
@@ -109,7 +144,7 @@ public class ReceptionController extends HttpServlet {
                 }
             }
 
-            // ✅ 이름 표시용 데이터 (선택)
+            // 이름 표시용 데이터 (선택)
             String departmentName = departmentService.findNameById(Long.parseLong(departmentId));
             String doctorName = doctorService.findNameById(Long.parseLong(doctorId));
 
@@ -133,7 +168,7 @@ public class ReceptionController extends HttpServlet {
             String noteToDoctor = req.getParameter("noteToDoctor");
             boolean consentNotice = "true".equals(req.getParameter("consentNotice"));
 
-            // ✅ (임시) 회원 기능이 없으므로 고정 memberId 사용
+            // (임시) 회원 기능이 없으므로 고정 memberId 사용
             // 나중에 로그인 기능이 완성되면 세션에서 꺼내는 코드로 교체하면 됨
             Long memberId = 1L;
 
@@ -143,7 +178,7 @@ public class ReceptionController extends HttpServlet {
                 return;
             }
 
-            // ✅ 접수 생성
+            // 접수 생성
             Long receptionId = receptionService.createReception(
                     memberId,
                     doctorId,
@@ -157,7 +192,7 @@ public class ReceptionController extends HttpServlet {
                 return;
             }
 
-            // ✅ 완료 페이지로 리다이렉트 (receptionId 전달)
+            // 완료 페이지로 리다이렉트 (receptionId 전달)
             resp.sendRedirect(req.getContextPath() + "/v1/reception/done?receptionId=" + receptionId);
         }
 

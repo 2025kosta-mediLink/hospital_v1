@@ -1,6 +1,6 @@
 package dto;
 
-public class DoctorDTO {
+public class DoctorListItemDTO {
   private Long doctorId;        // 의사 ID
   private String name;          // 의사 이름
   private Long departmentId;    // 소속 진료과 ID

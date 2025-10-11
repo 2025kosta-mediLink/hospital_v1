@@ -1,6 +1,6 @@
 package dto;
 
-public class SymptomDTO {
+public class SymptomListItemDTO {
   private Long symptomId;
   private String name;
 
