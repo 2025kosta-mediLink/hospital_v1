@@ -1,6 +1,6 @@
 package dao;
 
-import common.DBConnectionUtil;
+import common.util.DBConnectionUtil;
 import dto.ReceptionDetailDTO;
 
 import java.sql.*;
