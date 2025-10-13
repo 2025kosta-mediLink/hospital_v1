@@ -1,6 +1,6 @@
-package test;
+package common.test;
 
-import common.DBConnectionUtil;
+import common.util.DBConnectionUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

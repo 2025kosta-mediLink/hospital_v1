@@ -1,7 +1,7 @@
 // DepartmentDAO.java
 package dao;
 
-import common.DBConnectionUtil;
+import common.util.DBConnectionUtil;
 import dto.DepartmentListItemDTO;
 
 import java.sql.Connection;
