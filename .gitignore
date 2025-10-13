@@ -1,6 +1,4 @@
-﻿**/.smarttomcat/
-**/.SmartTomcat/
-**/target/
+﻿**/target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
@@ -52,8 +50,8 @@ build/
 *.swp
 work/
 logs/
-.smarttomcat/
-.SmartTomcat/
+**/.smarttomcat/
+**/.SmartTomcat/
 
 ### application files ###
 *.properties
