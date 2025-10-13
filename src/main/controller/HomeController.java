@@ -11,7 +11,7 @@ import java.io.IOException;
 /**
  * 홈 컨트롤러: 홈 상단 요약 패널 데이터 주입.
  */
-@WebServlet(urlPatterns = {"/", "/home"})
+@WebServlet(urlPatterns = {"/home"})
 public class HomeController extends HttpServlet {
 
     private final HomeService homeService = new HomeService();

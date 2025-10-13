@@ -1,0 +1,16 @@
+/* 로그인 전용 */
+html { -webkit-text-size-adjust: 100%; }
+:root { color-scheme: light; }
+
+body {
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans KR",
+    AppleSDGothicNeo,"Helvetica Neue",Arial,"Malgun Gothic",sans-serif;
+    font-size:14px; line-height:1.45; background:var(--bg);
+}
+
+.card.auth { margin-top:84px; }
+.card-title { letter-spacing:-.2px; }
+
+/* 버튼 간격 */
+.stack-16{ margin-top:16px; }
+.stack-24{ margin-top:24px; }
