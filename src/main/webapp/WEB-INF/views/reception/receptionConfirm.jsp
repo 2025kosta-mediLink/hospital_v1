@@ -7,103 +7,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>접수하기 - 최종 확인</title>
-    <style>
-        :root{
-            --bg:#f5f7fb; --card:#fff; --text:#111827; --muted:#6b7280;
-            --line:#e5e7eb; --primary:#2563eb; --primary-weak:#eff6ff;
-            --danger:#ef4444; --shadow:0 6px 18px rgba(0,0,0,.06); --radius:16px;
-            --wrap-max:640px;   /* 컨텐츠 최대 폭 */
-            --tabbar-h:72px;    /* 하단바 높이 */
-        }
-        *{box-sizing:border-box}
-        body{
-            margin:0; background:var(--bg); color:var(--text);
-            font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,AppleSDGothicNeo,"Noto Sans KR","Malgun Gothic",sans-serif;
-        }
-        .wrap{
-            max-width:640px;
-            margin:20px auto;
-            /* 기존: padding:0 16px 84px; */
-            padding:0 16px calc(var(--tabbar-h) + 24px + env(safe-area-inset-bottom));
-        }
-
-        /* 상단바 */
-        .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-        .title{font-weight:800;font-size:18px}
-        .back, .close{
-            display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;
-            padding:8px 10px;border-radius:10px;cursor:pointer;color:#111;text-decoration:none;font-weight:800;box-shadow:var(--shadow)
-        }
-        .back:hover,.close:hover{background:#f8fafc}
-        .chev{font-weight:900}
-
-        /* 카드 공통 */
-        .card{background:var(--card);border:1px solid #eef1f6;border-radius:12px;box-shadow:var(--shadow);padding:14px;margin-bottom:14px}
-        .card h3{margin:0 0 12px;font-size:14px;display:flex;align-items:center;gap:8px}
-        .muted{color:var(--muted)}
-        .kv{display:grid;grid-template-columns:80px 1fr;row-gap:8px;column-gap:8px}
-        .k{color:var(--muted)}
-        .v{font-weight:800}
-        .pill{display:inline-block;background:#f1f5f9;border:1px solid #e5e7eb;border-radius:999px;padding:4px 10px;margin-right:6px;margin-bottom:6px;font-weight:800}
-        .note{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
-        /* 주의사항 */
-        .alert{border-color:#ffe1e1;background:#fffafa}
-        .alert h3{color:#b91c1c}
-        .alert ul{margin:0 0 0 18px;padding:0}
-        .alert li{margin:6px 0}
-
-        /* 동의 */
-        .consent{display:flex;align-items:center;gap:10px}
-        .consent input{width:18px;height:18px}
-
-        /* 버튼 */
-        .actions{position:sticky;bottom:84px;background:transparent;margin-top:16px}
-        .btn-primary{
-            width:100%;background:var(--primary);color:#fff;border:0;border-radius:12px;padding:14px 16px;
-            font-weight:800;cursor:pointer;box-shadow:var(--shadow);font-size:15px
-        }
-        .btn-primary:disabled{opacity:.5;cursor:not-allowed}
-        /* 공통 하단 네비 */
-        .nav{
-            /* 기존: position:sticky; bottom:0; left:0; right:0; ... */
-            position:fixed;
-            left:50%; transform:translateX(-50%);
-            bottom:0;
-            width:min(var(--wrap-max), 100vw);
-            background:var(--card);
-            border-top:1px solid var(--line);
-            box-shadow:0 -6px 18px rgba(0,0,0,.06);
-            padding:8px 6px calc(8px + env(safe-area-inset-bottom));
-            display:flex; justify-content:space-around; align-items:center;
-            height:var(--tabbar-h);
-            z-index:999;
-        }
-        .nav a{color:#4b5563;text-decoration:none;font-weight:700;padding:8px 10px;border-radius:10px}
-        .nav a.active{color:var(--primary);background:#eff6ff}
-
-        /* 빈 상태 */
-        .empty{background:var(--card);border:1px dashed var(--line);padding:24px;border-radius:12px;color:var(--muted);text-align:center}
-    </style>
-
-    <script>
-        // 뒤로가기 (referrer 없으면 폴백)
-        function goBackOr(url){
-            if (document.referrer) history.back();
-            else location.href = url;
-        }
-        // 동의 체크 시 버튼 활성화
-        document.addEventListener('DOMContentLoaded', function(){
-            const agree   = document.getElementById('consentNotice');
-            const submit  = document.getElementById('submitBtn');
-            if(!agree || !submit) return;
-            const sync = () => submit.disabled = !agree.checked;
-            agree.addEventListener('change', sync);
-            sync();
-        });
-    </script>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/reception/receptionConfirm.css">
+    <script defer src="${pageContext.request.contextPath}/static/js/reception/receptionConfirm.js"></script>
 </head>
 <body>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+
 <div class="wrap">
 
     <!-- 상단 -->
@@ -185,7 +94,6 @@
                 <input id="consentNotice" type="checkbox" checked />
                 주의사항을 숙지하고 동의합니다.
             </label>
-<%--            <p class="muted" style="margin:8px 0 0">※ 서버에서도 동의 여부를 다시 검증합니다.</p>--%>
         </div>
 
         <!-- 제출 버튼 -->
@@ -194,13 +102,14 @@
         </div>
     </form>
 
-    <!-- 하단 네비 -->
-    <div class="nav">
-        <a href="${pageContext.request.contextPath}/">홈</a>
-        <a class="active" href="${pageContext.request.contextPath}/v1/reception/departments">접수</a>
-        <a href="${pageContext.request.contextPath}/v1/reception/list">접수내역</a>
-    </div>
-
+    <!-- 하단 탭바 -->
+    <nav class="nav" aria-label="하단 내비게이션">
+        <a href="${ctx}/v1/reservation/departments">예약</a>
+        <a class="active" href="${ctx}/v1/reception/departments">접수</a>
+        <a href="${ctx}/v1/home">홈</a>
+        <a href="${ctx}/v1/prescription">처방전</a>
+        <a href="${ctx}/v1/reception/list">마이페이지</a>
+    </nav>
 </div>
 </body>
 </html>

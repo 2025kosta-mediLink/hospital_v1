@@ -6,146 +6,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>증상 입력</title>
-    <style>
-        :root{
-            --bg:#f5f7fb; --card:#fff; --text:#111827; --muted:#6b7280;
-            --line:#e5e7eb; --primary:#2563eb; --primary-weak:#eff6ff;
-            --danger:#ef4444; --shadow:0 6px 18px rgba(0,0,0,.06); --radius:16px;
-            --wrap-max:640px;   /* 컨텐츠 최대 폭 */
-            --tabbar-h:72px;    /* 하단바 높이 */
-        }
-        *{box-sizing:border-box}
-        body{
-            margin:0; background:var(--bg); color:var(--text);
-            font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,AppleSDGothicNeo,"Noto Sans KR","Malgun Gothic",sans-serif;
-        }
-        /* ✅ 하단 네비까지 고려한 여백을 한 번에 */
-        .wrap{
-            max-width:640px;
-            margin:20px auto;
-            /* 기존: padding:0 16px 84px; */
-            padding:0 16px calc(var(--tabbar-h) + 24px + env(safe-area-inset-bottom));
-        }
-
-        /* 이전 버튼 */
-        .back{
-            display:inline-flex; align-items:center; gap:6px;
-            border:1px solid var(--line); background:#fff;
-            padding:8px 10px; border-radius:10px; cursor:pointer;
-            color:#111; text-decoration:none; font-weight:800;
-            box-shadow:var(--shadow);
-        }
-        .back:hover{ background:#f8fafc; }
-        .back .chev{ font-weight:900; font-size:14px; }
-
-        /* 헤더 */
-        .topbar{display:flex; align-items:center; gap:10px; margin-bottom:10px}
-        .title{font-weight:800; font-size:20px}
-        .sub{color:var(--muted); font-size:12px; margin-bottom:10px}
-
-        /* 카드 */
-        .card{background:var(--card); border:1px solid #eef1f6; border-radius:12px; box-shadow:var(--shadow);
-            padding:14px; margin-bottom:12px}
-        .card h3{margin:0 0 10px; font-size:14px; display:flex; align-items:center; gap:8px}
-        .hint{color:var(--muted); font-size:12px}
-        .row{display:flex; align-items:center; justify-content:space-between; margin-top:8px}
-
-        /* 체크박스 리스트 */
-        .sym-list{display:flex; flex-direction:column; gap:8px; max-height:260px; overflow:auto; padding-right:2px}
-        .sym-item{display:flex; align-items:center; gap:8px; padding:8px 10px; border:1px solid var(--line); border-radius:10px; background:#fff}
-        .sym-item:hover{background:#f8fafc}
-        .sym-item input[type="checkbox"]{width:16px; height:16px}
-
-        /* textarea */
-        .ta{width:100%; min-height:110px; border:1px solid var(--line); border-radius:12px; padding:10px 12px; resize:vertical}
-        .ta:focus{outline:3px solid rgba(37,99,235,.15); border-color:var(--primary)}
-
-        /* 동의 체크 */
-        .consent{display:flex; align-items:center; gap:8px; margin-top:6px}
-        .consent input{width:16px; height:16px}
-
-        /* 하단 버튼 */
-        .footer{margin-top:14px}
-        .btn-primary{width:100%; background:var(--primary); color:#fff; border:0; border-radius:12px; padding:12px 14px;
-            font-weight:800; cursor:pointer}
-        .btn-primary:disabled{opacity:.5; cursor:not-allowed}
-
-        /* 보조 표시 */
-        .counter{font-size:12px; color:var(--muted)}
-        .counter.error{color:var(--danger); font-weight:700}
-        .badge{background:var(--primary-weak); color:#1d4ed8; border-radius:999px; padding:4px 10px; font-weight:800; font-size:12px}
-
-        /* 공통 하단 네비 */
-        .nav{
-            /* 기존: position:sticky; bottom:0; left:0; right:0; ... */
-            position:fixed;
-            left:50%; transform:translateX(-50%);
-            bottom:0;
-            width:min(var(--wrap-max), 100vw);
-            background:var(--card);
-            border-top:1px solid var(--line);
-            box-shadow:0 -6px 18px rgba(0,0,0,.06);
-            padding:8px 6px calc(8px + env(safe-area-inset-bottom));
-            display:flex; justify-content:space-around; align-items:center;
-            height:var(--tabbar-h);
-            z-index:999;
-        }
-        .nav a{color:#4b5563; text-decoration:none; font-weight:700; padding:8px 10px; border-radius:10px}
-        .nav a.active{color:var(--primary); background:#eff6ff}
-
-        /* 빈 상태 */
-        .empty{background:var(--card); border:1px dashed var(--line); padding:24px; border-radius:12px; color:var(--muted); text-align:center}
-    </style>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function(){
-            const form        = document.getElementById('symptomForm');
-            const note        = document.getElementById('noteToDoctor');
-            const counter     = document.getElementById('noteCounter');
-            const consent     = document.getElementById('consentNotice');
-            const submitBtn   = document.getElementById('nextBtn');
-            const symCheckboxes = document.querySelectorAll('input[name="symptomIds"]');
-            const symCountEl  = document.getElementById('symCount');
-            const maxLen      = 500;
-
-            if (!form || !note || !counter || !consent || !submitBtn || !symCountEl) return;
-
-            function updateCount(){
-                const len = note.value.length;
-                counter.textContent = len + " / " + maxLen;
-                counter.classList.toggle('error', len > maxLen);
-                submitBtn.disabled = !(consent.checked && len <= maxLen);
-            }
-            function updateSymCount(){
-                let c = 0;
-                symCheckboxes.forEach(cb => { if (cb.checked) c++; });
-                symCountEl.textContent = c;
-            }
-
-            note.addEventListener('input', updateCount);
-            consent.addEventListener('change', updateCount);
-            symCheckboxes.forEach(cb => cb.addEventListener('change', updateSymCount));
-
-            // 초기 상태
-            updateCount();
-            updateSymCount();
-
-            form.addEventListener('submit', function(e){
-                if (note.value.length > maxLen) {
-                    e.preventDefault();
-                    alert("전달사항은 최대 " + maxLen + "자까지 입력 가능합니다.");
-                }
-            });
-        });
-
-        // 뒤로가기 (referrer 없으면 폴백으로 이동)
-        function goBackOr(url){
-            if (document.referrer) { history.back(); }
-            else { location.href = url; }
-        }
-    </script>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/reception/receptionSymptom.css">
+    <script defer src="${pageContext.request.contextPath}/static/js/reception/receptionSymptom.js"></script>
 </head>
 <body>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <div class="wrap">
 
     <div class="topbar">
@@ -159,7 +24,6 @@
 
     <div class="sub">증상을 선택하고, 의료진에게 전달할 내용을 적어주세요.</div>
 
-    <!-- 폼 -->
     <form id="symptomForm" method="post" action="${pageContext.request.contextPath}/v1/reception/confirm">
         <!-- 이전 단계 값 유지 -->
         <input type="hidden" name="departmentId" value="${departmentId}" />
@@ -217,13 +81,14 @@
         </div>
     </form>
 
-    <!-- 하단 네비 (✅ 인라인 스타일 제거) -->
-    <div class="nav">
-        <a href="${pageContext.request.contextPath}/">홈</a>
-        <a class="active" href="${pageContext.request.contextPath}/v1/reception/departments">접수</a>
-        <a href="${pageContext.request.contextPath}/v1/reception/list">접수내역</a>
-    </div>
-
+    <!-- 하단 탭바 -->
+    <nav class="nav" aria-label="하단 내비게이션">
+        <a href="${ctx}/v1/reservation/departments">예약</a>
+        <a class="active" href="${ctx}/v1/reception/departments">접수</a>
+        <a href="${ctx}/v1/home">홈</a>
+        <a href="${ctx}/v1/prescription">처방전</a>
+        <a href="${ctx}/v1/reception/list">마이페이지</a>
+    </nav>
 </div>
 </body>
 </html>
