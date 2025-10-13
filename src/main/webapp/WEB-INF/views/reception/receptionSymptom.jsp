@@ -55,23 +55,12 @@
 
         <!-- 카드 2: 전달 메모 -->
         <div class="card">
-            <h3>의료진에게 알림</h3>
+            <h3>의료진에게 할 말</h3>
             <textarea id="noteToDoctor" name="noteToDoctor" class="ta"
                       placeholder="예) 3일째 열이 나고, 기침과 발열이 심해졌습니다. 약은 이부프로펜을 복용 중입니다."></textarea>
             <div class="row">
                 <div class="hint">최대 500자까지 입력 가능합니다.</div>
                 <div id="noteCounter" class="counter">0 / 500</div>
-            </div>
-        </div>
-
-        <!-- 카드 3: 동의 -->
-        <div class="card">
-            <label class="consent">
-                <input id="consentNotice" type="checkbox" name="consentNotice" value="true" required />
-                주의사항에 동의합니다.
-            </label>
-            <div class="hint" style="margin-top:6px">
-                개인정보 수집·이용 및 안내사항에 동의해야 접수가 가능합니다.
             </div>
         </div>
 
