@@ -1,0 +1,81 @@
+/* ===== 토큰 ===== */
+:root{
+    --bg:#f5f7fb; --card:#fff; --text:#111827; --muted:#6b7280;
+    --line:#e5e7eb; --primary:#2563eb; --primary-weak:#eff6ff;
+    --shadow:0 6px 18px rgba(0,0,0,.06);
+    --wrap-max:640px;            /* 최대 컨테이너 폭 */
+    --tabbar-h:72px;             /* 하단 탭바 높이 */
+}
+*{box-sizing:border-box}
+body{
+    margin:0; background:var(--bg); color:var(--text);
+    font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,AppleSDGothicNeo,"Noto Sans KR","Malgun Gothic",sans-serif;
+}
+
+/* 전체 래퍼: 하단 고정 탭바가 내용 가리지 않게 padding-bottom 크게 */
+.wrap{
+    max-width:var(--wrap-max); margin:0 auto;
+    padding-bottom:calc(var(--tabbar-h) + 24px + env(safe-area-inset-bottom));
+}
+
+/* ===== 히어로(상단 이미지) ===== */
+.hero{
+    height:200px;
+    background-image:url('https://images.unsplash.com/photo-1584433144859-1fc3ab64a957?q=80&w=1200&auto=format&fit=crop');
+    background-size:cover;
+    background-position:center;
+}
+
+/* 히어로 아래 콘텐츠. 음수 마진으로 카드가 살짝 겹치게 */
+.container{padding:0 16px; margin-top:-28px;}
+
+/* 공통 카드 패널 */
+.panel{
+    background:var(--card);
+    border:1px solid #eef1f6;
+    border-radius:18px;
+    box-shadow:var(--shadow);
+    padding:16px;
+}
+.panel + .panel{margin-top:12px;}
+
+.row{display:flex; align-items:center; justify-content:space-between;}
+.h1{font-size:18px; font-weight:900;}
+.muted{color:var(--muted);}
+.chip{
+    display:inline-flex; align-items:center; gap:6px;
+    padding:6px 10px; border-radius:999px;
+    background:#eef2ff; color:#1d4ed8; font-weight:800;
+    font-size:12px;
+}
+.big{font-size:24px; font-weight:900;}
+.list{display:grid; row-gap:6px; margin-top:8px;}
+.dot{width:4px; height:4px; border-radius:50%; background:#d1d5db; display:inline-block; margin:0 8px 2px;}
+
+/* 퀵 액션 */
+.grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:12px;}
+.quick{
+    background:#f8fafc; border:1px solid var(--line); border-radius:14px;
+    padding:14px; text-align:center; text-decoration:none; color:#111; font-weight:800;
+}
+.quick:hover{background:#eef2f7;}
+
+/* ===== 하단 탭바 (고정) ===== */
+.nav{
+    position:fixed; left:50%; transform:translateX(-50%);
+    bottom:0;
+    width:min(var(--wrap-max), 100vw);
+    background:var(--card);
+    border-top:1px solid var(--line);
+    box-shadow:0 -6px 18px rgba(0,0,0,.06);
+    padding:8px 6px calc(8px + env(safe-area-inset-bottom));
+    display:flex; justify-content:space-around; align-items:center;
+    height:var(--tabbar-h);
+    z-index:999;
+}
+.nav a{
+    color:#4b5563; text-decoration:none; font-weight:700;
+    padding:10px 12px; border-radius:10px; display:inline-flex; align-items:center; gap:6px;
+}
+.nav a.active{color:var(--primary); background:#eff6ff;}
+@media (max-width:420px){ .nav a{font-size:12px;} }
