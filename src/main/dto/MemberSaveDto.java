@@ -1,4 +1,4 @@
-package dto.member;
+package dto;
 
 public class MemberSaveDto {
 }
