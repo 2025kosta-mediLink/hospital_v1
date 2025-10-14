@@ -1,20 +1,54 @@
+/* =============================
+   Department List (iPhone16 393×852 고정 + 스크롤 가능 버전)
+============================= */
+
+/* ===== 토큰 ===== */
 :root{
     --bg:#f5f7fb; --card:#fff; --text:#111827; --muted:#6b7280;
-    --line:#e5e7eb; --primary:#2563eb; --primary-weak:#eff6ff;
-    --shadow:0 6px 18px rgba(0,0,0,.06); --radius:16px;
-    --wrap-max:640px;   /* 컨텐츠 최대 폭 */
-    --tabbar-h:72px;    /* 하단바 높이 */
+    --line:#e6eef5;
+    --primary:#2563eb; --primary-weak:#eff6ff;
+    --shadow-card:0 4px 12px rgba(17,24,39,.05);
+    --radius:16px;
+    --tabbar-h:72px;
+
+    /* iPhone16 프레임 사이즈 */
+    --vw:393px;
+    --vh:852px;
 }
+
 *{box-sizing:border-box}
+html,body{height:100%}
 body{
     margin:0; background:var(--bg); color:var(--text);
     font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,AppleSDGothicNeo,"Noto Sans KR","Malgun Gothic",sans-serif;
 }
+
+/* ===== 프레임: 스크롤 가능하게 변경됨 ===== */
 .wrap{
-    max-width:640px;
-    margin:20px auto;
-    padding:0 16px calc(var(--tabbar-h) + 24px + env(safe-area-inset-bottom));
+    width:var(--vw);
+    max-width:var(--vw);
+    min-height:100dvh;                 /* 실제 보이는 높이 기준 */
+    background:#fff;
+    border-radius:0;
+    box-shadow:none;
+    margin:0 auto;
+    overflow:auto;                      /* ✅ 스크롤 가능 */
+    position:relative;
+
+    /* 상/하 안전영역 + 고정 탭바만큼 여백 확보 */
+    padding: calc(env(safe-area-inset-top) + 0px) 16px
+    calc(var(--tabbar-h) + 24px + env(safe-area-inset-bottom));
 }
+
+/* ===== 상단 영역 ===== */
+.topbar{
+    position:sticky; top:0; z-index:10;
+    height:56px; display:flex; align-items:center; gap:10px;
+    background:#fff; padding:0; margin:0 0 12px;
+    box-shadow:0 2px 10px rgba(0,0,0,.04);
+}
+.title{font-weight:800; font-size:20px; margin:0 4px}
+.desc{color:var(--muted); font-size:12px}
 
 /* 이전 버튼 (좌상단) */
 .back{
@@ -22,65 +56,80 @@ body{
     border:1px solid var(--line); background:#fff;
     padding:8px 10px; border-radius:10px; cursor:pointer;
     color:#111; text-decoration:none; font-weight:800;
-    box-shadow:var(--shadow);
+    box-shadow:var(--shadow-card);
+    margin-left:8px;
 }
-.back:hover{ background:#f8fafc; }
-.back .chev{ font-weight:900; font-size:14px; }
+.back:hover{ background:#f8fafc }
+.back .chev{ font-weight:900; font-size:14px }
 
-/* 헤더 */
-.topbar{display:flex;align-items:center;gap:10px;margin-bottom:12px}
-.title{font-weight:800;font-size:20px}
-.desc{color:var(--muted);font-size:12px}
-
-/* 검색 바 (형태만) */
+/* ===== 검색 바 ===== */
 .search{
-    display:flex;gap:8px;align-items:center;background:var(--card);
-    border:1px solid var(--line);border-radius:12px;padding:8px 10px;margin:8px 0 14px;box-shadow:var(--shadow)
+    display:flex; gap:8px; align-items:center;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:8px 10px; margin:8px 0 14px;
+    box-shadow:var(--shadow-card);
 }
-.search input{flex:1;border:0;outline:0;font-size:14px;background:transparent}
-.search button{border:0;background:var(--primary);color:#fff;font-weight:800;border-radius:10px;padding:8px 12px;cursor:pointer}
-.search button:hover{opacity:.95}
+.search input{
+    flex:1; border:0; outline:0; font-size:14px; background:transparent;
+}
+.search button{
+    border:0; color:#fff; font-weight:800; border-radius:10px; padding:8px 12px; cursor:pointer;
+    background:linear-gradient(90deg,#3b82f6 0%, #2563eb 100%);
+}
+.search button:hover{ filter:brightness(.98) }
 
-/* 그리드 카드: 항상 2열 */
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+/* ===== 2열 그리드 ===== */
+.grid{
+    display:grid; grid-template-columns:repeat(2,1fr);
+    gap:10px;
+}
 
-.item{position:relative;display:block}
-.radio{position:absolute;inset:0;opacity:0;cursor:pointer}
+/* 카드 아이템 */
+.item{position:relative; display:block}
+.radio{position:absolute; inset:0; opacity:0; cursor:pointer}
 .card{
-    background:var(--card);border:1px solid #eef1f6;border-radius:14px;
-    padding:14px 12px;min-height:90px;display:flex;flex-direction:column;align-items:center;justify-content:center;
-    gap:8px;box-shadow:var(--shadow);transition:transform .08s ease,border-color .08s ease
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:14px 12px; min-height:96px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;
+    box-shadow:var(--shadow-card);
+    transition:transform .08s ease, border-color .08s ease, box-shadow .08s ease;
 }
 .icon{
-    width:28px;height:28px;border-radius:999px;display:grid;place-items:center;
-    color:var(--primary);background:var(--primary-weak);font-size:18px
+    width:28px; height:28px; border-radius:999px; display:grid; place-items:center;
+    color:var(--primary); background:var(--primary-weak); font-size:18px;
 }
-.name{font-weight:800;text-align:center}
+.name{font-weight:800; text-align:center}
 
 /* 선택 상태 */
 .radio:checked + .card{
     border-color:var(--primary);
     box-shadow:0 0 0 3px rgba(37,99,235,.12);
-    transform:translateY(-1px)
+    transform:translateY(-1px);
 }
-.radio:focus-visible + .card{outline:3px solid rgba(37,99,235,.25)}
+.radio:focus-visible + .card{ outline:3px solid rgba(37,99,235,.25) }
 
-/* 하단 안내 & 버튼 */
-.footer{margin-top:16px;display:flex;gap:10px}
+/* ===== 하단 버튼/힌트 ===== */
+.footer{margin-top:16px; display:flex; gap:10px}
 .btn-primary{
-    flex:1;background:var(--primary);color:#fff;border:0;border-radius:12px;padding:12px 14px;
-    font-weight:800;cursor:pointer
+    flex:1; height:44px;
+    color:#fff; border:0; border-radius:12px; font-weight:800; cursor:pointer;
+    background:linear-gradient(90deg,#3b82f6 0%, #2563eb 100%);
 }
-.btn-primary:disabled{opacity:.5;cursor:not-allowed}
-.hint{color:var(--muted);font-size:12px;text-align:center;margin-top:8px}
+.btn-primary:hover{ filter:brightness(.98) }
+.btn-primary:active{ transform:translateY(1px) }
+.btn-primary:disabled{ opacity:.5; cursor:not-allowed }
+.hint{color:var(--muted); font-size:12px; text-align:center; margin-top:8px}
 
-/* 공통 하단 네비 */
+/* ===== 공통 하단 네비 (고정) ===== */
 .nav{
-    position:fixed;
-    left:50%; transform:translateX(-50%);
+    position:fixed; left:50%; transform:translateX(-50%);
     bottom:0;
-    width:min(var(--wrap-max), 100vw);
-    background:var(--card);
+    width:var(--vw);
+    background:#fff;
     border-top:1px solid var(--line);
     box-shadow:0 -6px 18px rgba(0,0,0,.06);
     padding:8px 6px calc(8px + env(safe-area-inset-bottom));
@@ -88,11 +137,16 @@ body{
     height:var(--tabbar-h);
     z-index:999;
 }
-.nav a{color:#4b5563;text-decoration:none;font-weight:700;padding:8px 10px;border-radius:10px}
-.nav a.active{color:var(--primary);background:#eff6ff}
+.nav a{
+    color:#4b5563; text-decoration:none; font-weight:700;
+    padding:8px 10px; border-radius:10px;
+}
+.nav a.active{ color:var(--primary); background:var(--primary-weak) }
 
-/* 빈 상태 */
+/* ===== 빈 상태 ===== */
 .empty{
-    background:var(--card);border:1px dashed var(--line);
-    padding:24px;border-radius:12px;color:var(--muted);text-align:center
+    background:var(--card);
+    border:1px dashed var(--line);
+    padding:24px; border-radius:12px;
+    color:var(--muted); text-align:center;
 }
