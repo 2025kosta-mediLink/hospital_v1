@@ -6,6 +6,7 @@ import service.DoctorNoticeService;
 import service.DoctorWeeklyScheduleService;
 import dto.DoctorSelectDTO;
 import dto.ScheduleDetailDTO;  // ScheduleDetailDTO 임포트
+import common.util.AuthSessionUtil;  // AuthSessionUtil 임포트
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,7 +14,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet({"/v1/reservation/doctors", "/v1/reception/doctors"})
@@ -31,9 +31,13 @@ public class DoctorController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String uuid = AuthSessionUtil.requireUuidOrRedirect(req, resp);
+        if (uuid == null) {
+            return;
+        }
+
         Long departmentId = Long.parseLong(req.getParameter("departmentId"));
         List<DoctorSelectDTO> doctorList = doctorService.getDoctorsByDepartment(departmentId); // 의사 목록 조회
-
 
         // doctorList에 있는 모든 의사에 대해 공지사항과 일정 갱신
         for (DoctorSelectDTO dto : doctorList) {
@@ -50,6 +54,12 @@ public class DoctorController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        // 로그인 체크
+        String uuid = AuthSessionUtil.requireUuidOrRedirect(req, resp);
+        if (uuid == null) {
+            return;
+        }
+
         String servletPath = req.getServletPath();
         String doctorId = req.getParameter("doctorId");
 
