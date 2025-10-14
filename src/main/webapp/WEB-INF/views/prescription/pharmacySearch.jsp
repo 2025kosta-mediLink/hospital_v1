@@ -7,12 +7,18 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>주변 약국 찾기</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common2.css?v=20250115_001">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/prescription/pharmacySearch.css?v=20250115_002">
+    
+    <!-- API 설정 및 지도 서비스 -->
+    <script src="${pageContext.request.contextPath}/static/js/config/api-config.js?v=20250115_001"></script>
+    <script src="${pageContext.request.contextPath}/static/js/map/kakao-map-service.js?v=20250115_001"></script>
+    <script src="${pageContext.request.contextPath}/static/js/api/pharmacy-api-service.js?v=20250115_001"></script>
+    <script src="${pageContext.request.contextPath}/static/js/api/public-data-service.js?v=20250115_001"></script>
 </head>
 <body>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
+<c:set var="headerTitle" value="약국 찾기" scope="request"/>
 
 <div class="wrap">
     <jsp:include page="../common/header.jsp"/>
@@ -27,26 +33,7 @@
     <!-- 전체 화면 지도 -->
     <div class="map-container">
         <div id="map" class="map-fullscreen">
-            <!-- 네이버 지도 API가 들어갈 영역 -->
-        <div class="map-placeholder">
-                <!-- 약국 마커들 -->
-                <div class="pharmacy-marker" style="top: 30%; left: 60%;" data-pharmacy-id="pharmacy_001" onclick="selectPharmacy('pharmacy_001')">
-                    <div class="marker-icon">💊</div>
-                    <div class="marker-number">2+</div>
-                </div>
-                <div class="pharmacy-marker" style="top: 45%; left: 70%;" data-pharmacy-id="pharmacy_002" onclick="selectPharmacy('pharmacy_002')">
-                    <div class="marker-icon">💊</div>
-            </div>
-                <div class="pharmacy-marker" style="top: 60%; left: 50%;" data-pharmacy-id="pharmacy_003" onclick="selectPharmacy('pharmacy_003')">
-                    <div class="marker-icon">💊</div>
-                    <div class="marker-number">10+</div>
-                    </div>
-                <!-- 내 위치 마커 -->
-                <div class="user-location-marker" style="top: 50%; left: 45%;">
-                    <div class="location-dot"></div>
-                    <div class="location-ring"></div>
-                </div>
-            </div>
+            <!-- 카카오맵 API가 들어갈 영역 -->
         </div>
     </div>
 
@@ -174,6 +161,9 @@
     document.addEventListener('DOMContentLoaded', function() {
         console.log('=== DOM 로드 완료 ===');
         
+        // 카카오맵 초기화
+        initKakaoMap();
+        
         // 모달 핸들 드래그 이벤트
         const modalHandle = document.querySelector('.modal-handle');
         if (modalHandle) {
@@ -191,6 +181,239 @@
             });
         }
     });
+    
+    // 카카오맵 초기화 함수
+    function initKakaoMap() {
+        console.log('=== 카카오맵 초기화 시작 ===');
+        console.log('API_CONFIG:', API_CONFIG);
+        console.log('카카오맵 API 키:', API_CONFIG.KAKAO_MAP_KEY);
+        
+        // 지도 컨테이너 확인
+        const mapContainer = document.getElementById('map');
+        console.log('지도 컨테이너:', mapContainer);
+        if (!mapContainer) {
+            console.error('지도 컨테이너를 찾을 수 없습니다!');
+            return;
+        }
+        
+        // 카카오맵 API가 로드되었는지 확인
+        if (typeof kakao !== 'undefined' && kakao.maps) {
+            console.log('카카오맵 API가 이미 로드되어 있음');
+            createMap();
+        } else {
+            console.log('카카오맵 API 로드 시작...');
+            // 카카오맵 API 스크립트 로드
+            const script = document.createElement('script');
+            script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${API_CONFIG.KAKAO_MAP_KEY}&autoload=false`;
+            script.onload = function() {
+                console.log('=== 카카오맵 API 스크립트 로드 완료 ===');
+                console.log('kakao 객체:', typeof kakao);
+                console.log('kakao.maps:', typeof kakao.maps);
+                
+                kakao.maps.load(function() {
+                    console.log('=== kakao.maps.load 콜백 실행 ===');
+                    createMap();
+                });
+            };
+            script.onerror = function(error) {
+                console.error('카카오맵 API 스크립트 로드 실패:', error);
+            };
+            document.head.appendChild(script);
+            console.log('카카오맵 스크립트 태그 추가됨');
+        }
+    }
+    
+    // 지도 생성 함수
+    function createMap() {
+        const container = document.getElementById('map');
+        if (!container) {
+            console.error('지도 컨테이너를 찾을 수 없습니다');
+            return;
+        }
+        
+        const options = {
+            center: new kakao.maps.LatLng(37.5665, 126.9780), // 서울시청
+            level: 3
+        };
+        
+        const map = new kakao.maps.Map(container, options);
+        console.log('=== 카카오맵 생성 완료 ===');
+        
+        // 현재 위치로 지도 이동
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                const moveLatLon = new kakao.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                map.setCenter(moveLatLon);
+                map.setLevel(3);
+                console.log('=== 현재 위치로 지도 이동 완료 ===');
+            }, function(error) {
+                console.warn('현재 위치를 가져올 수 없습니다:', error);
+            });
+        }
+        
+        // 약국 마커 추가
+        addPharmacyMarkers(map);
+    }
+    
+    // 약국 마커 추가 함수 (실제 공공데이터 사용)
+    async function addPharmacyMarkers(map) {
+        try {
+            console.log('=== 실제 약국 데이터 로드 시작 ===');
+            
+            // 공공데이터 서비스 초기화
+            const publicDataService = new PublicDataService();
+            
+            // 현재 위치 기반 약국 검색
+            const currentPosition = await getCurrentPosition();
+            
+            // 공공데이터에서 약국 정보 가져오기
+            const pharmacies = await publicDataService.getPharmacyList({
+                pageNo: 1,
+                numOfRows: 50
+            });
+            
+            console.log('=== 공공데이터에서 가져온 약국 수:', pharmacies.length);
+            
+            // 거리 계산 및 정렬
+            const pharmaciesWithDistance = pharmacies.map(pharmacy => {
+                const distance = publicDataService.calculateDistance(
+                    currentPosition.latitude, currentPosition.longitude,
+                    pharmacy.latitude, pharmacy.longitude
+                );
+                return {
+                    ...pharmacy,
+                    distance: distance.toFixed(1) + 'km'
+                };
+            }).sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
+            
+            // 지도에 마커 추가
+            pharmaciesWithDistance.forEach(function(pharmacy, index) {
+                if (pharmacy.latitude && pharmacy.longitude) {
+                    const markerPosition = new kakao.maps.LatLng(pharmacy.latitude, pharmacy.longitude);
+                    
+                    // 마커 이미지 설정 (영업중/마감에 따라)
+                    const imageSrc = pharmacy.isOpen ? 
+                        '/static/images/icons/pharmacy_open.png' : 
+                        '/static/images/icons/pharmacy_closed.png';
+                    const imageSize = new kakao.maps.Size(30, 30);
+                    const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
+                    
+                    const marker = new kakao.maps.Marker({
+                        position: markerPosition,
+                        image: markerImage,
+                        title: pharmacy.name
+                    });
+                    
+                    marker.setMap(map);
+                    
+                    // 마커 클릭 이벤트
+                    kakao.maps.event.addListener(marker, 'click', function() {
+                        selectPharmacy(pharmacy.pharmacyId);
+                    });
+                }
+            });
+            
+            // 약국 리스트 업데이트
+            updatePharmacyList(pharmaciesWithDistance);
+            
+            console.log('=== 실제 약국 마커 추가 완료 ===');
+            
+        } catch (error) {
+            console.error('실제 약국 데이터 로드 실패:', error);
+            console.log('=== 더미 데이터로 폴백 ===');
+            
+            // 에러 발생 시 더미 데이터 사용
+            const dummyPharmacies = [
+                { name: '건강약국', lat: 37.5665, lng: 126.9780, isOpen: true, pharmacyId: 'pharmacy_001', address: '서울시 강남구 테헤란로 123', phone: '02-1234-5678', distance: '0.3km' },
+                { name: '메디팜약국', lat: 37.5655, lng: 126.9790, isOpen: true, pharmacyId: 'pharmacy_002', address: '서울시 강남구 역삼동 456', phone: '02-2345-6789', distance: '0.5km' },
+                { name: '웰니스약국', lat: 37.5675, lng: 126.9770, isOpen: false, pharmacyId: 'pharmacy_003', address: '서울시 강남구 논현동 789', phone: '02-3456-7890', distance: '0.8km' }
+            ];
+            
+            addDummyMarkers(map, dummyPharmacies);
+        }
+    }
+    
+    // 더미 마커 추가 함수 (폴백용)
+    function addDummyMarkers(map, pharmacies) {
+        pharmacies.forEach(function(pharmacy, index) {
+            const markerPosition = new kakao.maps.LatLng(pharmacy.lat, pharmacy.lng);
+            
+            const marker = new kakao.maps.Marker({
+                position: markerPosition,
+                title: pharmacy.name
+            });
+            
+            marker.setMap(map);
+            
+            kakao.maps.event.addListener(marker, 'click', function() {
+                selectPharmacy(pharmacy.pharmacyId);
+            });
+        });
+        
+        updatePharmacyList(pharmacies);
+        console.log('=== 더미 약국 마커 추가 완료 ===');
+    }
+    
+    // 현재 위치 가져오기
+    function getCurrentPosition() {
+        return new Promise((resolve, reject) => {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        resolve({
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude
+                        });
+                    },
+                    (error) => {
+                        console.warn('현재 위치를 가져올 수 없습니다:', error);
+                        resolve({
+                            latitude: 37.5665, // 서울시청 기본값
+                            longitude: 126.9780
+                        });
+                    }
+                );
+            } else {
+                resolve({
+                    latitude: 37.5665,
+                    longitude: 126.9780
+                });
+            }
+        });
+    }
+    
+    // 약국 리스트 업데이트
+    function updatePharmacyList(pharmacies) {
+        const pharmacyList = document.querySelector('.pharmacy-list');
+        if (!pharmacyList) return;
+        
+        pharmacyList.innerHTML = '';
+        
+        pharmacies.slice(0, 10).forEach(pharmacy => { // 상위 10개만 표시
+            const pharmacyItem = createPharmacyListItem(pharmacy);
+            pharmacyList.appendChild(pharmacyItem);
+        });
+    }
+    
+    // 약국 리스트 아이템 생성
+    function createPharmacyListItem(pharmacy) {
+        const item = document.createElement('div');
+        item.className = 'pharmacy-list-item';
+        item.onclick = () => selectPharmacy(pharmacy.pharmacyId);
+        
+        item.innerHTML = `
+            <div class="pharmacy-info">
+                <div class="pharmacy-name">${pharmacy.name}</div>
+                <div class="pharmacy-address">${pharmacy.address}</div>
+                <div class="pharmacy-distance">${pharmacy.distance}</div>
+            </div>
+            <div class="pharmacy-status ${pharmacy.isOpen ? 'open' : 'closed'}">
+                ${pharmacy.isOpen ? '영업중' : '영업마감'}
+            </div>
+        `;
+        
+        return item;
+    }
     
     function selectPharmacy(pharmacyId) {
         console.log('=== 약국 선택 시작 ===');
