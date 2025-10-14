@@ -1,11 +1,10 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
 <!-- 공통 네비게이션 CSS -->
 <c:if test="${empty commonCssLoaded}">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common2.css?v=20250115_001">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css?v=20250115_001">
     <c:set var="commonCssLoaded" value="true" scope="request"/>
 </c:if>
 
