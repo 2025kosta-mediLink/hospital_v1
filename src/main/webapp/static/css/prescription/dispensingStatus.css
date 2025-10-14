@@ -1,0 +1,802 @@
+/* 조제 상황 Screen */
+
+/* 기본 설정 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #F8F9FA;
+}
+
+.wrap {
+    position: relative;
+    width: 375px;
+    min-height: 812px;
+    height: auto;
+    margin: 0 auto;
+    background: #F8F9FA;
+    border-radius: 0px;
+    padding-bottom: 114px;
+    overflow-y: auto;
+}
+
+/* 개별 헤더 스타일 제거됨 - common2.css 사용 */
+
+/* Back Button */
+.btn-back {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0px;
+    width: 44px;
+    height: 44px;
+    border-radius: 0px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-right: auto;
+}
+
+.btn-back svg {
+    width: 24px;
+    height: 24px;
+    border-radius: 0px;
+    stroke: #6B7280;
+}
+
+/* Close Button */
+.btn-close {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0px;
+    width: 44px;
+    height: 44px;
+    border-radius: 0px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: auto;
+}
+
+.btn-close svg {
+    width: 24px;
+    height: 24px;
+    border-radius: 0px;
+    stroke: #6B7280;
+}
+
+
+/* 실시간 업데이트 */
+.real-time-updates {
+    background: #fff;
+    padding: 16px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.update-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+    position: relative;
+}
+
+.update-item:last-child {
+    margin-bottom: 0;
+}
+
+.update-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #d1d5db;
+    margin-top: 4px;
+    flex-shrink: 0;
+}
+
+.update-item.active .update-dot {
+    background: #2563eb;
+    animation: pulse 2s infinite;
+}
+
+.update-item.completed .update-dot {
+    background: #10b981;
+}
+
+.update-text {
+    font-size: 14px;
+    color: #374151;
+    line-height: 1.5;
+}
+
+.update-detail {
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 4px;
+    margin-left: 24px;
+}
+
+.estimated-time,
+.completion-time {
+    font-weight: 600;
+    color: #2563eb;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.2); opacity: 0.7; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* 조제 완료 알림 모달 */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;  /* 기본적으로 숨김 */
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    backdrop-filter: blur(4px);
+    box-sizing: border-box;
+}
+
+.modal-content {
+    background: #fff;
+    border-radius: 20px;
+    padding: 32px 24px;
+    text-align: center;
+    max-width: 320px;
+    width: 90%;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.modal-illustration {
+    margin-bottom: 20px;
+}
+
+.medicine-bag {
+    font-size: 36px;
+    animation: bounce 1s ease-in-out;
+}
+
+.modal-date {
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 8px;
+}
+
+.modal-message {
+    font-size: 16px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 24px;
+}
+
+.modal-btn {
+    width: 100%;
+    height: 48px;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.modal-btn:hover {
+    background: #1d4ed8;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+}
+
+/* 지도 컨테이너 */
+.map-container {
+    width: 375px;
+    height: 410px; /* 높이 조정: 380px → 410px (30px 더 증가) */
+    background: #ffffff;
+    position: relative;
+    margin: 0 auto;
+}
+
+.map-placeholder {
+    height: 100%;
+    position: relative;
+    background: #ffffff;
+}
+
+.map-content {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.map-mock {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.route-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 16px 24px;
+    border-radius: 12px;
+}
+
+.route-start, .route-end {
+    background: #2563eb;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.route-line {
+    width: 60px;
+    height: 2px;
+    background: #2563eb;
+    position: relative;
+}
+
+.route-line::after {
+    content: "";
+    position: absolute;
+    right: -4px;
+    top: -4px;
+    width: 0;
+    height: 0;
+    border-left: 6px solid #2563eb;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+}
+
+
+/* 조제 현황 */
+.dispensing-status {
+    padding: 0;
+    position: relative;
+    z-index: 1;
+}
+
+.status-container {
+    width: 100%;
+    margin: 0;
+    background: #fff;
+    border: none;
+    border-radius: 0;
+    padding: 16px;
+    box-shadow: none;
+}
+
+/* 약국 정보 제거됨 - 지도에서 길안내 제공 */
+
+/* 진행 단계 */
+.progress-steps {
+    margin-top: 0;
+    margin-bottom: 24px;
+}
+
+.step {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 12px;
+    position: relative;
+}
+
+.step:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    left: 12px;
+    top: 24px;
+    width: 2px;
+    height: 44px;
+    background: #e5e7eb;
+}
+
+.step.completed:not(:last-child)::after {
+    background: #2563eb;
+}
+
+.step.current:not(:last-child)::after {
+    background: #2563eb;
+}
+
+.step-icon {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 4px;
+}
+
+.step-circle {
+    width: 24px;
+    height: 24px;
+    border: 2px solid #e5e7eb;
+    border-radius: 50%;
+    background: #fff;
+}
+
+.step-circle.active {
+    border-color: #2563eb;
+    background: #2563eb;
+}
+
+.step.completed .step-circle {
+    border-color: #2563eb;
+    background: #2563eb;
+}
+
+.step-content {
+    flex: 1;
+}
+
+.step-title {
+    font-size: 14px; /* 16px → 14px */
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 4px; /* 6px → 4px */
+}
+
+.step-detail, .step-time {
+    font-size: 12px; /* 14px → 12px */
+    color: #6b7280;
+    margin-bottom: 2px;
+}
+
+/* 완료된 단계: 체크된 파란색 동그라미 + 검정글씨색 */
+.step.completed .step-title {
+    color: #111827;
+    font-weight: 600;
+}
+
+.step.completed .step-detail, .step.completed .step-time {
+    color: #6b7280;
+}
+
+.step.completed .step-circle {
+    background: #2563eb;
+    border-color: #2563eb;
+}
+
+.step.completed .step-circle svg {
+    color: #fff;
+}
+
+/* 진행 중인 단계: 파란색 동그라미 + 파란글씨색 */
+.step.current .step-title {
+    color: #2563eb;
+    font-weight: 600;
+}
+
+.step.current .step-detail, .step.current .step-time {
+    color: #2563eb;
+}
+
+/* 완료된 단계: 체크된 파란색 동그라미 + 검정글씨색 */
+.step.completed .step-title {
+    color: #111827;
+    font-weight: 600;
+}
+
+.step.completed .step-detail, .step.completed .step-time {
+    color: #6b7280;
+}
+
+.step.current .step-circle {
+    background: #2563eb;
+    border-color: #2563eb;
+}
+
+.step.current .step-circle svg {
+    color: #fff;
+}
+
+/* 미진행 단계: 회색 동그라미 + 회색글씨 */
+.step.pending .step-title {
+    color: #9ca3af;
+    font-weight: 500;
+}
+
+.step.pending .step-detail, .step.pending .step-time {
+    color: #9ca3af;
+}
+
+.step.pending .step-circle {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+}
+
+.step.pending .step-circle svg {
+    color: #9ca3af;
+}
+
+/* 팝업 숨김 클래스 */
+.hidden {
+    display: none !important;
+}
+
+/* 강제 팝업 숨김 */
+#completionModal[style*="display: none"] {
+    display: none !important;
+}
+
+
+/* Bottom Navigation */
+.bottom-nav-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0px 0px 34px;
+    width: 375px;
+    height: 114px;
+    background: #F8F9FA;
+    border-radius: 0px;
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.bottom-nav {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0px;
+    width: 370px;
+    height: 80px;
+    background: #FFFFFF;
+    border-top: 1px solid #E5E7EB;
+    border-radius: 0px;
+}
+
+.nav-items {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0px;
+    width: 370px;
+    height: 80px;
+    border-radius: 0px;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0px;
+    gap: 4px;
+    height: 80px;
+    background: #FFFFFF;
+    border-radius: 0px;
+    cursor: pointer;
+    flex: 1;
+}
+
+.nav-item.active {
+    background: transparent;
+    border-radius: 0px;
+    width: auto;
+    height: 80px;
+    margin: 0;
+}
+
+.nav-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 0px;
+    stroke: #9CA3AF;
+    fill: none;
+}
+
+.nav-item.active .nav-icon {
+    stroke: #3B82F6;
+    fill: #3B82F6;
+}
+
+.nav-label {
+    font-family: 'Noto Sans KR';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 14px;
+    color: #9CA3AF;
+}
+
+.nav-item.active .nav-label {
+    color: #3B82F6;
+}
+
+/* 처방전 상세 정보 */
+.prescription-details {
+    margin-bottom: 24px;
+    padding: 16px;
+    background: #f9fafb;
+    border-radius: 12px;
+}
+
+.prescription-details h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 12px 0;
+}
+
+.prescription-content {
+    font-size: 14px;
+    color: #6b7280;
+    line-height: 1.5;
+}
+
+/* 액션 버튼 */
+.action-buttons {
+    text-align: center;
+}
+
+.btn-complete-receipt {
+    width: 100%;
+    height: 44px;
+    background: #007BFF;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-complete-receipt:hover {
+    background: #0056b3;
+}
+
+.completed-message, .waiting-message {
+    font-size: 14px;
+    font-weight: 600;
+    color: #6b7280;
+    text-align: center;
+    padding: 16px;
+}
+
+.completed-message {
+    color: #10b981;
+}
+
+/* 조제 완료 알림 팝업 */
+.notification-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;  /* 기본적으로 숨김 */
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+.popup-content {
+    background: #fff;
+    border-radius: 20px;
+    padding: 32px 24px;
+    text-align: center;
+    max-width: 320px;
+    width: 100%;
+}
+
+.popup-icon {
+    color: #10b981;
+    margin-bottom: 16px;
+}
+
+.popup-timestamp {
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 8px;
+}
+
+.popup-message {
+    font-size: 16px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 24px;
+}
+
+.btn-confirm {
+    width: 100%;
+    height: 48px;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-confirm:hover {
+    background: #1d4ed8;
+}
+
+/* 에러 메시지 */
+.error-message {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-size: 14px;
+}
+
+/* 하단 탭바 */
+.nav {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 0;
+    width: min(640px, 100vw);
+    background: #fff;
+    border-top: 1px solid #e5e7eb;
+    box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.06);
+    padding: 8px 6px calc(8px + env(safe-area-inset-bottom));
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 72px;
+    z-index: 999;
+}
+
+.nav a {
+    color: #4b5563;
+    text-decoration: none;
+    font-weight: 700;
+    padding: 10px 12px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+}
+
+.nav a.active {
+    color: #2563eb;
+    background: #eff6ff;
+}
+
+@media (max-width: 420px) {
+    .nav a {
+        font-size: 11px;
+    }
+}
+
+/* 수령 완료 확인 모달 */
+.receipt-confirm-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.receipt-confirm-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+.receipt-confirm-content {
+    position: relative;
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 320px;
+    width: 90%;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+}
+
+.receipt-confirm-modal[style*="flex"] .receipt-confirm-content {
+    transform: scale(1);
+}
+
+.receipt-confirm-header {
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.receipt-confirm-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+.receipt-confirm-body {
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.receipt-confirm-body p {
+    font-size: 16px;
+    color: #6b7280;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.receipt-confirm-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.receipt-confirm-actions .btn-cancel, .receipt-confirm-actions .btn-confirm {
+    flex: 1;
+    height: 44px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.receipt-confirm-actions .btn-cancel {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+.receipt-confirm-actions .btn-cancel:hover {
+    background: #e5e7eb;
+}
+
+.receipt-confirm-actions .btn-confirm {
+    background: #2563eb;
+    color: #fff;
+}
+
+.receipt-confirm-actions .btn-confirm:hover {
+    background: #1d4ed8;
+}

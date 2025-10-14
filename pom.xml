@@ -65,6 +65,7 @@
 
   <build>
     <finalName>hospital_v1</finalName>
+    <sourceDirectory>src/main</sourceDirectory>
     <plugins>
       <!-- 자바 컴파일러 플러그인 -->
       <plugin>
