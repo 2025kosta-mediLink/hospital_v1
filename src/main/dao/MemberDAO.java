@@ -86,4 +86,16 @@ public class MemberDAO {
         }
         return null;
     }
+
+    public Long findIdByUuid(String uuid) {
+        String sql = "SELECT member_id FROM member WHERE uuid=?";
+        try (Connection c = DBConnectionUtil.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getLong("member_id");
+                return null;
+            }
+        } catch (SQLException e) { throw new RuntimeException(e); }
+    }
 }
