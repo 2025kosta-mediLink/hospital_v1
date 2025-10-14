@@ -10,7 +10,9 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/home.css">
     <script defer src="${pageContext.request.contextPath}/static/js/home.js"></script>
 </head>
-<body>
+<!-- 컨트롤러에서 setAttribute -->
+<body data-is-logged-in="${isLoggedIn}" data-login-url="${loginUrl}">
+
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
 <div class="wrap">
@@ -47,16 +49,16 @@
             </div>
         </section>
 
-        <!-- 퀵 액션 -->
+        <!-- 퀵 액션 (모두 보호: 비로그인 시 클릭 -> 로그인으로) -->
         <section class="panel" aria-label="빠른 실행">
             <div class="grid3">
-                <a class="quick" href="${ctx}/v1/reservations/departments">진료예약</a>
-                <a class="quick" href="${ctx}/v1/reception/departments">진료접수</a>
-                <a class="quick" href="${ctx}/v1/prescription">처방전</a>
+                <a class="quick need-login" href="${ctx}/v1/reservations/departments">진료예약</a>
+                <a class="quick need-login" href="${ctx}/v1/reception/departments">진료접수</a>
+                <a class="quick need-login" href="${ctx}/v1/prescription">처방전</a>
             </div>
         </section>
 
-        <!-- 진료시간 안내 -->
+        <!-- 진료시간 안내 (공개 정보) -->
         <section class="panel" aria-labelledby="hours-heading">
             <h2 id="hours-heading" class="h1">진료시간 안내</h2>
             <div class="list" role="list">
@@ -72,12 +74,31 @@
 
     <!-- 하단 탭바 -->
     <nav class="nav" aria-label="하단 내비게이션">
-        <a href="${ctx}/v1/reservation/departments">예약</a>
-        <a href="${ctx}/v1/reception/departments">접수</a>
-        <a class="active" href="${ctx}/v1/home">홈</a>
-        <a href="${ctx}/v1/prescription">처방전</a>
-        <a href="${ctx}/v1/reception/list">마이페이지</a>
+        <a class="need-login" href="${ctx}/v1/reservation/departments">예약</a>
+        <a class="need-login" href="${ctx}/v1/reception/departments">접수</a>
+        <a class="active" href="${ctx}/v1/home">홈</a> <!-- 홈은 공개 -->
+        <a class="need-login" href="${ctx}/v1/prescription">처방전</a>
+        <a class="need-login" href="${ctx}/v1/reception/list">마이페이지</a>
     </nav>
 </div>
+
+<!-- 비로그인 클릭 가드 -->
+<script>
+    (function () {
+        var isLoggedIn = document.body.getAttribute('data-is-logged-in') === 'true';
+        var loginUrl   = document.body.getAttribute('data-login-url');
+
+        if (isLoggedIn || !loginUrl) return;
+
+        // 보호가 필요한 링크에 대해서만 가드
+        document.querySelectorAll('a.need-login').forEach(function (a) {
+            a.addEventListener('click', function (e) {
+                e.preventDefault();
+                window.location.href = loginUrl;
+            });
+        });
+    })();
+</script>
+
 </body>
 </html>
