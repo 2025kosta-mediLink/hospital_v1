@@ -1,5 +1,5 @@
 /* =============================
-   Symptom/Note (iPhone16 393×852 고정 + 스크롤/통일 스타일)
+   Symptom/Note (iPhone16 393×852 고정 + 폼 스크롤 + 하단 버튼 고정)
 ============================= */
 
 /* 토큰 */
@@ -10,8 +10,7 @@
     --radius:16px; --tabbar-h:72px;
 
     /* iPhone16 프레임 */
-    --vw:393px;
-    --vh:852px;
+    --vw:393px; --vh:852px;
 }
 
 *{box-sizing:border-box}
@@ -21,21 +20,23 @@ body{
     font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,AppleSDGothicNeo,"Noto Sans KR","Malgun Gothic",sans-serif;
 }
 
-/* ===== 프레임(고정 폭) : 스크롤 가능 + 상/하 안전영역 확보 ===== */
+/* ===== 프레임: 컬럼 레이아웃 + 폼만 스크롤 ===== */
 .wrap{
-    width:var(--vw);
-    max-width:var(--vw);
-    min-height:100dvh;                 /* 모바일 주소창 대응 */
-    background:#fff;
-    border-radius:0;                    /* 프레임 각지게 */
-    margin:0 auto;
-    overflow:auto;                      /* ✅ 긴 내용 스크롤 */
+    width:var(--vw); max-width:var(--vw);
+    min-height:100dvh; background:#fff; margin:0 auto;
+    border-radius:0;
+    display:flex; flex-direction:column;   /* ★ 컬럼 레이아웃 */
+    overflow:hidden;                       /* 바깥 스크롤 숨기기 */
     position:relative;
     padding: calc(env(safe-area-inset-top) + 0px) 16px
     calc(var(--tabbar-h) + 24px + env(safe-area-inset-bottom));
 }
 
-/* 이전 버튼 */
+/* 헤더 */
+.topbar{display:flex; align-items:center; gap:10px; margin-bottom:10px}
+.title{font-weight:800; font-size:20px}
+.sub{color:var(--muted); font-size:12px; margin-bottom:10px}
+
 .back{
     display:inline-flex; align-items:center; gap:6px;
     border:1px solid var(--line); background:#fff;
@@ -46,10 +47,14 @@ body{
 .back:hover{ background:#f8fafc }
 .back .chev{ font-weight:900; font-size:14px }
 
-/* 헤더 */
-.topbar{display:flex; align-items:center; gap:10px; margin-bottom:10px}
-.title{font-weight:800; font-size:20px}
-.sub{color:var(--muted); font-size:12px; margin-bottom:10px}
+/* ===== 폼을 스크롤 컨테이너로 (id 두 가지 다 지원) ===== */
+#symptomForm,
+#symForm{
+    flex:1;                      /* 상단/하단 제외 영역 채우기 */
+    overflow:auto;               /* ★ 폼 내부만 스크롤 */
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: calc(var(--tabbar-h) + 96px); /* 탭바 + 고정 버튼 여유 */
+}
 
 /* 카드 */
 .card{
@@ -81,8 +86,20 @@ body{
 }
 .ta:focus{ outline:3px solid rgba(37,99,235,.15); border-color:var(--primary) }
 
-/* 하단 버튼 */
-.footer{margin-top:14px}
+/* ===== 하단 버튼: 탭바 위에 확실히 고정 ===== */
+.footer{
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: calc(var(--tabbar-h) + 12px + env(safe-area-inset-bottom));
+    width: calc(var(--vw) - 32px);        /* 393px - 좌우 패딩(16px*2) */
+    z-index: 1000;                        /* 탭바(999)보다 위 */
+    padding: 8px;
+    background: rgba(255,255,255,.98);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(17,24,39,.10);
+}
 .btn-primary{
     width:100%; height:44px; border:0; border-radius:12px; cursor:pointer;
     color:#fff; font-weight:800;
@@ -101,7 +118,7 @@ body{
 .nav{
     position:fixed; left:50%; transform:translateX(-50%);
     bottom:0;
-    width:var(--vw);                       /* 393px 고정 */
+    width:var(--vw);
     background:#fff;
     border-top:1px solid var(--line);
     box-shadow:0 -6px 18px rgba(0,0,0,.06);

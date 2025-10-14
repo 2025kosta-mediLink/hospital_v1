@@ -1,5 +1,5 @@
 /* =============================
-   Reception Confirm/Consent (iPhone16 393×852 고정 + 스크롤/통일 스타일)
+   Reception Confirm/Consent (iPhone16 393×852 고정 + 폼 스크롤 + 하단 버튼 고정)
 ============================= */
 
 /* 토큰 */
@@ -10,8 +10,7 @@
     --radius:16px; --tabbar-h:72px;
 
     /* iPhone16 프레임 */
-    --vw:393px;
-    --vh:852px;
+    --vw:393px; --vh:852px;
 }
 
 *{box-sizing:border-box}
@@ -21,15 +20,13 @@ body{
     font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,AppleSDGothicNeo,"Noto Sans KR","Malgun Gothic",sans-serif;
 }
 
-/* ===== 프레임: 고정 폭 + 스크롤 + 안전영역 패딩 ===== */
+/* ===== 프레임: 컬럼 레이아웃 + 폼만 스크롤 ===== */
 .wrap{
-    width:var(--vw);
-    max-width:var(--vw);
-    min-height:100dvh;                 /* 모바일 주소창 변화 대응 */
-    background:#fff;
-    border-radius:0;                    /* 프레임 각짐 유지 */
-    margin:0 auto;
-    overflow:auto;                      /* ✅ 내용 길면 스크롤 */
+    width:var(--vw); max-width:var(--vw);
+    min-height:100dvh; background:#fff; margin:0 auto;
+    border-radius:0;
+    display:flex; flex-direction:column;    /* ★ 컬럼 레이아웃 */
+    overflow:hidden;                        /* 바깥 스크롤 숨김 */
     position:relative;
     padding: calc(env(safe-area-inset-top) + 0px) 16px
     calc(var(--tabbar-h) + 24px + env(safe-area-inset-bottom));
@@ -53,6 +50,17 @@ body{
 .back:hover,.close:hover{ background:#f8fafc }
 .chev{ font-weight:900 }
 
+/* ===== 폼을 스크롤 컨테이너로 (id/패턴 여러 가지 지원) ===== */
+#consentForm,
+#confirmForm,
+form[action*="/reception/confirm"],
+form[action*="/reception/consent"]{
+    flex:1;                               /* 상단/하단 제외 영역 채우기 */
+    overflow:auto;                        /* ★ 폼 내부만 스크롤 */
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: calc(var(--tabbar-h) + 96px); /* 탭바+고정버튼 여유 */
+}
+
 /* ===== 카드 공통 ===== */
 .card{
     background:var(--card); border:1px solid var(--line);
@@ -64,27 +72,14 @@ body{
 .kv{display:grid; grid-template-columns:80px 1fr; row-gap:8px; column-gap:8px}
 .k{color:var(--muted)}
 .v{font-weight:800}
+.kv>.v{ justify-self:end; text-align:right }  /* 값 우측 정렬 */
 
-/* 값(오른쪽 컬럼) 우측 정렬 */
-.kv>.v{ justify-self:end; text-align:right }
-
-/* 증상 Pill (우측 정렬 시 간격 보정) */
 .pill{
-    display:inline-block;
-    background:#f1f5f9;
-    border:1px solid #e5e7eb;
-    border-radius:999px;
-    padding:4px 10px;
-    margin-left:6px;
-    margin-bottom:6px;
-    font-weight:800;
+    display:inline-block; background:#f1f5f9; border:1px solid #e5e7eb;
+    border-radius:999px; padding:4px 10px; margin-left:6px; margin-bottom:6px; font-weight:800;
 }
-
-/* 전달사항 */
 .note{
-    font-weight:800;
-    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    text-align:right;
+    font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-align:right;
 }
 
 /* 주의사항 */
@@ -97,12 +92,19 @@ body{
 .consent{ display:flex; align-items:center; gap:10px }
 .consent input{ width:18px; height:18px }
 
-/* ===== 버튼 영역 (탭바와 겹치지 않게 sticky) ===== */
+/* ===== 하단 버튼: 탭바 위에 확실히 고정 ===== */
 .actions{
-    position:sticky;
-    bottom:calc(var(--tabbar-h) + 12px);
-    background:transparent;
-    margin-top:16px;
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: calc(var(--tabbar-h) + 12px + env(safe-area-inset-bottom));
+    width: calc(var(--vw) - 32px);       /* 393px - 좌우 16px*2 */
+    z-index: 1000;                       /* 탭바(999)보다 위 */
+    padding: 8px;
+    background: rgba(255,255,255,.98);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(17,24,39,.10);
 }
 .btn-primary{
     width:100%; height:48px;
@@ -119,7 +121,7 @@ body{
 .nav{
     position:fixed; left:50%; transform:translateX(-50%);
     bottom:0;
-    width:var(--vw);                    /* 393px 고정 */
+    width:var(--vw);
     background:#fff;
     border-top:1px solid var(--line);
     box-shadow:0 -6px 18px rgba(0,0,0,.06);

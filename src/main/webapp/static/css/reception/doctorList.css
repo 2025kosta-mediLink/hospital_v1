@@ -1,5 +1,5 @@
 /* =============================
-   Doctor List (iPhone16 393×852 고정 + 스크롤/통일 스타일)
+   Doctor List (iPhone16 393×852 고정 + 폼 스크롤 + 하단 버튼 고정)
 ============================= */
 
 /* 토큰 */
@@ -21,15 +21,19 @@ body{
     font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,AppleSDGothicNeo,"Noto Sans KR","Malgun Gothic",sans-serif;
 }
 
-/* ===== 프레임(고정 폭) : 스크롤 가능 + 상/하 안전영역 확보 ===== */
+/* ===== 프레임: 컬럼 레이아웃 + 폼만 스크롤 ===== */
 .wrap{
     width:var(--vw);
     max-width:var(--vw);
     min-height:100dvh;                 /* 모바일 주소창 변화 대응 */
     background:#fff;
-    border-radius:0;                    /* 둥근 프레임 제거 */
+    border-radius:0;
     margin:0 auto;
-    overflow:auto;                      /* ✅ 내용 길면 스크롤 */
+
+    display:flex;                      /* ★ 컬럼 레이아웃 */
+    flex-direction:column;
+    overflow:hidden;                   /* 바깥은 숨기고 내부 폼만 스크롤 */
+
     position:relative;
     padding: calc(env(safe-area-inset-top) + 0px) 16px
     calc(var(--tabbar-h) + 24px + env(safe-area-inset-bottom));
@@ -68,6 +72,15 @@ body{
 .chip>input{position:absolute; inset:0; opacity:0; cursor:pointer}
 .chip.active{background:var(--primary); color:#fff; border-color:var(--primary)}
 
+/* ===== 폼을 스크롤 컨테이너로 (id 두 가지 다 지원) ===== */
+#doctorForm,
+#docForm{
+    flex:1;                      /* ★ 상단/하단 제외 남은 높이 채우기 */
+    overflow:auto;               /* ★ 폼 내부만 스크롤 */
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: calc(var(--tabbar-h) + 96px); /* 탭바+고정 버튼 여유 */
+}
+
 /* 카드 리스트 (1열 기본 / 넓으면 2열) */
 .grid{display:grid; grid-template-columns:1fr; gap:10px; margin-top:10px}
 @media (min-width:560px){ .grid{grid-template-columns:repeat(2,1fr)} }
@@ -97,8 +110,21 @@ body{
 }
 .chip.active{background:var(--primary); color:#fff; border-color:var(--primary)}
 
-/* 하단 버튼 */
-.footer{margin-top:16px; display:flex; gap:10px}
+/* ===== 하단 버튼: 탭바 위에 확실히 고정 ===== */
+.footer{
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: calc(var(--tabbar-h) + 12px + env(safe-area-inset-bottom));
+    width: calc(var(--vw) - 32px);      /* 393px - 좌우 16px 패딩 */
+    z-index: 1000;                      /* 탭바(999)보다 위 */
+    padding: 8px;
+    background: rgba(255,255,255,.98);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(17,24,39,.10);
+    display:flex; gap:10px;
+}
 .btn-primary{
     flex:1; height:44px;
     color:#fff; border:0; border-radius:12px; font-weight:800; cursor:pointer;
