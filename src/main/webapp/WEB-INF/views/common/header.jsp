@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!-- 공통 헤더 CSS -->
+<link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css?v=20250115_001">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common2.css?v=20250115_001">
 
 <!-- 공통 헤더 -->
