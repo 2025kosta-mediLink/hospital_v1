@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>회원가입 완료</title>
-  <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css">
+  <link rel="stylesheet" href="${pageContext.request.contextPath}/webapp/static/css/common.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/auth/signUpDone.css">
   <script defer src="${pageContext.request.contextPath}/static/js/common.js"></script>
   <script defer src="${pageContext.request.contextPath}/static/js/auth/signUpDone.js"></script>
@@ -21,6 +21,6 @@
 </div>
 
 <% request.setAttribute("activeKey", "home"); %>
-<jsp:include page="/WEB-INF/views/common/navbar.jsp"/>
+<jsp:include page="/WEB-INF/views/common/navigation.jsp"/>
 </body>
 </html>
