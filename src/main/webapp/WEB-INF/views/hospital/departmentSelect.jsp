@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>진료과 선택</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/webapp/static/css/common.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/reception/departmentList.css">
     <script defer src="${pageContext.request.contextPath}/static/js/common.js"></script>
     <script defer src="${pageContext.request.contextPath}/static/js/hospital/departmentSelect.js"></script>
@@ -26,7 +26,7 @@
     <!-- 진료과 목록 -->
     <form id="deptForm" method="get" action="${pageContext.request.contextPath}/v1/reservation/doctors">
         <c:choose>
-            <c:when test="${empty departments}">
+            <c:when test="${empty departmentSelect or empty departmentSelect.departments}">
                 <div class="empty">표시할 진료과가 없습니다.</div>
                 <div class="footer">
                     <button id="nextBtn" class="btn-primary" type="submit" disabled>다음</button>
@@ -34,9 +34,10 @@
             </c:when>
             <c:otherwise>
                 <div class="grid">
-                    <c:forEach var="d" items="${departments}">
+                    <c:forEach var="d" items="${departmentSelect.departments}">
                         <label class="item">
-                            <input class="radio" type="radio" name="departmentId" value="${d.departmentId}" required />
+                            <!-- 여기 수정: departmentId -> id -->
+                            <input class="radio" type="radio" name="departmentId" value="${d.id}" required />
                             <div class="card">
                                 <div class="icon"><c:out value="${fn:substring(d.name,0,1)}" /></div>
                                 <div class="name"><c:out value="${d.name}" /></div>
