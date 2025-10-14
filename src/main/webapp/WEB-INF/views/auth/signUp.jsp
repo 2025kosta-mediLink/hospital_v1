@@ -5,8 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>회원가입</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/webapp/static/css/common.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/auth/signUp.css"><!-- 박스형 입력 스타일 -->
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/auth/signUp.css">
+    <!-- 박스형 입력 스타일 -->
     <script defer src="${pageContext.request.contextPath}/static/js/common.js"></script>
     <script defer src="${pageContext.request.contextPath}/static/js/auth/signUp.js"></script>
 </head>
@@ -17,7 +18,8 @@
 <h2 class="page-title">회원가입</h2>
 
 <div class="form-section">
-    <form id="signUpForm" method="post" action="${pageContext.request.contextPath}/v1/auth/sign-up" novalidate>
+    <form id="signUpForm" method="post" action="${pageContext.request.contextPath}/v1/auth/sign-up"
+          novalidate>
 
         <!-- 아이디 + 중복 확인 -->
         <div class="field">
@@ -41,26 +43,30 @@
         <!-- 비밀번호 -->
         <div class="field">
             <label class="label" for="password">비밀번호</label>
-            <input class="input" id="password" name="password" type="password" autocomplete="new-password" placeholder="비밀번호">
+            <input class="input" id="password" name="password" type="password"
+                   autocomplete="new-password" placeholder="비밀번호">
             <div class="helper">사용 가능한 문자는 영문, 숫자, 특수문자 포함하여 8~16자 이내여야 합니다.<br></div>
         </div>
 
         <!-- 비밀번호 확인 -->
         <div class="field">
             <label class="label" for="password2">비밀번호 확인</label>
-            <input class="input" id="password2" type="password" autocomplete="new-password" placeholder="비밀번호 확인">
+            <input class="input" id="password2" type="password" autocomplete="new-password"
+                   placeholder="비밀번호 확인">
         </div>
 
         <!-- 이름 -->
         <div class="field">
             <label class="label" for="name">이름</label>
-            <input class="input" id="name" name="name" type="text" autocomplete="name" placeholder="이름">
+            <input class="input" id="name" name="name" type="text" autocomplete="name"
+                   placeholder="이름">
         </div>
 
         <!-- 주민등록번호 -->
         <div class="field">
             <label class="label" for="rrn">주민등록번호</label>
-            <input class="input" id="rrn" name="rrn" type="text" inputmode="numeric" autocomplete="off"
+            <input class="input" id="rrn" name="rrn" type="text" inputmode="numeric"
+                   autocomplete="off"
                    placeholder="주민등록번호 (예: 901201-1234567)">
         </div>
 
@@ -82,14 +88,16 @@
         <!-- 휴대폰 -->
         <div class="field">
             <label class="label" for="phone">휴대폰 번호</label>
-            <input class="input" id="phone" name="phone" type="text" inputmode="numeric" autocomplete="tel"
+            <input class="input" id="phone" name="phone" type="text" inputmode="numeric"
+                   autocomplete="tel"
                    placeholder="휴대폰 번호">
         </div>
 
         <!-- 주소 -->
         <div class="field">
             <label class="label" for="address">주소</label>
-            <input class="input" id="address" name="address" type="text" autocomplete="street-address"
+            <input class="input" id="address" name="address" type="text"
+                   autocomplete="street-address"
                    placeholder="주소">
         </div>
 

@@ -34,4 +34,24 @@ public class DoctorWeeklyScheduleDAO {
         }
         return scheduleList;
     }
+
+    public ScheduleDetailDTO findOneByDoctorIdAndDayOfWeek(long doctorId, int dow) {
+        String sql = "SELECT day_of_week, am_flag, pm_flag " +
+                "FROM doctor_weekly_schedule WHERE doctor_id=? AND day_of_week=?";
+        try (Connection c = DBConnectionUtil.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setLong(1, doctorId);
+            ps.setInt(2, dow);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new ScheduleDetailDTO(
+                            rs.getInt("day_of_week"),
+                            rs.getBoolean("am_flag"),
+                            rs.getBoolean("pm_flag")
+                    );
+                }
+            }
+        } catch (SQLException e) { throw new RuntimeException(e); }
+        return null;
+    }
 }
