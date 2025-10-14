@@ -78,3 +78,62 @@ body{
 }
 .nav a{color:#4b5563; text-decoration:none; font-weight:700; padding:8px 10px; border-radius:10px;}
 .nav a.active{color:var(--primary); background:#eff6ff;}
+
+/* ===== Modal ===== */
+.modal[hidden] { display: none !important; }   /* HTML hidden 보장 */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;                 /* 탭바(999)보다 높게 */
+    display: grid;
+    place-items: center;
+}
+
+.modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(17,24,39,.45);
+}
+
+.modal-panel {
+    position: relative;
+    width: min(520px, calc(100vw - 32px));
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    padding: 16px;
+    z-index: 1;
+}
+
+.modal-title { margin: 0 0 6px; font-weight: 900; font-size: 18px; }
+.modal-desc  { margin: 0 0 12px; color: var(--muted); }
+.modal-label { display:block; font-weight:700; font-size:13px; color: var(--muted); margin-bottom:6px; }
+
+.modal-textarea {
+    width: 100%;
+    min-height: 84px;
+    resize: vertical;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 10px;
+    font: inherit;
+}
+
+.modal-actions { display: flex; gap: 8px; margin-top: 12px; justify-content: flex-end; }
+
+.modal-x {
+    position: absolute;
+    top: 8px; right: 10px;
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: #fff;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: 900;
+    line-height: 1;
+}
+
+

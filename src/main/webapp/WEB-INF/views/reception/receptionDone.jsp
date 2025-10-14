@@ -40,14 +40,14 @@
                     <li>대기 현황은 실시간으로 업데이트 됩니다.</li>
                 </ul>
 
-                <div class="meta">
-                    <div class="k">진료과</div>
-                    <div class="v"><c:out value="${reception.departmentName}" /></div>
-                    <div class="k">의료진</div>
-                    <div class="v"><c:out value="${reception.doctorName}" /></div>
-                    <div class="k">상태</div>
-                    <div class="v"><c:out value="${reception.status}" /></div>
-                </div>
+<%--                <div class="meta">--%>
+<%--                    <div class="k">진료과</div>--%>
+<%--                    <div class="v"><c:out value="${reception.departmentName}" /></div>--%>
+<%--                    <div class="k">의료진</div>--%>
+<%--                    <div class="v"><c:out value="${reception.doctorName}" /></div>--%>
+<%--                    <div class="k">상태</div>--%>
+<%--                    <div class="v"><c:out value="${reception.status}" /></div>--%>
+<%--                </div>--%>
 
                 <div class="actions">
                     <a class="btn-primary" href="${pageContext.request.contextPath}/v1/waiting/${reception.receptionId}">대기현황 보기</a>

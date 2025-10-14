@@ -54,10 +54,6 @@ body{
 .ta{width:100%; min-height:110px; border:1px solid var(--line); border-radius:12px; padding:10px 12px; resize:vertical}
 .ta:focus{outline:3px solid rgba(37,99,235,.15); border-color:var(--primary)}
 
-/* 동의 체크 */
-.consent{display:flex; align-items:center; gap:8px; margin-top:6px}
-.consent input{width:16px; height:16px}
-
 /* 하단 버튼 */
 .footer{margin-top:14px}
 .btn-primary{

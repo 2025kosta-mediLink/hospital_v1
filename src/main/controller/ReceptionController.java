@@ -4,10 +4,7 @@ import dto.DepartmentListItemDTO;
 import dto.DoctorListItemDTO;
 import dto.ReceptionDetailDTO;
 import dto.SymptomListItemDTO;
-import service.DepartmentService;
-import service.DoctorService;
-import service.ReceptionService;
-import service.SymptomService;
+import service.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @WebServlet("/v1/reception/*")
 public class ReceptionController extends HttpServlet {
@@ -24,6 +23,7 @@ public class ReceptionController extends HttpServlet {
     private ReceptionService receptionService;
     private DepartmentService departmentService;
     private DoctorService doctorService;
+    private ReceptionListService receptionListService;
 
     @Override
     public void init() throws ServletException {
@@ -31,6 +31,7 @@ public class ReceptionController extends HttpServlet {
         receptionService = new ReceptionService();
         departmentService = new DepartmentService();
         doctorService = new DoctorService();
+        receptionListService = new ReceptionListService();
     }
 
     @Override
@@ -124,6 +125,46 @@ public class ReceptionController extends HttpServlet {
 
         String path = req.getPathInfo();
 
+      // 1) 취소 라우트 우선 처리: "/{id}/cancel"
+      if (path != null) {
+        Matcher m = Pattern.compile("^/(\\d+)/cancel$").matcher(path);
+        if (m.matches()) {
+          Long receptionId;
+          try {
+            receptionId = Long.parseLong(m.group(1));
+          } catch (NumberFormatException e) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid reception id");
+            return;
+          }
+
+          Long memberId = 1L; // (임시) 로그인 붙으면 세션에서 가져오기
+          String reason = req.getParameter("reason");
+
+          boolean ok;
+          String msg;
+          try {
+            ReceptionListService.CancelResult r =
+                receptionListService.cancelReceptionTransactional(receptionId, memberId, reason);
+            ok = r.isSuccess();
+            msg = (r.getMessage() != null && !r.getMessage().isBlank())
+                ? r.getMessage()
+                : (ok ? "접수가 취소되었습니다." : "취소에 실패했습니다.");
+          } catch (Exception e) {
+            e.printStackTrace();
+            ok = false;
+            msg = "서버 오류로 취소 처리에 실패했습니다.";
+          }
+
+          String redirect = req.getContextPath()
+              + "/v1/reception/detail?id=" + receptionId
+              + "&cancel=" + (ok ? "1" : "0")
+              + "&msg=" + java.net.URLEncoder.encode(msg, "UTF-8");
+          resp.sendRedirect(redirect);
+          return;
+        }
+      }
+
+
         // [확인 화면 이동]
         if ("/confirm".equals(path)) {
             String departmentId = req.getParameter("departmentId");
@@ -162,7 +203,7 @@ public class ReceptionController extends HttpServlet {
         } else if ("/done".equals(path)) {
             req.setCharacterEncoding("UTF-8");
 
-            Long departmentId = Long.parseLong(req.getParameter("departmentId"));
+//            Long departmentId = Long.parseLong(req.getParameter("departmentId"));
             Long doctorId = Long.parseLong(req.getParameter("doctorId"));
             String[] symptomIds = req.getParameterValues("symptomIds");
             String noteToDoctor = req.getParameter("noteToDoctor");

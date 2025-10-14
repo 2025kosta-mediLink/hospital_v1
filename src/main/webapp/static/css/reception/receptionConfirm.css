@@ -36,8 +36,33 @@ body{
 .kv{display:grid;grid-template-columns:80px 1fr;row-gap:8px;column-gap:8px}
 .k{color:var(--muted)}
 .v{font-weight:800}
-.pill{display:inline-block;background:#f1f5f9;border:1px solid #e5e7eb;border-radius:999px;padding:4px 10px;margin-right:6px;margin-bottom:6px;font-weight:800}
-.note{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* 값(오른쪽 컬럼) 우측 정렬 */
+.kv > .v{
+    justify-self:end;
+    text-align:right;
+}
+
+/* 증상 Pill (우측 정렬 시 간격 보정) */
+.pill{
+    display:inline-block;
+    background:#f1f5f9;
+    border:1px solid #e5e7eb;
+    border-radius:999px;
+    padding:4px 10px;
+    margin-left:6px;      /* 기존 margin-right → 우측 정렬에 맞게 변경 */
+    margin-bottom:6px;
+    font-weight:800;
+}
+
+/* 전달사항 */
+.note{
+    font-weight:800;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    text-align:right;     /* 우측 정렬 */
+}
 
 /* 주의사항 */
 .alert{border-color:#ffe1e1;background:#fffafa}

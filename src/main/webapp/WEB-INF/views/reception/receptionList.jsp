@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"  %>
+<%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -8,7 +9,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>전체 접수 내역 조회</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/reception/receptionList.css">
-    <script defer src="${pageContext.request.contextPath}/static/js/reception/receptionList.js"></script>
 </head>
 <body>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
@@ -20,45 +20,9 @@
     </div>
 
     <div class="tabs">
-        <a class="tab" href="${pageContext.request.contextPath}/v1/reservations/list">예약내역</a>
-        <a class="tab active" href="${pageContext.request.contextPath}/v1/reception/list">접수내역</a>
+        <a class="tab" href="${ctx}/v1/reservations/list">예약내역</a>
+        <a class="tab active" href="${ctx}/v1/reception/list">접수내역</a>
     </div>
-
-    <!-- 필터 (월 + 상태) -->
-    <form class="filter" method="get" action="${pageContext.request.contextPath}/v1/reception/list">
-        <!-- 월 선택 (YYYY-MM) -->
-        <label class="pill" title="조회 월 선택">
-            <input type="month" name="month" value="${param.month}" class="pill-input" />
-            <span class="pill-text">
-        <c:choose>
-            <c:when test="${not empty param.month}">${param.month}</c:when>
-            <c:otherwise>전체 기간</c:otherwise>
-        </c:choose>
-      </span>
-        </label>
-
-        <!-- 상태 선택 -->
-        <label class="pill" title="상태 선택">
-            <select name="status" class="pill-select">
-                <option value="ALL"        ${status=='ALL'?'selected':''}>전체</option>
-                <option value="WAITING"    ${status=='WAITING'?'selected':''}>대기</option>
-                <option value="IN_SERVICE" ${status=='IN_SERVICE'?'selected':''}>진료중</option>
-                <option value="DONE"       ${status=='DONE'?'selected':''}>완료</option>
-                <option value="CANCELED"   ${status=='CANCELED'?'selected':''}>취소</option>
-            </select>
-            <span class="pill-text">
-        <c:choose>
-            <c:when test="${status=='WAITING'}">대기</c:when>
-            <c:when test="${status=='IN_SERVICE'}">진료중</c:when>
-            <c:when test="${status=='DONE'}">완료</c:when>
-            <c:when test="${status=='CANCELED'}">취소</c:when>
-            <c:otherwise>전체</c:otherwise>
-        </c:choose>
-      </span>
-        </label>
-
-        <button type="submit" class="pill-submit">조회</button>
-    </form>
 
     <!-- 목록 -->
     <c:choose>
@@ -70,12 +34,25 @@
                 <div class="card">
                     <div class="card-head">
                         <div class="rec-no">접수번호 <c:out value="${r.receptionNo}"/>번</div>
+
+                            <%-- 상태 배지: 다양한 관용 표기를 모두 취급 --%>
+                        <c:set var="st" value="${fn:toUpperCase(r.status)}"/>
                         <c:choose>
-                            <c:when test="${r.status=='WAITING'}"><span class="badge b-wait">대기</span></c:when>
-                            <c:when test="${r.status=='IN_SERVICE'}"><span class="badge b-in">진료중</span></c:when>
-                            <c:when test="${r.status=='DONE'}"><span class="badge b-done">완료</span></c:when>
-                            <c:when test="${r.status=='CANCELED'}"><span class="badge b-cancel">취소</span></c:when>
-                            <c:otherwise><span class="badge">기타</span></c:otherwise>
+                            <c:when test="${st=='WAIT' || st=='WAITING'}">
+                                <span class="badge b-wait">대기</span>
+                            </c:when>
+                            <c:when test="${st=='IN_SERVICE' || st=='INSERVICE' || st=='IN_PROGRESS'}">
+                                <span class="badge b-in">진료중</span>
+                            </c:when>
+                            <c:when test="${st=='DONE' || st=='COMPLETE' || st=='COMPLETED'}">
+                                <span class="badge b-done">완료</span>
+                            </c:when>
+                            <c:when test="${st=='CANCEL' || st=='CANCELED' || st=='CANCELLED'}">
+                                <span class="badge b-cancel">취소</span>
+                            </c:when>
+                            <c:otherwise>
+                                <span class="badge">기타</span>
+                            </c:otherwise>
                         </c:choose>
                     </div>
 
@@ -92,23 +69,20 @@
 
                     <div class="card-actions">
                         <c:choose>
-                            <%-- 대기/진료중/완료: 모두 '상세보기' 노출 --%>
-                            <c:when test="${r.status=='WAITING' || r.status=='IN_SERVICE' || r.status=='DONE'}">
-                                <a class="btn btn-primary"
-                                   href="${pageContext.request.contextPath}/v1/reception/detail?id=${r.receptionId}">
+                            <%-- 대기/진료중/완료: '상세보기' (+ 완료 시 처방전 보기) --%>
+                            <c:when test="${st=='WAIT' || st=='WAITING' || st=='IN_SERVICE' || st=='INSERVICE' || st=='IN_PROGRESS' || st=='DONE' || st=='COMPLETE' || st=='COMPLETED'}">
+                                <a class="btn btn-primary" href="${ctx}/v1/reception/detail?id=${r.receptionId}">
                                     상세보기
                                 </a>
-                                <c:if test="${r.status=='DONE'}">
-                                    <a class="btn btn-ghost" href="${pageContext.request.contextPath}/v1/prescriptions/${r.receptionId}">
+                                <c:if test="${st=='DONE' || st=='COMPLETE' || st=='COMPLETED'}">
+                                    <a class="btn btn-ghost" href="${ctx}/v1/prescriptions/${r.receptionId}">
                                         처방전 보기
                                     </a>
                                 </c:if>
                             </c:when>
-
                             <%-- 취소 등 기타: 상세보기만 --%>
                             <c:otherwise>
-                                <a class="btn btn-ghost"
-                                   href="${pageContext.request.contextPath}/v1/reception/detail?id=${r.receptionId}">
+                                <a class="btn btn-ghost" href="${ctx}/v1/reception/detail?id=${r.receptionId}">
                                     상세보기
                                 </a>
                             </c:otherwise>
@@ -119,7 +93,6 @@
             </c:forEach>
         </c:otherwise>
     </c:choose>
-
 
     <!-- 하단 탭바 -->
     <nav class="nav" aria-label="하단 내비게이션">

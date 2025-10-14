@@ -19,10 +19,10 @@
     <div class="topbar">
         <button class="back" type="button"
                 onclick="goBackOr('${pageContext.request.contextPath}/v1/reception/symptom?departmentId=${departmentId}&doctorId=${doctorId}')">
-            <span class="chev">←</span> 이전
+            <span class="chev">←</span>
         </button>
-        <div class="title">접수하기</div>
-        <a class="close" href="${pageContext.request.contextPath}/v1/reception/departments">닫기</a>
+        <div class="title">최종확인</div>
+        <a class="close" href="${pageContext.request.contextPath}/v1/reception/departments">X</a>
     </div>
 
     <!-- 폼 시작 -->
@@ -34,7 +34,6 @@
             <input type="hidden" name="symptomIds" value="${sid}" />
         </c:forEach>
         <input type="hidden" name="noteToDoctor" value="${noteToDoctor}" />
-        <input type="hidden" name="consentNotice" value="${consentNotice}" />
 
         <!-- 접수 확인 정보 -->
         <div class="card">
@@ -91,7 +90,7 @@
         <!-- 동의 체크 (서버 검증은 이미 진행됨) -->
         <div class="card">
             <label class="consent">
-                <input id="consentNotice" type="checkbox" checked />
+                <input id="consentNotice" name="consentNotice" type="checkbox" value="true" checked />
                 주의사항을 숙지하고 동의합니다.
             </label>
         </div>

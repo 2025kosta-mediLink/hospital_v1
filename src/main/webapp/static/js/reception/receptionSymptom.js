@@ -2,19 +2,19 @@ document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('symptomForm');
     const note = document.getElementById('noteToDoctor');
     const counter = document.getElementById('noteCounter');
-    const consent = document.getElementById('consentNotice');
     const submitBtn = document.getElementById('nextBtn');
     const symCheckboxes = document.querySelectorAll('input[name="symptomIds"]');
     const symCountEl = document.getElementById('symCount');
     const maxLen = 500;
 
-    if (!form || !note || !counter || !consent || !submitBtn || !symCountEl) return;
+    if (!form || !note || !counter || !submitBtn || !symCountEl) return;
 
     function updateCount() {
         const len = note.value.length;
         counter.textContent = len + ' / ' + maxLen;
         counter.classList.toggle('error', len > maxLen);
-        submitBtn.disabled = !(consent.checked && len <= maxLen);
+        // 동의 체크 제거에 따라 길이 초과만 막음
+        submitBtn.disabled = len > maxLen;
     }
 
     function updateSymCount() {
@@ -24,7 +24,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     note.addEventListener('input', updateCount);
-    consent.addEventListener('change', updateCount);
     symCheckboxes.forEach((cb) => cb.addEventListener('change', updateSymCount));
 
     // 초기 상태
