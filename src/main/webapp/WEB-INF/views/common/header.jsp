@@ -1,6 +1,9 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<!-- 공통 헤더 CSS -->
+<link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common2.css?v=20250115_001">
+
 <!-- 공통 헤더 -->
 <header class="header">
     <button class="btn-back" onclick="history.back()">

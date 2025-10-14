@@ -7,7 +7,6 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>조제 상황</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common2.css?v=20250115_001">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/prescription/dispensingStatus.css?v=20250115_modal">
     <script src="${pageContext.request.contextPath}/static/js/prescription/dispensingStatus.js?v=20250115_modal"></script>
 </head>
