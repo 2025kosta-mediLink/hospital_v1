@@ -19,10 +19,10 @@
     <div class="topbar">
         <button class="back" type="button"
                 onclick="goBackOr('${pageContext.request.contextPath}/v1/reception/symptom?departmentId=${departmentId}&doctorId=${doctorId}')">
-            <span class="chev">←</span> 이전
+            <span class="chev">←</span>
         </button>
-        <div class="title">접수하기</div>
-        <a class="close" href="${pageContext.request.contextPath}/v1/reception/departments">닫기</a>
+        <div class="title">최종확인</div>
+        <a class="close" href="${pageContext.request.contextPath}/v1/reception/departments">X</a>
     </div>
 
     <!-- 폼 시작 -->
