@@ -14,6 +14,7 @@
     <script src="${pageContext.request.contextPath}/static/js/map/kakao-map-service.js?v=20250115_001"></script>
     <script src="${pageContext.request.contextPath}/static/js/api/pharmacy-api-service.js?v=20250115_001"></script>
     <script src="${pageContext.request.contextPath}/static/js/api/public-data-service.js?v=20250115_001"></script>
+    <script src="${pageContext.request.contextPath}/static/js/api/kakao-place-service.js?v=20250115_001"></script>
 </head>
 <body>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
@@ -255,36 +256,28 @@
         addPharmacyMarkers(map);
     }
     
-    // 약국 마커 추가 함수 (실제 공공데이터 사용)
+    // 약국 마커 추가 함수 (카카오맵 장소 API 사용)
     async function addPharmacyMarkers(map) {
         try {
-            console.log('=== 실제 약국 데이터 로드 시작 ===');
+            console.log('=== 카카오맵 장소 API로 약국 검색 시작 ===');
             
-            // 공공데이터 서비스 초기화
-            const publicDataService = new PublicDataService();
+            // 카카오맵 장소 서비스 초기화
+            const kakaoPlaceService = new KakaoPlaceService();
             
             // 현재 위치 기반 약국 검색
             const currentPosition = await getCurrentPosition();
             
-            // 공공데이터에서 약국 정보 가져오기
-            const pharmacies = await publicDataService.getPharmacyList({
-                pageNo: 1,
-                numOfRows: 50
-            });
+            // 카카오맵 장소 API에서 약국 정보 가져오기
+            const pharmacies = await kakaoPlaceService.searchNearbyPharmacies(
+                currentPosition.latitude, 
+                currentPosition.longitude, 
+                3000 // 3km 반경
+            );
             
-            console.log('=== 공공데이터에서 가져온 약국 수:', pharmacies.length);
+            console.log('=== 카카오맵에서 가져온 약국 수:', pharmacies.length);
             
-            // 거리 계산 및 정렬
-            const pharmaciesWithDistance = pharmacies.map(pharmacy => {
-                const distance = publicDataService.calculateDistance(
-                    currentPosition.latitude, currentPosition.longitude,
-                    pharmacy.latitude, pharmacy.longitude
-                );
-                return {
-                    ...pharmacy,
-                    distance: distance.toFixed(1) + 'km'
-                };
-            }).sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
+            // 거리 정보가 이미 API에서 제공되므로 그대로 사용
+            const pharmaciesWithDistance = pharmacies;
             
             // 지도에 마커 추가
             pharmaciesWithDistance.forEach(function(pharmacy, index) {
@@ -319,7 +312,7 @@
             console.log('=== 실제 약국 마커 추가 완료 ===');
             
         } catch (error) {
-            console.error('실제 약국 데이터 로드 실패:', error);
+            console.error('카카오맵 장소 API 호출 실패:', error);
             console.log('=== 더미 데이터로 폴백 ===');
             
             // 에러 발생 시 더미 데이터 사용
