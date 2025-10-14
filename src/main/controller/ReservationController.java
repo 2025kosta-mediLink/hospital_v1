@@ -40,7 +40,7 @@ public class ReservationController extends HttpServlet {
             long doctorId = Long.parseLong(req.getParameter("doctorId"));
             DoctorDetailDTO doctor = doctorService.getDoctorById(doctorId);
             req.setAttribute("doctor", doctor);
-            req.getRequestDispatcher("/WEB-INF/views/hospital/dateSelection.jsp").forward(req, resp);
+            req.getRequestDispatcher("/WEB-INF/views/reservation/dateSelection.jsp").forward(req, resp);
             return;
         }
 
@@ -82,7 +82,7 @@ public class ReservationController extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/v1/reservation/complete");
         } catch (IllegalStateException e) {
             req.setAttribute("error", "이미 해당 시간은 예약이 찼습니다. 다른 시간을 선택해주세요.");
-            req.getRequestDispatcher("/WEB-INF/views/hospital/dateSelection.jsp").forward(req, resp);
+            req.getRequestDispatcher("/WEB-INF/views/reservation/dateSelection.jsp").forward(req, resp);
         }
     }
 }

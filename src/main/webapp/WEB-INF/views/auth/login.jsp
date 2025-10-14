@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>로그인</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/webapp/static/css/common.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/auth/login.css">
     <script defer src="${pageContext.request.contextPath}/static/js/common.js"></script>
     <script defer src="${pageContext.request.contextPath}/static/js/auth/login.js"></script>
