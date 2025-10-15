@@ -1,12 +1,18 @@
 package service;
 
+import common.type.ReservationStatus;
 import dao.MemberDAO;
 import dao.ReservationDAO;
 import dao.DoctorWeeklyScheduleDAO;
 import dao.DoctorExceptionDayDAO;
+import dto.MonthOptionDTO;
+import dto.ReservationListItemDTO;
+import dto.ReservationListDTO;
 
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ReservationService {
     private final ReservationDAO reservationDAO = new ReservationDAO();
@@ -50,6 +56,78 @@ public class ReservationService {
         }
         String no = genNo();
         reservationDAO.insert(memberId, doctorId, appointmentAt, no);
+    }
+
+    public ReservationListDTO getReservationList(String memberUuid, String month, String statusUi) {
+        Long memberId = memberDAO.findIdByUuid(memberUuid);
+        if (memberId == null) throw new IllegalStateException("member-not-found");
+
+        // UI → enum → DB 상태값
+        ReservationStatus st = ReservationStatus.fromUiOrNull(statusUi);
+        String dbStatus = (st == null) ? null : st.name();
+
+        List<ReservationListItemDTO> rows =
+                reservationDAO.findHistoryByMember(memberId, month, dbStatus);
+
+        // 날짜/시간 한글 표기 + 상태 라벨/배지 세팅
+        for (ReservationListItemDTO it : rows) {
+            fillKoreanDateTime(it);
+            if (it.getStatus() != null) {
+                try {
+                    ReservationStatus s = ReservationStatus.valueOf(it.getStatus());
+                    it.setStatusLabel(s.getLabelKo());
+                    it.setStatusBadge(s.getBadgeClass());
+                } catch (IllegalArgumentException ignore) { /* DB 값이 예외면 무시 */ }
+            }
+        }
+
+        // 월 옵션
+        List<String> ymList = rows.stream()
+                .map(ReservationListItemDTO::getYearMonth)
+                .distinct()
+                .sorted(Comparator.reverseOrder())
+                .toList();
+
+        List<MonthOptionDTO> monthOptions = ymList.stream()
+                .map(ym -> new MonthOptionDTO(ym, formatMonthKorean(ym)))
+                .collect(Collectors.toList());
+
+        // 월별 그룹핑 (내림차순 유지)
+        Map<String, List<ReservationListItemDTO>> grouped =
+                rows.stream().collect(Collectors.groupingBy(
+                        ReservationListItemDTO::getYearMonth,
+                        LinkedHashMap::new,
+                        Collectors.toList()
+                ));
+
+        ReservationListDTO result = new ReservationListDTO();
+        result.setGroupedByMonth(grouped);
+        result.setMonthOptions(monthOptions);
+        result.setSelectedMonth(month);
+        result.setSelectedStatus(
+                (statusUi == null || statusUi.isBlank()) ? "ALL" : statusUi.toUpperCase(Locale.ROOT)
+        );
+        return result;
+    }
+
+    private static String formatMonthKorean(String ym) {
+        // "YYYY-MM" -> "2024년 1월"
+        String[] p = ym.split("-");
+        return Integer.parseInt(p[0]) + "년 " + Integer.parseInt(p[1]) + "월";
+    }
+
+    private static void fillKoreanDateTime(ReservationListItemDTO it) {
+        // appointmentAt: "YYYY-MM-DD HH:mm"
+        LocalDateTime dt = LocalDateTime.parse(it.getAppointmentAt(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        String[] dows = {"월","화","수","목","금","토","일"};
+        int dowIdx = dt.getDayOfWeek().getValue()-1; // 0=월
+        String dateLabel = dt.getYear() + "년 " + dt.getMonthValue() + "월 " + dt.getDayOfMonth() + "일 (" + dows[dowIdx] + ")";
+        String ampm = (dt.getHour() < 12) ? "오전" : "오후";
+        int hour12 = dt.getHour() % 12; if (hour12 == 0) hour12 = 12;
+        String timeLabel = ampm + " " + String.format("%d:%02d", hour12, dt.getMinute());
+
+        it.setDateLabel(dateLabel);
+        it.setTimeLabel(timeLabel);
     }
 
     private List<String> range(String start, String end, int minutes) {

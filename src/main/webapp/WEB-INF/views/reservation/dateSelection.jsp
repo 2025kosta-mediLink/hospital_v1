@@ -48,7 +48,7 @@
         <div class="modal-title">예약 정보 확인</div>
         <div class="modal-row"><span class="label">진료과</span><span>${doctor.departmentName}</span>
         </div>
-        <div class="modal-row"><span class="label">의료진</span><span>${doctor.name}</span></div>
+        <div class="modal-row"><span class="label">의료진</span><span>${doctor.name} 교수</span></div>
         <div class="modal-row"><span class="label">예약 일시</span><span id="modalWhen"></span></div>
         <div class="notice-box">도착 10분 전 내원해주세요.</div>
         <div class="modal-actions">

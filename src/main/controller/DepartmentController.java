@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import service.DepartmentService;
 
-@WebServlet("/v1/reservation/departments")
+@WebServlet("/v1/hospital/departments")
 public class DepartmentController extends HttpServlet {
 
     private DepartmentService departmentService;

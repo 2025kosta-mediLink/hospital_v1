@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById('viewAllReservations').addEventListener('click',
       function () {
         // 예약 내역 페이지로 이동하는 동작 추가
-        window.location.href = "/v1/reservation/history";
+        window.location.href = "/v1/reservation/list";
       });
 
   // 추가 예약하기 버튼

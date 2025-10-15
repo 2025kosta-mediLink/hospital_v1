@@ -12,7 +12,7 @@
 <div class="bottom-nav-container">
     <div class="bottom-nav">
         <div class="nav-items">
-            <div class="nav-item" onclick="window.location.href='${ctx}/v1/reservation/departments'">
+            <div class="nav-item" onclick="window.location.href='${ctx}/v1/hospital/departments'">
                 <div class="nav-icon">
                     <img src="${ctx}/static/images/icons/calendar_gray.png" alt="예약" class="nav-icon-img">
                 </div>

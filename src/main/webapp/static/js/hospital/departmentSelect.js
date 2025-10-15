@@ -2,9 +2,9 @@
 function searchDepartments() {
     const searchTerm = document.getElementById('searchTerm').value.trim();
     if (searchTerm) {
-        window.location.href = "/v1/reservation/departments?searchTerm=" + encodeURIComponent(searchTerm);
+        window.location.href = "/v1/hospital/departments?searchTerm=" + encodeURIComponent(searchTerm);
     } else {
-        window.location.href = "/v1/reservation/departments"; // 검색어가 없으면 그냥 모든 진료과로 리다이렉트
+        window.location.href = "/v1/hospital/departments"; // 검색어가 없으면 그냥 모든 진료과로 리다이렉트
     }
 }
 

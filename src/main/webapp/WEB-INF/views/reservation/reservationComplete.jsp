@@ -19,7 +19,7 @@
 
         <!-- 예약 정보 출력 -->
         <div class="reservation-info">
-            <p class="info-item"><strong>의료진:</strong> ${doctor.name}</p>
+            <p class="info-item"><strong>의료진:</strong> ${doctor.name} 교수</p>
             <p class="info-item"><strong>진료과:</strong> ${doctor.departmentName}</p>
             <p class="info-item"><strong>예약일시:</strong> ${reservation.appointmentAt}</p>
             <p class="info-item"><strong>예약 번호:</strong> ${reservation.reservationNo}</p>
