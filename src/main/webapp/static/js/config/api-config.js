@@ -6,6 +6,9 @@ const API_CONFIG = {
     // 공공데이터 API 키 (공공데이터포털에서 발급받은 키로 교체)
     PUBLIC_DATA_KEY: 'YOUR_PUBLIC_DATA_API_KEY',
     
+    // 카카오 REST API 키 (약국 검색용)
+    KAKAO_REST_API_KEY: 'af11d187f48df0ed2268e7e2afbbfc45',
+    
     // API 엔드포인트
     ENDPOINTS: {
         // 공공데이터 약국 정보 API

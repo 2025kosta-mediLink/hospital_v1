@@ -19,7 +19,7 @@ body {
     margin: 0 auto;
     background: #F8F9FA;
     border-radius: 0px;
-    padding-bottom: 114px;
+    padding-bottom: 0;
 }
 
 /* 개별 헤더 스타일 제거됨 - common2.css 사용 */
@@ -402,92 +402,7 @@ body {
     background: #0056b3;
 }
 
-/* Bottom Navigation */
-.bottom-nav-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 0px 0px 34px;
-    width: 375px;
-    height: 114px;
-    background: #F8F9FA;
-    border-radius: 0px;
-    position: fixed;
-    bottom: 0;
-}
-
-.bottom-nav {
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 0px;
-    width: 370px;
-    height: 80px;
-    background: #FFFFFF;
-    border-top: 1px solid #E5E7EB;
-    border-radius: 0px;
-}
-
-.nav-items {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    padding: 0px;
-    width: 370px;
-    height: 80px;
-    border-radius: 0px;
-}
-
-.nav-item {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 0px;
-    gap: 4px;
-    height: 80px;
-    background: #FFFFFF;
-    border-radius: 0px;
-    cursor: pointer;
-    flex: 1;
-}
-
-.nav-item.active {
-    background: transparent;
-    border-radius: 0px;
-    width: auto;
-    height: 80px;
-    margin: 0;
-}
-
-.nav-icon {
-    width: 24px;
-    height: 24px;
-    border-radius: 0px;
-    stroke: #9CA3AF;
-    fill: none;
-}
-
-.nav-item.active .nav-icon {
-    stroke: #3B82F6;
-    fill: #3B82F6;
-}
-
-.nav-label {
-    font-family: 'Noto Sans KR';
-    font-style: normal;
-    font-weight: 500;
-    font-size: 12px;
-    line-height: 14px;
-    color: #9CA3AF;
-}
-
-.nav-item.active .nav-label {
-    color: #3B82F6;
-}
+/* Bottom Navigation 스타일은 common2.css에서 처리 */
 
 /* Responsive */
 @media (max-width: 375px) {
@@ -511,90 +426,4 @@ body {
     .find-pharmacy-btn {
         width: 100%;
     }
-}
-
-/* 새로운 네비게이션 디자인 */
-.bottom-nav-container {
-    background: #FFFFFF !important;
-    border-top: 1px solid #E5E7EB !important;
-}
-
-.nav-item {
-    position: relative;
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-.nav-item:hover {
-    background: none !important;
-}
-
-.nav-item:hover .nav-icon {
-    color: #3B82F6 !important;
-}
-
-.nav-item:hover .nav-label {
-    color: #3B82F6 !important;
-}
-
-.nav-item.active {
-    background: none !important;
-}
-
-.nav-item.active::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 60px;
-    height: 60px;
-    background: #F0F9FF;
-    border-radius: 50%;
-    z-index: 1;
-}
-
-.nav-item.active .nav-icon {
-    color: #3B82F6 !important;
-    background: none;
-    padding: 0;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto;
-    position: relative;
-    z-index: 2;
-}
-
-.nav-item.active .nav-label {
-    color: #3B82F6 !important;
-    font-weight: 600 !important;
-    position: relative;
-    z-index: 2;
-}
-
-.nav-icon {
-    color: #9CA3AF !important;
-    transition: all 0.3s ease;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.nav-icon-img {
-    width: 24px;
-    height: 24px;
-    transition: all 0.3s ease;
-}
-
-.nav-label {
-    color: #9CA3AF !important;
-    font-size: 11px !important;
-    font-weight: 500 !important;
-    margin-top: 2px !important;
-    transition: all 0.3s ease;
 }

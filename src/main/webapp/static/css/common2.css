@@ -70,13 +70,15 @@
 
 /* 공통 네비게이션 스타일 */
 .bottom-nav-container {
-    margin-top: auto;
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 375px;
     height: 72px;
     background: #FFFFFF !important;
     border-top: 1px solid #E5E7EB !important;
-    position: sticky;
-    bottom: 0;
-    z-index: 9;
+    z-index: 9999;
 }
 
 .bottom-nav {

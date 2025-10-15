@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -43,6 +44,8 @@ public class PharmacyController extends HttpServlet {
         
         if ("/send".equals(pathInfo)) {
             sendPrescriptionToPharmacy(req, resp);
+        } else if ("/save-info".equals(pathInfo)) {
+            savePharmacyInfo(req, resp);
         } else if ("/api/search".equals(pathInfo)) {
             searchPharmaciesApi(req, resp);
         } else {
@@ -60,17 +63,12 @@ public class PharmacyController extends HttpServlet {
         }
 
         try {
-            // 현재 위치 기반 약국 검색 (임시로 더미 데이터 사용)
-            double latitude = 37.5665; // 서울시청 위도 (임시)
-            double longitude = 126.9780; // 서울시청 경도 (임시)
-            
-            List<PharmacyListItemDTO> pharmacies = pharmacyService.searchNearbyPharmacies(latitude, longitude, 3000); // 3km
-            req.setAttribute("pharmacies", pharmacies);
+            // 약국 데이터는 JavaScript에서 카카오 API로 가져오므로 서버에서는 전달하지 않음
             req.setAttribute("selectedPrescriptions", selectedPrescriptions);
             
             req.getRequestDispatcher("/WEB-INF/views/prescription/pharmacySearch.jsp").forward(req, resp);
         } catch (Exception e) {
-            req.setAttribute("error", "약국 검색 중 오류가 발생했습니다.");
+            req.setAttribute("error", "약국 검색 페이지 로드 중 오류가 발생했습니다.");
             req.getRequestDispatcher("/WEB-INF/views/prescription/pharmacySearch.jsp").forward(req, resp);
         }
     }
@@ -127,7 +125,8 @@ public class PharmacyController extends HttpServlet {
             int pageNo = Integer.parseInt(req.getParameter("pageNo") != null ? req.getParameter("pageNo") : "1");
             int numOfRows = Integer.parseInt(req.getParameter("numOfRows") != null ? req.getParameter("numOfRows") : "20");
             
-            List<PharmacyListItemDTO> pharmacies = pharmacyService.getPharmacyListFromPublicData(pageNo, numOfRows);
+            // TODO: PharmacyService에 getPharmacyListFromPublicData 메서드 구현 필요
+            List<PharmacyListItemDTO> pharmacies = new ArrayList<>(); // pharmacyService.getPharmacyListFromPublicData(pageNo, numOfRows);
             
             Map<String, Object> response = Map.of(
                 "success", true,
@@ -163,7 +162,8 @@ public class PharmacyController extends HttpServlet {
         }
 
         try {
-            PharmacyListItemDTO pharmacy = pharmacyService.getPharmacyDetailFromPublicData(pharmacyId);
+            // TODO: PharmacyService에 getPharmacyDetailFromPublicData 메서드 구현 필요
+            PharmacyListItemDTO pharmacy = null; // pharmacyService.getPharmacyDetailFromPublicData(pharmacyId);
             
             if (pharmacy == null) {
                 Map<String, Object> errorResponse = Map.of(
@@ -210,7 +210,8 @@ public class PharmacyController extends HttpServlet {
             double longitude = Double.parseDouble(requestData.get("longitude").toString());
             int radius = Integer.parseInt(requestData.getOrDefault("radius", "2000").toString());
             
-            List<PharmacyListItemDTO> pharmacies = pharmacyService.searchNearbyPharmaciesFromPublicData(latitude, longitude, radius);
+            // TODO: PharmacyService에 searchNearbyPharmaciesFromPublicData 메서드 구현 필요
+            List<PharmacyListItemDTO> pharmacies = new ArrayList<>(); // pharmacyService.searchNearbyPharmaciesFromPublicData(latitude, longitude, radius);
             
             Map<String, Object> response = Map.of(
                 "success", true,
@@ -227,6 +228,36 @@ public class PharmacyController extends HttpServlet {
             );
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().write(objectMapper.writeValueAsString(errorResponse));
+        }
+    }
+
+    // 약국 정보를 세션에 저장
+    private void savePharmacyInfo(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            // JSON 요청 본문 읽기
+            StringBuilder jsonBuffer = new StringBuilder();
+            String line;
+            while ((line = req.getReader().readLine()) != null) {
+                jsonBuffer.append(line);
+            }
+            
+            String jsonData = jsonBuffer.toString();
+            System.out.println("Received pharmacy info: " + jsonData);
+            
+            // 세션에 약국 정보 저장
+            HttpSession session = req.getSession();
+            session.setAttribute("selectedPharmacyInfo", jsonData);
+            
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
+            resp.getWriter().write("{\"success\": true}");
+            
+        } catch (Exception e) {
+            System.err.println("약국 정보 저장 오류: " + e.getMessage());
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
+            resp.getWriter().write("{\"success\": false, \"error\": \"약국 정보 저장 실패\"}");
         }
     }
 }

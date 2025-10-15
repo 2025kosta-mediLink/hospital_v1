@@ -3,10 +3,6 @@
 
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
-<!-- 공통 네비게이션 CSS -->
-<link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css?v=20250115_001">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common2.css?v=20250115_001">
-
 <!-- 공통 하단 네비게이션 -->
 <div class="bottom-nav-container">
     <div class="bottom-nav">
@@ -31,7 +27,7 @@
             </div>
             <div class="nav-item ${pageContext.request.servletPath.contains('prescription') ? 'active' : ''}" onclick="window.location.href='${ctx}/v1/prescription'">
                 <div class="nav-icon">
-                    <img src="${ctx}/static/images/icons/pill_blue.png" alt="처방전" class="nav-icon-img">
+                    <img src="${ctx}/static/images/icons/pill_gray.png" alt="처방전" class="nav-icon-img">
                 </div>
                 <span class="nav-label">처방전</span>
             </div>
@@ -48,6 +44,16 @@
 <script>
 // 네비게이션 아이콘 호버 효과
 document.addEventListener('DOMContentLoaded', function() {
+    // active 아이템의 아이콘을 파란색으로 변경
+    const activeItems = document.querySelectorAll('.nav-item.active');
+    activeItems.forEach(item => {
+        const img = item.querySelector('.nav-icon-img');
+        if (img) {
+            img.src = img.src.replace('_gray.png', '_blue.png');
+        }
+    });
+    
+    // 나머지 아이템에 호버 효과 적용
     const navItems = document.querySelectorAll('.nav-item:not(.active)');
     
     navItems.forEach(item => {

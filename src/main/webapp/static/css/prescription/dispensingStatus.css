@@ -20,7 +20,7 @@ body {
     margin: 0 auto;
     background: #F8F9FA;
     border-radius: 0px;
-    padding-bottom: 114px;
+    padding-bottom: 0;
     overflow-y: auto;
 }
 
@@ -209,66 +209,61 @@ body {
 /* 지도 컨테이너 */
 .map-container {
     width: 375px;
-    height: 410px; /* 높이 조정: 380px → 410px (30px 더 증가) */
+    height: 480px;
     background: #ffffff;
     position: relative;
     margin: 0 auto;
+    display: flex;
+    flex-direction: column;
 }
 
-.map-placeholder {
-    height: 100%;
-    position: relative;
+.route-info-header {
+    height: 50px;
     background: #ffffff;
-}
-
-.map-content {
-    height: 100%;
+    padding: 12px 16px;
+    border-bottom: 1px solid #e5e7eb;
     display: flex;
-    align-items: center;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 
-.map-mock {
+.route-path {
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 4px;
+}
+
+.route-map {
+    flex: 1;
+    width: 100%;
+    height: 430px;
+    background: #f5f5f5;
+}
+
+.route-details {
     display: flex;
-    align-items: center;
     justify-content: center;
-}
-
-.route-info {
-    display: flex;
     align-items: center;
-    gap: 20px;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 16px 24px;
-    border-radius: 12px;
+    gap: 16px;
 }
 
-.route-start, .route-end {
-    background: #2563eb;
-    color: #fff;
-    padding: 8px 12px;
-    border-radius: 8px;
+.route-distance, .route-duration {
     font-size: 12px;
-    font-weight: 600;
+    color: #6b7280;
+    font-weight: 500;
 }
 
-.route-line {
-    width: 60px;
-    height: 2px;
-    background: #2563eb;
-    position: relative;
+.route-distance::before {
+    content: "📏 ";
+    margin-right: 4px;
 }
 
-.route-line::after {
-    content: "";
-    position: absolute;
-    right: -4px;
-    top: -4px;
-    width: 0;
-    height: 0;
-    border-left: 6px solid #2563eb;
-    border-top: 5px solid transparent;
-    border-bottom: 5px solid transparent;
+.route-duration::before {
+    content: "⏱️ ";
+    margin-right: 4px;
 }
 
 
@@ -446,94 +441,7 @@ body {
 }
 
 
-/* Bottom Navigation */
-.bottom-nav-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 0px 0px 34px;
-    width: 375px;
-    height: 114px;
-    background: #F8F9FA;
-    border-radius: 0px;
-    position: fixed;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-.bottom-nav {
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 0px;
-    width: 370px;
-    height: 80px;
-    background: #FFFFFF;
-    border-top: 1px solid #E5E7EB;
-    border-radius: 0px;
-}
-
-.nav-items {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    padding: 0px;
-    width: 370px;
-    height: 80px;
-    border-radius: 0px;
-}
-
-.nav-item {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 0px;
-    gap: 4px;
-    height: 80px;
-    background: #FFFFFF;
-    border-radius: 0px;
-    cursor: pointer;
-    flex: 1;
-}
-
-.nav-item.active {
-    background: transparent;
-    border-radius: 0px;
-    width: auto;
-    height: 80px;
-    margin: 0;
-}
-
-.nav-icon {
-    width: 24px;
-    height: 24px;
-    border-radius: 0px;
-    stroke: #9CA3AF;
-    fill: none;
-}
-
-.nav-item.active .nav-icon {
-    stroke: #3B82F6;
-    fill: #3B82F6;
-}
-
-.nav-label {
-    font-family: 'Noto Sans KR';
-    font-style: normal;
-    font-weight: 500;
-    font-size: 12px;
-    line-height: 14px;
-    color: #9CA3AF;
-}
-
-.nav-item.active .nav-label {
-    color: #3B82F6;
-}
+/* Bottom Navigation 스타일은 common2.css에서 처리 */
 
 /* 처방전 상세 정보 */
 .prescription-details {
@@ -799,4 +707,221 @@ body {
 
 .receipt-confirm-actions .btn-confirm:hover {
     background: #1d4ed8;
+}
+
+/* 조제 완료 알림 모달 */
+.completion-notification-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.completion-notification-modal[style*="flex"] {
+    opacity: 1;
+}
+
+.completion-notification-content {
+    background: white;
+    border-radius: 20px;
+    padding: 32px 24px 24px;
+    text-align: center;
+    max-width: 320px;
+    width: 90%;
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+    margin-top: -40px; /* 약사 머리가 모달창 위로 나오도록 */
+}
+
+.completion-notification-modal[style*="flex"] .completion-notification-content {
+    transform: scale(1);
+}
+
+.completion-notification-character {
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 10;
+}
+
+.pharmacist-image {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    position: relative;
+    z-index: 10;
+    margin-top: 0; /* 약사 이미지는 원래 위치에 */
+}
+
+.character-illustration {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.character-head {
+    width: 60px;
+    height: 60px;
+    background: #FFE4B5;
+    border-radius: 50%;
+    position: relative;
+    margin: 0 auto;
+}
+
+.character-glasses {
+    width: 30px;
+    height: 20px;
+    border: 3px solid #333;
+    border-radius: 50%;
+    position: absolute;
+    top: 15px;
+    left: 15px;
+}
+
+.character-glasses::before {
+    content: '';
+    width: 3px;
+    height: 8px;
+    background: #333;
+    position: absolute;
+    top: 5px;
+    left: 12px;
+}
+
+.character-smile {
+    width: 20px;
+    height: 10px;
+    border: 2px solid #333;
+    border-top: none;
+    border-radius: 0 0 20px 20px;
+    position: absolute;
+    top: 35px;
+    left: 20px;
+}
+
+.character-body {
+    width: 50px;
+    height: 40px;
+    background: #4A90E2;
+    border-radius: 8px;
+    position: absolute;
+    top: 50px;
+    left: 15px;
+}
+
+.character-coat {
+    width: 50px;
+    height: 40px;
+    background: white;
+    border-radius: 8px;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.character-pill-bottle {
+    width: 12px;
+    height: 16px;
+    background: #FFD700;
+    border-radius: 2px;
+    position: absolute;
+    top: 8px;
+    left: 8px;
+}
+
+.character-pill-bottle::before {
+    content: '+';
+    color: white;
+    font-size: 8px;
+    position: absolute;
+    top: 2px;
+    left: 3px;
+}
+
+.character-clipboard {
+    width: 12px;
+    height: 16px;
+    background: #E0E0E0;
+    border-radius: 2px;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+}
+
+.character-clipboard::before {
+    content: '📋';
+    font-size: 8px;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+}
+
+.completion-notification-time {
+    font-size: 14px;
+    color: #6B7280;
+    margin-bottom: 8px;
+}
+
+.completion-notification-message {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2563EB;
+    margin-bottom: 24px;
+}
+
+.completion-notification-btn {
+    background: #2563EB;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.completion-notification-btn:hover {
+    background: #1D4ED8;
+}
+
+/* 조제 상황 단계 아이콘 스타일 */
+.step-circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #E5E7EB;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.step-circle.completed {
+    background: #2563EB;
+    border-color: #2563EB;
+    position: relative;
+}
+
+.step-circle.completed::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.step-circle.active {
+    background: #2563EB;
+    border-color: #2563EB;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
 }

@@ -71,7 +71,7 @@
   </dependencies>
 
   <build>
-    <finalName>hospital_v1</finalName>
+    <finalName>ROOT</finalName>
     <sourceDirectory>src/main</sourceDirectory>
     <plugins>
       <!-- 자바 컴파일러 플러그인 -->

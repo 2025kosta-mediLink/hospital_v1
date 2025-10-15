@@ -3,7 +3,7 @@
 
 <!-- 공통 헤더 CSS -->
 <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css?v=20250115_001">
-<link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common2.css?v=20250115_001">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common2.css?v=20250115_010">
 
 <!-- 공통 헤더 -->
 <header class="header">
