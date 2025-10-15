@@ -15,11 +15,14 @@
 <!-- 공지사항 슬라이드 -->
 <div class="doctor-notices card">
   <c:choose>
-    <c:when test="${not empty doctorList[0].notices}">
-      <c:forEach var="notice" items="${doctorList[0].notices}">
-        <div class="doctor-notice ${notice.content}">
-          <span class="notice-icon">📢</span> ${notice.content}
-        </div>
+    <c:when test="${not empty doctorList}">
+      <c:forEach var="doctor" items="${doctorList}">
+        <c:forEach var="notice" items="${doctor.notices}">
+          <div class="doctor-notice" data-doctor-id="${doctor.id}">
+            <span class="doctor-name"><b>${doctor.name} 교수</b></span><br>
+            <span class="notice-content">📢 ${notice.content}</span>
+          </div>
+        </c:forEach>
       </c:forEach>
     </c:when>
     <c:otherwise>
@@ -29,7 +32,6 @@
     </c:otherwise>
   </c:choose>
 </div>
-
 <!-- 의사 이름 슬라이드 -->
 <div class="doctor-names" id="doctorNames">
   <c:forEach var="doctor" items="${doctorList}" varStatus="s">
