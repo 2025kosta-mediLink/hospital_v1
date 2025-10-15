@@ -1,6 +1,7 @@
 package dao;
 
 import common.util.DBConnectionUtil;
+import dto.ReservationBasicDTO;
 import dto.ReservationListItemDTO;
 
 import java.sql.*;
@@ -102,5 +103,41 @@ public class ReservationDAO {
             throw new RuntimeException(e);
         }
         return list;
+    }
+
+    /** 예약 기본 정보(소유자/상태) 조회 */
+    public ReservationBasicDTO findBasicById(Long reservationId) {
+        String sql = "SELECT reservation_id, member_id, status " +
+                "FROM reservation WHERE reservation_id = ?";
+        try (Connection c = DBConnectionUtil.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setLong(1, reservationId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    ReservationBasicDTO dto = new ReservationBasicDTO();
+                    dto.setReservationId(rs.getLong("reservation_id"));
+                    dto.setMemberId(rs.getLong("member_id"));
+                    dto.setStatus(rs.getString("status"));
+                    return dto;
+                }
+            }
+        } catch (SQLException e) { throw new RuntimeException(e); }
+        return null;
+    }
+
+    /**
+     * RESERVED 상태일 때만 취소로 변경.
+     * @return 변경된 행 수(성공 시 1)
+     */
+    public int cancelIfOwnerAndReserved(long reservationId, long memberId) {
+        String sql = "UPDATE reservation " +
+                "SET status='CANCELLED', updated_at=NOW() " +
+                "WHERE reservation_id=? AND member_id=? AND status='RESERVED'";
+        try (Connection c = DBConnectionUtil.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setLong(1, reservationId);
+            ps.setLong(2, memberId);
+            return ps.executeUpdate();
+        } catch (SQLException e) { throw new RuntimeException(e); }
     }
 }

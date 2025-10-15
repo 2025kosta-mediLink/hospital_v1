@@ -1,6 +1,8 @@
 package controller;
 
 import common.util.AuthSessionUtil;
+import common.util.JsonUtil;
+import dto.ReservationCancelResultDTO;
 import dto.ReservationListDTO;
 import service.ReservationService;
 
@@ -9,7 +11,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
 
-@WebServlet(urlPatterns = {"/v1/reservation/list"})
+@WebServlet(urlPatterns = {
+        "/v1/reservation/list",
+        "/v1/reservation/cancel"
+})
 public class ReservationListController extends HttpServlet {
 
     private ReservationService reservationService;
@@ -37,5 +42,42 @@ public class ReservationListController extends HttpServlet {
         req.setAttribute("selectedMonth", result.getSelectedMonth());
         req.setAttribute("selectedStatus", result.getSelectedStatus());
         req.getRequestDispatcher("/WEB-INF/views/reservation/reservationList.jsp").forward(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws IOException {
+
+        String path = req.getServletPath();
+        if ("/v1/reservation/cancel".equals(path)) {
+            // 로그인 필수 (401)
+            String uuid = AuthSessionUtil.requireUuidOr401(req, resp);
+            if (uuid == null) return;
+
+            String idStr = req.getParameter("reservationId");
+            if (idStr == null) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "reservationId is required");
+                return;
+            }
+            long reservationId;
+            try { reservationId = Long.parseLong(idStr); }
+            catch (NumberFormatException e) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "invalid reservationId");
+                return;
+            }
+
+            var result = reservationService.cancelReservation(uuid, reservationId);
+
+            resp.setContentType("application/json; charset=UTF-8");
+            var payload = new java.util.HashMap<String, Object>();
+            payload.put("ok", result.isOk());
+            payload.put("message", result.getMessage());
+            payload.put("status", result.getStatus());
+            resp.getWriter().write(JsonUtil.toJson(payload));
+            return;
+        }
+
+        // 그 외 POST는 404
+        resp.sendError(HttpServletResponse.SC_NOT_FOUND);
     }
 }

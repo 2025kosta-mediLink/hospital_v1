@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/reservation/reservationList.css">
 </head>
-<body class="screen">
+<body class="screen" data-ctx="${pageContext.request.contextPath}">
 <jsp:include page="/WEB-INF/views/common/header.jsp"/>
 
 <!-- 탭 (마이페이지 공통) -->

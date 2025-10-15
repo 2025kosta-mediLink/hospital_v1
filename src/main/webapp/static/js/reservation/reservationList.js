@@ -131,3 +131,39 @@
     saveMonthOptionsIfFirstView();
     restoreMonthOptionsIfNeeded();
 })();
+
+document.addEventListener("click", async (e) => {
+    const btn = e.target.closest(".js-cancel");
+    if (!btn) return;
+
+    const id = btn.dataset.id;
+    if (!id) return;
+
+    if (!confirm("정말 이 예약을 취소할까요?")) return;
+
+    const base = document.body.dataset.ctx || '';
+    try {
+        const res = await fetch(`${base}/v1/reservation/cancel`, {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+            body: `reservationId=${encodeURIComponent(id)}`
+        });
+
+        const ct = res.headers.get("content-type") || "";
+        if (!res.ok) {
+            const text = await res.text().catch(()=> '');
+            alert(`취소 실패 (${res.status})\n${text.slice(0,120)}`);
+            return;
+        }
+
+        const json = ct.includes("application/json")
+            ? await res.json()
+            : { ok:false, message:"JSON 응답 아님" };
+
+        alert(json.message || (json.ok ? "취소되었습니다." : "취소 실패"));
+        if (json.ok) location.reload();
+    } catch (err) {
+        console.error(err);
+        alert("취소 처리 중 오류가 발생했습니다.");
+    }
+});
