@@ -17,12 +17,21 @@
   <c:choose>
     <c:when test="${not empty doctorList}">
       <c:forEach var="doctor" items="${doctorList}">
-        <c:forEach var="notice" items="${doctor.notices}">
-          <div class="doctor-notice" data-doctor-id="${doctor.id}">
-            <span class="doctor-name"><b>${doctor.name} 교수</b></span><br>
-            <span class="notice-content">📢 ${notice.content}</span>
-          </div>
-        </c:forEach>
+        <c:choose>
+          <c:when test="${not empty doctor.notices}">
+            <c:forEach var="notice" items="${doctor.notices}">
+              <div class="doctor-notice" data-doctor-id="${doctor.id}">
+                <span class="doctor-name"><b>${doctor.name} 교수</b></span><br>
+                <span class="notice-content">📢 ${notice.content}</span>
+              </div>
+            </c:forEach>
+          </c:when>
+          <c:otherwise>
+            <div class="doctor-notice">
+              <span class="notice-icon">📢</span> 공지사항이 없습니다.
+            </div>
+          </c:otherwise>
+        </c:choose>
       </c:forEach>
     </c:when>
     <c:otherwise>

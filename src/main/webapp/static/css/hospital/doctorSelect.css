@@ -1,6 +1,19 @@
 /* ================================
-   공지사항 영역 (수정된 부분만 추가)
+   공지 영역 (그대로 유지)
 ================================ */
+.doctor-notices {
+    background: #E6F0FA !important; /* 연한 파랑 배경 */
+    border-radius: var(--radius);
+    padding: 16px;
+    margin: 16px auto;
+    box-shadow: 0 2px 4px rgba(16, 24, 40, 0.08);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column; /* 세로로 배치 */
+    align-items: center;    /* 가운데 정렬 */
+    text-align: center;     /* 텍스트 가운데 정렬 */
+}
 
 /* 공지사항 텍스트 */
 .doctor-notice {
@@ -9,30 +22,49 @@
     margin-left: 8px; /* 확성기 아이콘과 텍스트 간격 */
     flex: 1 !important;
     display: none;
-    white-space: pre-wrap;  /* 줄 바꿈을 허용 */
 }
 
 /* 활성화된 공지사항 */
 .doctor-notice.active { display: block; }
 
-.doctor-name {
-    font-weight: bold;  /* 의사 이름 굵게 */
-    font-size: 1.2em;    /* 조금 더 큰 폰트 */
-    text-align: left;    /* 왼쪽 정렬 */
+/* 확성기 아이콘 */
+.notice-icon {
+    font-size: 18px;
+    color: var(--primary);
+    margin-right: 8px;
 }
 
-/* 공지사항 내용 */
-.notice-content {
-    display: block;    /* 줄 바꿈을 위한 block 처리 */
-    margin-top: 5px;   /* 의사 이름과 공지 내용 간격 */
-    font-size: 1em;    /* 공지 내용 폰트 크기 */
-    line-height: 1.5;  /* 가독성을 위한 줄 간격 */
-    text-align: left;  /* 왼쪽 정렬 */
+/* 공지사항 점(필요 시) */
+.notice-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 8px;
 }
+.notice-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--muted);
+}
+.notice-dot.active { background: var(--primary); }
+
+/* 공지 화살표(필요 시) */
+.arrow-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 8px;
+}
+.arrow-buttons button {
+    background: transparent;
+    border: none;
+    font-size: 24px;
+    color: var(--primary);
+    cursor: pointer;
+}
+
 
 /* ================================
    의사 이름 칩 (가로 슬라이드)
-   기존 스타일은 그대로 유지
 ================================ */
 .doctor-names {
     display: flex;
@@ -67,14 +99,16 @@
 .doctor-chip:hover { box-shadow: 0 1px 2px rgba(2, 8, 23, .06); }
 
 .doctor-chip.selected {
-    background: #1E66F5;         /* 선택 파랑 */
-    color: #FFFFFF;              /* 선택 글자색 */
-    box-shadow: 0 2px 6px rgba(30, 102, 245, .25);
+    background: #1E66F5 !important;         /* 선택 파랑 */
+    color: #FFFFFF !important;              /* 선택 글자색 */
+    box-shadow: 0 2px 6px rgba(30, 102, 245, .25) !important;
 }
+
 
 /* ================================
    의사 카드 캐러셀
-   기존 스타일은 그대로 유지
+   - 앞 1장 선명, 뒤 1장 예고(흐릿)
+   - 아래 화살표로 이동
 ================================ */
 
 /* 캐러셀 래퍼 */
@@ -154,3 +188,104 @@
 }
 .cards-nav .cards-prev:hover,
 .cards-nav .cards-next:hover { transform: translateY(-1px); }
+
+
+/* ================================
+   카드 내부 레이아웃 (상/하)
+================================ */
+
+/* 상단: 이름(좌 1/3) / 사진(우 2/3) */
+.card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 180px;   /* 상단 영역 높이 */
+}
+
+.name-area {
+    flex: 1 1 33%;
+    display: flex;
+    align-items: center;
+}
+.doctor-name-text {
+    font-size: 20px;
+    font-weight: 800;
+    color: #0F172A;      /* 진한 텍스트 */
+}
+
+.photo-area {
+    flex: 0 1 66%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+/* 프로필 이미지: 가로 2/3 채우기 */
+.doctor-profile-image {
+    width: 66%;
+    height: auto;
+    aspect-ratio: 1 / 1;  /* 정사각 유지 */
+    object-fit: cover;
+    border-radius: 12px;  /* 원형 원하면 50% */
+    border: 2px solid #E6EDF7;
+}
+
+/* 하단: 주간 진료시간표 */
+.card-bottom { padding-top: 4px; }
+
+.card-subtitle {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0F172A;
+    margin-bottom: 8px;
+}
+
+/* 표 */
+.card-schedule {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    table-layout: fixed;
+}
+.card-schedule thead th {
+    font-size: 12px;
+    font-weight: 700;
+    color: #64748B;      /* 회색 레이블 */
+    padding: 6px 0;
+}
+.card-schedule td,
+.card-schedule th {
+    border-bottom: 1px solid #EEF2F6;
+}
+.card-schedule tbody td { padding: 10px 0; }
+
+.card-schedule .time-col {
+    font-weight: 700;
+    color: #0F172A;
+}
+
+/* 표시 기호: 파란 점 / 연회색 대시 */
+.card-schedule .dot  {
+    color: #1E66F5;      /* 파랑 ● */
+    font-size: 14px;
+    line-height: 1;
+}
+.card-schedule .dash {
+    color: #E5EAF1;      /* 매우 연한 회색 ‘–’ */
+    font-size: 16px;
+    line-height: 1;
+}
+/* 버튼 스타일 */
+.btn-primary {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    background-color: #2563eb;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background-color: #1c5fca;
+}
