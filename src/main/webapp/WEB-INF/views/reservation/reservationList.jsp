@@ -25,21 +25,20 @@
         <!-- 월 필터 (SSR: 폼 전송) -->
         <div class="pill-select" id="monthSelect" data-current="${selectedMonth != null ? selectedMonth : 'ALL'}">
             <button type="button" class="pill-trigger" aria-haspopup="listbox" aria-expanded="false">
-        <span class="pill-label" data-value="${selectedMonth != null ? selectedMonth : 'ALL'}">
-          <c:choose>
-              <c:when test="${empty selectedMonth}">전체</c:when>
-              <c:otherwise>
-                  ${fn:substring(selectedMonth,0,4)}년 ${fn:substring(selectedMonth,5,7)}월
-              </c:otherwise>
-          </c:choose>
-        </span>
+                <span class="pill-label" data-value="${selectedMonth != null ? selectedMonth : 'ALL'}">
+                    <c:choose>
+                        <c:when test="${empty selectedMonth}">전체</c:when>
+                        <c:otherwise>
+                            ${fn:substring(selectedMonth,0,4)}년 ${fn:substring(selectedMonth,5,7)}월
+                        </c:otherwise>
+                    </c:choose>
+                </span>
                 <span class="pill-caret">▾</span>
             </button>
             <ul class="pill-menu" role="listbox" tabindex="-1" hidden>
                 <li role="option" data-value="ALL" ${empty selectedMonth ? 'aria-selected="true"' : ''}>전체</li>
                 <c:forEach var="opt" items="${monthOptions}">
-                    <li role="option"
-                        data-value="${opt.value}">
+                    <li role="option" data-value="${opt.value}">
                             ${opt.label}
                     </li>
                 </c:forEach>
@@ -49,14 +48,14 @@
         <!-- 상태 필터 (SSR: 폼 전송) -->
         <div class="pill-select" id="statusSelect" data-current="${selectedStatus != null ? selectedStatus : 'ALL'}">
             <button type="button" class="pill-trigger" aria-haspopup="listbox" aria-expanded="false">
-        <span class="pill-label" data-value="${selectedStatus != null ? selectedStatus : 'ALL'}">
-          <c:choose>
-              <c:when test="${selectedStatus == 'RESERVED'}">예약완료</c:when>
-              <c:when test="${selectedStatus == 'DONE'}">접수완료</c:when>
-              <c:when test="${selectedStatus == 'CANCELLED'}">취소</c:when>
-              <c:otherwise>전체</c:otherwise>
-          </c:choose>
-        </span>
+                <span class="pill-label" data-value="${selectedStatus != null ? selectedStatus : 'ALL'}">
+                    <c:choose>
+                        <c:when test="${selectedStatus == 'RESERVED'}">예약완료</c:when>
+                        <c:when test="${selectedStatus == 'DONE'}">접수완료</c:when>
+                        <c:when test="${selectedStatus == 'CANCELLED'}">취소</c:when>
+                        <c:otherwise>전체</c:otherwise>
+                    </c:choose>
+                </span>
                 <span class="pill-caret">▾</span>
             </button>
             <ul class="pill-menu" role="listbox" tabindex="-1" hidden>
@@ -100,15 +99,15 @@
                                 </div>
 
                                 <span class="status-chip
-                  ${it.status == 'RESERVED' ? 'status-RESERVED' : ''}
-                  ${it.status == 'DONE'     ? 'status-DONE'     : ''}
-                  ${it.status == 'CANCELLED'? 'status-CANCELLED': ''}">
-                  <c:choose>
-                      <c:when test="${it.status=='RESERVED'}">예약완료</c:when>
-                      <c:when test="${it.status=='DONE'}">접수완료</c:when>
-                      <c:otherwise>취소</c:otherwise>
-                  </c:choose>
-                </span>
+                                    ${it.status == 'RESERVED' ? 'status-RESERVED' : ''}
+                                    ${it.status == 'DONE' ? 'status-DONE' : ''}
+                                    ${it.status == 'CANCELLED' ? 'status-CANCELLED' : ''}">
+                                    <c:choose>
+                                        <c:when test="${it.status=='RESERVED'}">예약완료</c:when>
+                                        <c:when test="${it.status=='DONE'}">접수완료</c:when>
+                                        <c:otherwise>취소</c:otherwise>
+                                    </c:choose>
+                                </span>
                             </div>
 
                             <div class="sub-id">${it.reservationNo}</div>
@@ -127,11 +126,18 @@
                             <div class="actions">
                                 <c:choose>
                                     <c:when test="${it.status=='RESERVED'}">
-                                        <button type="button" class="btn-ghost js-share" data-id="${it.reservationId}">카카오톡 공유</button>
+                                        <!-- 카카오톡 공유 버튼 -->
+                                        <button type="button" class="btn-ghost js-share"
+                                                id="kakaotalk-sharing-btn-${it.reservationId}" data-id="${it.reservationId}" data-department-name="${it.departmentName}" data-doctor-name="${it.doctorName}" data-date-label="${it.dateLabel}" data-time-label="${it.timeLabel}">
+                                            카카오톡 공유
+                                        </button>
                                         <button type="button" class="btn-ghost js-cancel" data-id="${it.reservationId}">취소하기</button>
                                     </c:when>
                                     <c:when test="${it.status=='DONE'}">
-                                        <button type="button" class="btn-ghost js-share" data-id="${it.reservationId}">카카오톡 공유</button>
+                                        <button type="button" class="btn-ghost js-share"
+                                                id="kakaotalk-sharing-btn-${it.reservationId}" data-id="${it.reservationId}" data-department-name="${it.departmentName}" data-doctor-name="${it.doctorName}" data-date-label="${it.dateLabel}" data-time-label="${it.timeLabel}">
+                                            카카오톡 공유
+                                        </button>
                                     </c:when>
                                     <c:otherwise>
                                         <!-- 취소 상태: 버튼 없음 -->
@@ -148,6 +154,83 @@
 
 <jsp:include page="/WEB-INF/views/common/navigation.jsp"/>
 
-<script defer src="${pageContext.request.contextPath}/static/js/reservation/reservationList.js"></script>
+<!-- 카카오톡 API 스크립트 -->
+<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.6/kakao.min.js" integrity="sha384-WAtVcQYcmTO/N+C1N+1m6Gp8qxh+3NlnP7X1U7qP6P5dQY/MsRBNTh+e1ahJrkEm" crossorigin="anonymous"></script>
+
+<script>
+    window.onload = function () {
+        const kakaoJsKey = '${kakaoJsKey}';
+
+        if (typeof Kakao !== 'undefined' && Kakao.init) {
+            Kakao.init(kakaoJsKey);  // 카카오 SDK 초기화
+        } else {
+            console.error("Kakao SDK is not loaded correctly.");
+        }
+    };
+
+    // 카카오톡 공유하기 버튼 처리 함수
+    function shareReservation(reservationId, departmentName, doctorName, dateLabel, timeLabel) {
+        const month = new URLSearchParams(window.location.search).get('month');
+        const status = new URLSearchParams(window.location.search).get('status');
+        const shareUrl = `${window.location.origin}/v1/reservation/list?month=${month}&status=${status}`;
+
+        console.log(`${dateLabel} 병원 예약 일정 안내`);
+        if (typeof Kakao !== 'undefined' && Kakao.Share) {
+            Kakao.Share.createDefaultButton({
+                container: '#kakaotalk-sharing-btn-' + reservationId,  // 해당 버튼에 대한 ID를 container로 설정
+                objectType: 'feed',
+                content: {
+                    title: `${dateLabel} 병원 예약 일정 안내`,
+                    description: `${departmentName}, ${doctorName}, 예약 일시(${dateLabel} ${timeLabel})`,
+                    imageUrl: 'http://k.kakaocdn.net/dn/Q2iNx/btqgeRgV54P/VLdBs9cvyn8BJXB3o7N8UK/kakaolink40_original.png',
+                    link: {
+                        mobileWebUrl: shareUrl,
+                        webUrl: shareUrl
+                    },
+                },
+                social: {
+                    likeCount: 286,
+                    commentCount: 45,
+                    sharedCount: 845,
+                },
+                buttons: [
+                    {
+                        title: '웹으로 보기',
+                        link: {
+                            mobileWebUrl: shareUrl,
+                            webUrl: shareUrl,
+                        },
+                    },
+                    {
+                        title: '앱으로 보기',
+                        link: {
+                            mobileWebUrl: shareUrl,
+                            webUrl: shareUrl,
+                        },
+                    },
+                ],
+            });
+        } else {
+            console.error("Kakao SDK is not loaded correctly.");
+        }
+    }
+
+    document.addEventListener('click', function (e) {
+        const btn = e.target.closest('.js-share');
+        if (!btn) return;
+
+        const reservationId = btn.dataset.id;
+        const departmentName = btn.dataset.departmentName;
+        const doctorName = btn.dataset.doctorName;
+        const dateLabel = btn.dataset.dateLabel;
+        const timeLabel = btn.dataset.timeLabel;
+
+        if (reservationId) {
+            shareReservation(reservationId, departmentName, doctorName, dateLabel, timeLabel);
+        }
+    });
+</script>
+
+<script src="${pageContext.request.contextPath}/static/js/reservation/reservationList.js"></script>
 </body>
 </html>

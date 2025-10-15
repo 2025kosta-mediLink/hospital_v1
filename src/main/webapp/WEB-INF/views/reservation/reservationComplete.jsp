@@ -39,7 +39,7 @@
     </section>
 </main>
 
-<script src="${pageContext.request.contextPath}/static/js/reservationComplete.js"></script>
+<script src="${pageContext.request.contextPath}/static/js/reservation/reservationComplete.js"></script>
 <jsp:include page="/WEB-INF/views/common/navigation.jsp"/>
 </body>
 </html>
