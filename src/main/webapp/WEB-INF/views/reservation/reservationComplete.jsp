@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>예약 완료</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common/common.css">
     <link rel="stylesheet"
           href="${pageContext.request.contextPath}/static/css/reservation/reservationComplete.css">
 </head>

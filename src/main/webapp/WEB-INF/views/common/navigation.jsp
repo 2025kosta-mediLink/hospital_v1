@@ -4,7 +4,7 @@
 
 <!-- 공통 네비게이션 CSS -->
 <c:if test="${empty commonCssLoaded}">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css?v=20250115_001">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common/navigation.css?v=20250115_001">
     <c:set var="commonCssLoaded" value="true" scope="request"/>
 </c:if>
 

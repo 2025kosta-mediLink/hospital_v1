@@ -9,7 +9,7 @@
 <head>
     <meta charset="UTF-8">
     <title>예약 날짜 선택</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common/common.css">
     <link rel="stylesheet"
           href="${pageContext.request.contextPath}/static/css/reservation/dateSelection.css">
 </head>

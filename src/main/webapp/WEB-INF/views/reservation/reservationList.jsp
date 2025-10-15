@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <title>예약 내역</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/reservation/reservationList.css">
 </head>
 <body class="screen" data-ctx="${pageContext.request.contextPath}">
