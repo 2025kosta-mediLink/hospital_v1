@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>예약 완료</title>
 
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common/common.css" />
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/reservation/reservationComplete.css" />
 </head>
 <body class="screen">
@@ -15,14 +15,44 @@
 
 <main class="main">
     <section class="reservation-complete">
-        <h2>예약이 완료되었습니다</h2>
+        <!-- Success Icon -->
+        <div class="success-icon">
+            <img src="${pageContext.request.contextPath}/static/images/check-icon.png" alt="체크 아이콘" />
+        </div>
+
+        <!-- 예약 완료 메시지 -->
+        <div class="reservation-complete-text">
+            예약이 완료되었습니다
+        </div>
 
         <!-- 예약 정보 출력 -->
         <div class="reservation-info">
-            <p class="info-item"><strong>의료진:</strong> ${doctor.name}</p>
-            <p class="info-item"><strong>진료과:</strong> ${doctor.departmentName}</p>
-            <p class="info-item"><strong>예약일시:</strong> ${reservation.appointmentAt}</p>
-            <p class="info-item"><strong>예약 번호:</strong> ${reservation.reservationNo}</p> <!-- 예약 번호 추가 -->
+            <div class="reservation-info-card">
+                <div class="reservation-info-title">
+                    <i class="fas fa-calendar-alt"></i> <!-- 달력 아이콘 -->
+                    <span>예약 정보</span>
+                </div>
+                <div class="info-item">
+                    <span>예약 번호:</span>
+                    <span>${reservation.reservationNo}</span>
+                </div>
+                <div class="info-item">
+                    <span>진료과:</span>
+                    <span>${doctor.departmentName}</span>
+                </div>
+                <div class="info-item">
+                    <span>담당의사:</span>
+                    <span>${doctor.name}</span>
+                </div>
+                <div class="info-item">
+                    <span>예약일시:</span>
+                    <span class="date-label">${reservation.appointmentAt}</span>
+                </div>
+                <div class="info-item">
+                    <span>예약 시간:</span>
+                    <span class="time-label">${reservation.timeLabel}</span>
+                </div>
+            </div>
         </div>
 
         <!-- 안내사항 -->
@@ -33,8 +63,8 @@
 
         <div class="actions">
             <a href="${pageContext.request.contextPath}/v1/home" class="btn-primary">홈으로</a>
-            <button id="addAnotherReservation" class="btn">추가 예약하기</button>
-            <button id="viewAllReservations" class="btn">예약 내역 보기</button>
+            <a href="${pageContext.request.contextPath}/v1/reservation/departments" class="btn-primary">추가 예약하기</a>
+            <a href="${pageContext.request.contextPath}/v1/reservation/list" class="btn-primary">예약 내역 보기</a>
         </div>
     </section>
 </main>

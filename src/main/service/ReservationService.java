@@ -59,7 +59,20 @@ public class ReservationService {
     }
 
     public ReservationDTO getReservationById(Long reservationId) {
-        return reservationDAO.findById(reservationId);
+        ReservationDTO reservation = reservationDAO.findById(reservationId);
+
+        if (reservation != null) {
+            // 예약 시간 표시용 문자열 생성
+            String appointmentAt = reservation.getAppointmentAt();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime dateTime = LocalDateTime.parse(appointmentAt, formatter);
+
+            // 오전/오후 시간을 포함한 형식으로 변환
+            String timeLabel = dateTime.format(DateTimeFormatter.ofPattern("a h:mm"));  // 오전 10:30 형식
+            reservation.setTimeLabel(timeLabel);
+        }
+
+        return reservation;
     }
 
     public ReservationListDTO getReservationList(String memberUuid, String month, String statusUi) {
