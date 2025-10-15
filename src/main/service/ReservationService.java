@@ -109,34 +109,34 @@ public class ReservationService {
     }
 
     /** 예약 취소 */
-    public ReservationCancelResultDTO cancelReservation(String memberUuid, long reservationId) {
+    public ReservationCancelDTO cancelReservation(String memberUuid, long reservationId) {
         Long memberId = memberDAO.findIdByUuid(memberUuid);
         if (memberId == null) {
-            return new ReservationCancelResultDTO(false, "회원 정보를 확인할 수 없습니다.", null);
+            return new ReservationCancelDTO(false, "회원 정보를 확인할 수 없습니다.", null);
         }
 
-        ReservationBasicDTO basic = reservationDAO.findBasicById(reservationId);
-        if (basic == null) {
-            return new ReservationCancelResultDTO(false, "예약을 찾을 수 없습니다.", null);
+        ReservationOptionDTO option = reservationDAO.findOptionById(reservationId);
+        if (option == null) {
+            return new ReservationCancelDTO(false, "예약을 찾을 수 없습니다.", null);
         }
-        if (!memberId.equals(basic.getMemberId())) {
-            return new ReservationCancelResultDTO(false, "본인 예약만 취소할 수 있습니다.", basic.getStatus());
+        if (!memberId.equals(option.getMemberId())) {
+            return new ReservationCancelDTO(false, "본인 예약만 취소할 수 있습니다.", option.getStatus());
         }
 
         // 상태 검사
-        if ("DONE".equalsIgnoreCase(basic.getStatus())) {
-            return new ReservationCancelResultDTO(false, "접수완료된 예약은 취소할 수 없습니다.", "DONE");
+        if ("DONE".equalsIgnoreCase(option.getStatus())) {
+            return new ReservationCancelDTO(false, "접수완료된 예약은 취소할 수 없습니다.", "DONE");
         }
-        if ("CANCELLED".equalsIgnoreCase(basic.getStatus())) {
-            return new ReservationCancelResultDTO(true, "이미 취소된 예약입니다.", "CANCELLED"); // idempotent OK
+        if ("CANCELLED".equalsIgnoreCase(option.getStatus())) {
+            return new ReservationCancelDTO(true, "이미 취소된 예약입니다.", "CANCELLED"); // idempotent OK
         }
 
         int updated = reservationDAO.cancelIfOwnerAndReserved(reservationId, memberId);
         if (updated == 1) {
-            return new ReservationCancelResultDTO(true, "예약이 취소되었습니다.", "CANCELLED");
+            return new ReservationCancelDTO(true, "예약이 취소되었습니다.", "CANCELLED");
         }
         // RESERVED가 아니어서 업데이트 못한 경우(경쟁 상태 등)
-        return new ReservationCancelResultDTO(false, "취소할 수 없는 상태입니다.", basic.getStatus());
+        return new ReservationCancelDTO(false, "취소할 수 없는 상태입니다.", option.getStatus());
     }
 
     private static String formatMonthKorean(String ym) {

@@ -2,7 +2,6 @@ package controller;
 
 import common.util.AuthSessionUtil;
 import common.util.JsonUtil;
-import dto.ReservationCancelResultDTO;
 import dto.ReservationListDTO;
 import service.ReservationService;
 

@@ -1,6 +1,5 @@
 package dao;
 
-import domain.DoctorWeeklySchedule; // 수정된 도메인 클래스
 import common.util.DBConnectionUtil;
 import dto.ScheduleDetailDTO;
 

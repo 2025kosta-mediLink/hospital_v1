@@ -68,5 +68,6 @@
 </script>
 <script defer
         src="${pageContext.request.contextPath}/static/js/reservation/dateSelection.js"></script>
+<jsp:include page="/WEB-INF/views/common/navigation.jsp"/>
 </body>
 </html>

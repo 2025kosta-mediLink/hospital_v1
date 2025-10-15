@@ -1,12 +1,12 @@
 package dto;
 
-public class ReservationCancelResultDTO {
+public class ReservationCancelDTO {
     private boolean ok;
     private String message; // UI 노출용 메시지
     private String status;  // 최종 상태(RESERVED/DONE/CANCELLED)
 
-    public ReservationCancelResultDTO() {}
-    public ReservationCancelResultDTO(boolean ok, String message, String status) {
+    public ReservationCancelDTO() {}
+    public ReservationCancelDTO(boolean ok, String message, String status) {
         this.ok = ok; this.message = message; this.status = status;
     }
 

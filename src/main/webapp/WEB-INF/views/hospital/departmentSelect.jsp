@@ -5,7 +5,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>진료과 선택</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/reception/departmentList.css">
@@ -24,7 +24,7 @@
     </div>
 
     <!-- 진료과 목록 -->
-    <form id="deptForm" method="get" action="${pageContext.request.contextPath}/v1/reservation/doctors">
+    <form id="deptForm" method="get">
         <c:choose>
             <c:when test="${empty departmentSelect or empty departmentSelect.departments}">
                 <div class="empty">표시할 진료과가 없습니다.</div>
@@ -36,10 +36,9 @@
                 <div class="grid">
                     <c:forEach var="d" items="${departmentSelect.departments}">
                         <label class="item">
-                            <!-- 여기 수정: departmentId -> id -->
                             <input class="radio" type="radio" name="departmentId" value="${d.id}" required />
                             <div class="card">
-                                <div class="icon"><c:out value="${fn:substring(d.name,0,1)}" /></div>
+                                <div class="icon"><c:out value="${fn:substring(d.name, 0, 1)}" /></div>
                                 <div class="name"><c:out value="${d.name}" /></div>
                             </div>
                         </label>
@@ -52,6 +51,8 @@
         </c:choose>
     </form>
 </div>
+
 <jsp:include page="/WEB-INF/views/common/navigation.jsp" />
+
 </body>
 </html>

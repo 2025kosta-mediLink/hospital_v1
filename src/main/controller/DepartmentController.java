@@ -2,15 +2,16 @@ package controller;
 
 import common.util.AuthSessionUtil;
 import dto.DepartmentSelectDTO;
-import java.io.IOException;
+import service.DepartmentService;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import service.DepartmentService;
+import java.io.IOException;
 
-@WebServlet("/v1/hospital/departments")
+@WebServlet({"/v1/reservation/departments", "/v1/reception/departments"})
 public class DepartmentController extends HttpServlet {
 
     private DepartmentService departmentService;
@@ -21,8 +22,7 @@ public class DepartmentController extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-        throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String uuid = AuthSessionUtil.requireUuidOrRedirect(req, resp);
         if (uuid == null) {
             return;
@@ -35,7 +35,10 @@ public class DepartmentController extends HttpServlet {
         } else {
             departmentSelectDTO = departmentService.getAllDepartments();
         }
+
         req.setAttribute("departmentSelect", departmentSelectDTO);
+        req.setAttribute("servletPath", req.getServletPath());
+
         req.getRequestDispatcher("/WEB-INF/views/hospital/departmentSelect.jsp").forward(req, resp);
     }
 }

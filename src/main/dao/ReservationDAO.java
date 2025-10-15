@@ -1,7 +1,7 @@
 package dao;
 
 import common.util.DBConnectionUtil;
-import dto.ReservationBasicDTO;
+import dto.ReservationOptionDTO;
 import dto.ReservationListItemDTO;
 
 import java.sql.*;
@@ -24,8 +24,10 @@ public class ReservationDAO {
     }
 
     public void insert(long memberId, long doctorId, String appointmentAt, String no) {
-        String sql = "INSERT INTO reservation(member_id, doctor_id, reservation_no, appointment_at, status, created_at) " +
-                "VALUES(?,?,?,?, 'RESERVED', NOW())";
+        String sql = "INSERT INTO reservation(member_id, doctor_id, " +
+                "reservation_no, appointment_at, status, created_at, " +
+                "updated_up) " +
+                "VALUES(?,?,?,?, 'RESERVED', NOW(), NOW())";
         try (Connection c = DBConnectionUtil.getConnection();
              PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setLong(1, memberId);
@@ -106,7 +108,7 @@ public class ReservationDAO {
     }
 
     /** 예약 기본 정보(소유자/상태) 조회 */
-    public ReservationBasicDTO findBasicById(Long reservationId) {
+    public ReservationOptionDTO findOptionById(Long reservationId) {
         String sql = "SELECT reservation_id, member_id, status " +
                 "FROM reservation WHERE reservation_id = ?";
         try (Connection c = DBConnectionUtil.getConnection();
@@ -114,7 +116,7 @@ public class ReservationDAO {
             ps.setLong(1, reservationId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    ReservationBasicDTO dto = new ReservationBasicDTO();
+                    ReservationOptionDTO dto = new ReservationOptionDTO();
                     dto.setReservationId(rs.getLong("reservation_id"));
                     dto.setMemberId(rs.getLong("member_id"));
                     dto.setStatus(rs.getString("status"));

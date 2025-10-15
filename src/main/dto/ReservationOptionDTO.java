@@ -1,6 +1,6 @@
 package dto;
 
-public class ReservationBasicDTO {
+public class ReservationOptionDTO {
     private Long reservationId;
     private Long memberId;
     private String status; // RESERVED / DONE / CANCELLED
