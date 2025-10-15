@@ -1,7 +1,6 @@
 package service;
 
 import dao.DoctorWeeklyScheduleDAO;
-import domain.DoctorWeeklySchedule; // 수정된 도메인 클래스
 import dto.ScheduleDetailDTO;
 
 import java.util.List;

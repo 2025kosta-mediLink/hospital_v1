@@ -1,11 +1,9 @@
 package controller;
 
-import domain.DoctorWeeklySchedule;
 import service.DoctorService;
 import service.DoctorNoticeService;
 import service.DoctorWeeklyScheduleService;
 import dto.DoctorSelectDTO;
-import dto.ScheduleDetailDTO;  // ScheduleDetailDTO 임포트
 import common.util.AuthSessionUtil;  // AuthSessionUtil 임포트
 
 import javax.servlet.ServletException;

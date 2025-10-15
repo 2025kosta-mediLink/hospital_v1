@@ -20,7 +20,7 @@
     </div>
 
     <div class="tabs">
-        <a class="tab" href="${ctx}/v1/reservations/list">예약내역</a>
+        <a class="tab" href="${ctx}/v1/reservation/list">예약내역</a>
         <a class="tab active" href="${ctx}/v1/reception/list">접수내역</a>
     </div>
 
