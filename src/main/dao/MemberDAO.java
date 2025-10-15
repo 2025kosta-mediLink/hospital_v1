@@ -3,32 +3,39 @@ package dao;
 
 import common.util.DBConnectionUtil;
 import domain.Member;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 
 public class MemberDAO {
 
     public boolean existsByLoginId(String loginId) {
         String sql = "SELECT 1 FROM member WHERE login_id = ? AND delete_at IS NULL LIMIT 1";
         try (Connection conn = DBConnectionUtil.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+            PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, loginId);
             try (ResultSet rs = ps.executeQuery()) {
                 return rs.next();
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-            return true; // 보수적 처리
+            throw new RuntimeException("아이디 확인 중 DB 오류", e);
         }
     }
 
-    /** 회원가입: 도메인 엔티티 저장 */
+    /**
+     * 회원가입: 도메인 엔티티 저장
+     */
     public Long insert(Member m) {
         String sql = "INSERT INTO member " +
-                "(uuid, login_id, password, name, phone, gender, address, rrn, created_at, updated_at, delete_at) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), NULL)";
+            "(uuid, login_id, password, name, phone, gender, address, rrn, created_at, updated_at, delete_at) "
+            +
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), NULL)";
         try (Connection conn = DBConnectionUtil.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, m.getUuid());
             ps.setString(2, m.getLoginId());
             ps.setString(3, m.getPasswordHash());
@@ -52,13 +59,16 @@ public class MemberDAO {
         return null;
     }
 
-    /** 로그인/조회: 도메인으로 반환 */
+    /**
+     * 로그인/조회: 도메인으로 반환
+     */
     public Member findByLoginId(String loginId) {
-        String sql = "SELECT member_id, uuid, login_id, password, name, phone, gender, address, rrn, " +
+        String sql =
+            "SELECT member_id, uuid, login_id, password, name, phone, gender, address, rrn, " +
                 "       created_at, updated_at, delete_at " +
                 "FROM member WHERE login_id = ? AND delete_at IS NULL";
         try (Connection conn = DBConnectionUtil.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+            PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, loginId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -75,9 +85,15 @@ public class MemberDAO {
                     Timestamp c = rs.getTimestamp("created_at");
                     Timestamp u = rs.getTimestamp("updated_at");
                     Timestamp d = rs.getTimestamp("delete_at");
-                    if (c != null) m.setCreatedAt(c.toLocalDateTime());
-                    if (u != null) m.setUpdatedAt(u.toLocalDateTime());
-                    if (d != null) m.setDeleteAt(d.toLocalDateTime());
+                    if (c != null) {
+                        m.setCreatedAt(c.toLocalDateTime());
+                    }
+                    if (u != null) {
+                        m.setUpdatedAt(u.toLocalDateTime());
+                    }
+                    if (d != null) {
+                        m.setDeleteAt(d.toLocalDateTime());
+                    }
                     return m;
                 }
             }
@@ -85,5 +101,21 @@ public class MemberDAO {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public Long findIdByUuid(String uuid) {
+        String sql = "SELECT member_id FROM member WHERE uuid=?";
+        try (Connection c = DBConnectionUtil.getConnection();
+            PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, uuid);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getLong("member_id");
+                }
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

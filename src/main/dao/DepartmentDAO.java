@@ -1,55 +1,39 @@
-// DepartmentDAO.java
 package dao;
 
+import dto.DepartmentSelectDTO;
+import dto.DepartmentDetailDTO;
 import common.util.DBConnectionUtil;
-import dto.DepartmentListItemDTO;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
 
 public class DepartmentDAO {
-
-  public List<DepartmentListItemDTO> findAll() {
-    List<DepartmentListItemDTO> list = new ArrayList<>();
-    String sql = "SELECT department_id, name FROM department ORDER BY name ASC";
-
+  public DepartmentSelectDTO findAllDepartments() {
+    String sql = "SELECT department_id, name FROM department";
+    DepartmentSelectDTO dto = new DepartmentSelectDTO();
     try (Connection conn = DBConnectionUtil.getConnection();
          PreparedStatement ps = conn.prepareStatement(sql);
          ResultSet rs = ps.executeQuery()) {
-
       while (rs.next()) {
-        DepartmentListItemDTO d = new DepartmentListItemDTO();
-        d.setDepartmentId(rs.getLong("department_id"));
-        d.setName(rs.getString("name"));
-        list.add(d);
+        dto.getDepartments().add(new DepartmentDetailDTO(rs.getLong("department_id"), rs.getString("name")));
       }
-
-    } catch (Exception e) {
+    } catch (SQLException e) {
       e.printStackTrace();
     }
-    return list;
+    return dto;
   }
 
-  // ✅ 추가: ID로 단일 조회
-  public DepartmentListItemDTO findById(Long departmentId) {
-    String sql = "SELECT department_id, name FROM department WHERE department_id = ?";
-    DepartmentListItemDTO dto = null;
-
+  public DepartmentSelectDTO searchDepartments(String searchTerm) {
+    String sql = "SELECT department_id, name FROM department WHERE name LIKE ?";
+    DepartmentSelectDTO dto = new DepartmentSelectDTO();
     try (Connection conn = DBConnectionUtil.getConnection();
          PreparedStatement ps = conn.prepareStatement(sql)) {
-      ps.setLong(1, departmentId);
-
+      ps.setString(1, "%" + searchTerm + "%");
       try (ResultSet rs = ps.executeQuery()) {
-        if (rs.next()) {
-          dto = new DepartmentListItemDTO();
-          dto.setDepartmentId(rs.getLong("department_id"));
-          dto.setName(rs.getString("name"));
+        while (rs.next()) {
+          dto.getDepartments().add(new DepartmentDetailDTO(rs.getLong("department_id"), rs.getString("name")));
         }
       }
-    } catch (Exception e) {
+    } catch (SQLException e) {
       e.printStackTrace();
     }
     return dto;

@@ -3,9 +3,9 @@ package controller;
 import dto.PrescriptionListItemDTO;
 import service.PrescriptionService;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.util.List;
 
@@ -30,7 +30,7 @@ public class PrescriptionController extends HttpServlet {
     }
     
     private void showPrescriptionList(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        long memberId = 1L; // 로그인 전 임시 고정
+        long memberId = 31L; // test1234 계정 (member_id: 31)
         
         try {
             List<PrescriptionListItemDTO> prescriptions = prescriptionService.getPrescriptionList(memberId);

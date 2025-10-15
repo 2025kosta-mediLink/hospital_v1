@@ -2,15 +2,18 @@
 package controller;
 
 import dto.MemberSessionDTO;
-import service.AuthService;
-
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
 import java.io.IOException;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import service.AuthService;
 
 @WebServlet("/v1/auth/*")
 public class AuthController extends HttpServlet {
+
     private AuthService authService;
 
     @Override
@@ -20,7 +23,7 @@ public class AuthController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
+        throws ServletException, IOException {
         String path = req.getPathInfo();
 
         if (path == null || "/login".equals(path)) {
@@ -57,7 +60,7 @@ public class AuthController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
+        throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
         String path = req.getPathInfo();
 
@@ -71,8 +74,8 @@ public class AuthController extends HttpServlet {
             String rrn = req.getParameter("rrn");
 
             if (loginId == null || password == null || name == null ||
-                    phone == null || gender == null || address == null || rrn == null ||
-                    loginId.isBlank() || password.isBlank() || name.isBlank()) {
+                phone == null || gender == null || address == null || rrn == null ||
+                loginId.isBlank() || password.isBlank() || name.isBlank()) {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Required fields missing");
                 return;
             }
@@ -82,7 +85,8 @@ public class AuthController extends HttpServlet {
                 return;
             }
 
-            Long memberId = authService.signUp(loginId, password, name, phone, gender, address, rrn);
+            Long memberId = authService.signUp(loginId, password, name, phone, gender, address,
+                rrn);
             if (memberId == null) {
                 resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Sign-up failed");
                 return;
@@ -109,7 +113,7 @@ public class AuthController extends HttpServlet {
 
             HttpSession session = req.getSession(true);
             session.setAttribute("LOGIN_MEMBER", sessionUser);
-            resp.sendRedirect(req.getContextPath() + "/home");
+            resp.sendRedirect(req.getContextPath() + "/v1/home");
             return;
         }
 

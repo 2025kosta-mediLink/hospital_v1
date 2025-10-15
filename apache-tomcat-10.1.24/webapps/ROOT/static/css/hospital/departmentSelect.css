@@ -1,0 +1,99 @@
+/* 공통 스타일 */
+body {
+    background-color: #f5f7fb;
+    font-family: 'Noto Sans', sans-serif;
+}
+
+/* 진료과 카드 */
+.card {
+    background-color: #fff;
+    padding: 16px;
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    margin-bottom: 16px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    transition: transform 0.08s ease, border-color 0.08s ease;
+}
+
+.card:hover {
+    background-color: #eff6ff;
+}
+
+/* 진료과 선택 버튼 */
+.item {
+    position: relative;
+    display: block;
+}
+
+.radio {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.card .icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--primary-weak);
+    display: grid;
+    place-items: center;
+    color: var(--primary);
+    font-size: 18px;
+}
+
+.card .name {
+    font-weight: 800;
+    text-align: center;
+}
+
+/* 검색 바 */
+.search {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 8px 10px;
+    margin: 8px 0 14px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+.search input {
+    flex: 1;
+    border: 0;
+    outline: 0;
+    font-size: 14px;
+    background: transparent;
+}
+
+.search button {
+    border: 0;
+    background: var(--primary);
+    color: #fff;
+    font-weight: 800;
+    border-radius: 10px;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+/* 버튼 스타일 */
+.btn-primary {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    background-color: #2563eb;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background-color: #1c5fca;
+}
+
+
+

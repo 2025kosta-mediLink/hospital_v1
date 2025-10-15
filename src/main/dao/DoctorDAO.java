@@ -1,75 +1,53 @@
 package dao;
 
+import dto.DoctorSelectDTO;
 import common.util.DBConnectionUtil;
-import dto.DoctorListItemDTO;
+import dto.DoctorDetailDTO;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DoctorDAO {
-
-  // 진료과별 의사 목록 조회
-  public List<DoctorListItemDTO> findByDepartment(Long departmentId) {
-    List<DoctorListItemDTO> list = new ArrayList<>();
-
-    // department_id로 doctor 조회 + department 테이블 조인
-    String sql = "SELECT d.doctor_id, " +
-            "d.name, " +
-            "d.department_id, " +
-            "dep.name AS department_name " +
-            "FROM doctor d " +
-            "JOIN department dep ON d.department_id = dep.department_id " +
-            "WHERE d.department_id = ?;";
-
+  public List<DoctorSelectDTO> findDoctorsByDepartment(Long departmentId) {
+    String sql = "SELECT doctor_id, name, profile_image_url FROM doctor WHERE" +
+            " department_id = ?";
+    List<DoctorSelectDTO> doctors = new ArrayList<>();
     try (Connection conn = DBConnectionUtil.getConnection();
          PreparedStatement ps = conn.prepareStatement(sql)) {
-
-      // ? 바인딩
       ps.setLong(1, departmentId);
-
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
-          DoctorListItemDTO dto = new DoctorListItemDTO();
-          dto.setDoctorId(rs.getLong("doctor_id"));
-          dto.setName(rs.getString("name"));
-          dto.setDepartmentId(rs.getLong("department_id"));
-          dto.setDepartmentName(rs.getString("department_name"));
-          list.add(dto);
+          DoctorSelectDTO dto = new DoctorSelectDTO(rs.getLong("doctor_id"),
+                  rs.getString("name"),
+                  rs.getString("profile_image_url"));
+          doctors.add(dto);
         }
       }
-    } catch (Exception e) {
-      e.printStackTrace(); // 👉 실서비스라면 로깅으로 교체 필요
-    }
-    return list;
-  }
-
-  // ✅ 추가: ID로 단일 조회
-  public DoctorListItemDTO findById(Long doctorId) {
-    String sql = "SELECT d.doctor_id, d.name, d.department_id, dep.name AS department_name " +
-            "FROM doctor d " +
-            "JOIN department dep ON d.department_id = dep.department_id " +
-            "WHERE d.doctor_id = ?";
-
-    DoctorListItemDTO dto = null;
-
-    try (Connection conn = DBConnectionUtil.getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql)) {
-      ps.setLong(1, doctorId);
-      try (ResultSet rs = ps.executeQuery()) {
-        if (rs.next()) {
-          dto = new DoctorListItemDTO();
-          dto.setDoctorId(rs.getLong("doctor_id"));
-          dto.setName(rs.getString("name"));
-          dto.setDepartmentId(rs.getLong("department_id"));
-          dto.setDepartmentName(rs.getString("department_name"));
-        }
-      }
-    } catch (Exception e) {
+    } catch (SQLException e) {
       e.printStackTrace();
     }
-    return dto;
+    return doctors;
   }
+    public DoctorDetailDTO findDoctorById(long doctorId) {
+        String sql =
+                "SELECT d.doctor_id, d.name, d.profile_image_url, dep.name AS department_name " +
+                        "FROM doctor d JOIN department dep ON dep.department_id = d.department_id " +
+                        "WHERE d.doctor_id = ?";
+        try (Connection c = DBConnectionUtil.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setLong(1, doctorId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new DoctorDetailDTO(
+                            rs.getLong("doctor_id"),
+                            rs.getString("name"),
+                            rs.getString("department_name"),
+                            rs.getString("profile_image_url")
+                    );
+                }
+                return null;
+            }
+        } catch (SQLException e) { throw new RuntimeException(e); }
+    }
 }
