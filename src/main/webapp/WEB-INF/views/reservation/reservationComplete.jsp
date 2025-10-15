@@ -3,15 +3,15 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>예약 완료</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common/common.css">
-    <link rel="stylesheet"
-          href="${pageContext.request.contextPath}/static/css/reservation/reservationComplete.css">
+
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/reservation/reservationComplete.css" />
 </head>
 <body class="screen">
-<jsp:include page="/WEB-INF/views/common/header.jsp"/>
+<jsp:include page="/WEB-INF/views/common/header.jsp" />
 
 <main class="main">
     <section class="reservation-complete">
@@ -19,16 +19,16 @@
 
         <!-- 예약 정보 출력 -->
         <div class="reservation-info">
-            <p class="info-item"><strong>의료진:</strong> ${doctor.name} 교수</p>
+            <p class="info-item"><strong>의료진:</strong> ${doctor.name}</p>
             <p class="info-item"><strong>진료과:</strong> ${doctor.departmentName}</p>
             <p class="info-item"><strong>예약일시:</strong> ${reservation.appointmentAt}</p>
-            <p class="info-item"><strong>예약 번호:</strong> ${reservation.reservationNo}</p>
-            <!-- 예약 번호 추가 -->
+            <p class="info-item"><strong>예약 번호:</strong> ${reservation.reservationNo}</p> <!-- 예약 번호 추가 -->
         </div>
 
         <!-- 안내사항 -->
         <div class="notice-box">
-            <span class="notice-icon">⚠️</span> 도착 10분 전 내원해주세요.
+            <span class="notice-icon">⚠️</span>
+            도착 10분 전 내원해주세요.
         </div>
 
         <div class="actions">
@@ -40,6 +40,7 @@
 </main>
 
 <script src="${pageContext.request.contextPath}/static/js/reservation/reservationComplete.js"></script>
-<jsp:include page="/WEB-INF/views/common/navigation.jsp"/>
+
+<jsp:include page="/WEB-INF/views/common/navigation.jsp" />
 </body>
 </html>

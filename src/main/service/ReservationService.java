@@ -45,15 +45,21 @@ public class ReservationService {
         return res;
     }
 
-    public void createReservationByUuid(String memberUuid, long doctorId, String appointmentAt) {
+    public Long createReservationByUuid(String memberUuid, long doctorId, String appointmentAt) {
         Long memberId = memberDAO.findIdByUuid(memberUuid);
-        if (memberId == null) throw new IllegalStateException("member-not-found");
+        if (memberId == null) {
+            throw new IllegalStateException("member-not-found");
+        }
 
         if (reservationDAO.exists(doctorId, appointmentAt)) {
             throw new IllegalStateException("occupied");
         }
         String no = genNo();
-        reservationDAO.insert(memberId, doctorId, appointmentAt, no);
+        return reservationDAO.insert(memberId, doctorId, appointmentAt, no);  // reservationId 리턴
+    }
+
+    public ReservationDTO getReservationById(Long reservationId) {
+        return reservationDAO.findById(reservationId);
     }
 
     public ReservationListDTO getReservationList(String memberUuid, String month, String statusUi) {
@@ -65,7 +71,7 @@ public class ReservationService {
         String dbStatus = (st == null) ? null : st.name();
 
         List<ReservationListItemDTO> rows =
-                reservationDAO.findHistoryByMember(memberId, month, dbStatus);
+                reservationDAO.findListByMember(memberId, month, dbStatus);
 
         // 날짜/시간 한글 표기 + 상태 라벨/배지 세팅
         for (ReservationListItemDTO it : rows) {
