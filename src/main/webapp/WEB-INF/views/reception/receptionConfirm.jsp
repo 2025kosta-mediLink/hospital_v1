@@ -88,7 +88,7 @@
         </div>
 
         <!-- 제출 버튼 -->
-        <div class="actions">
+        <div class="footer">
             <button id="submitBtn" class="btn-primary" type="submit">바로 접수하기</button>
         </div>
     </form>
