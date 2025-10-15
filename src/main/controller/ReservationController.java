@@ -6,9 +6,9 @@ import service.ReservationService;
 import service.DoctorService;
 import dto.DoctorDetailDTO;
 
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
-import javax.servlet.*;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.*;
+import jakarta.servlet.*;
 import java.io.IOException;
 import java.util.Map;
 

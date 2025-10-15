@@ -3,9 +3,9 @@ package controller;
 import dto.PrescriptionListItemDTO;
 import service.PrescriptionService;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.util.List;
 
@@ -30,7 +30,7 @@ public class PrescriptionController extends HttpServlet {
     }
     
     private void showPrescriptionList(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        long memberId = 1L; // 로그인 전 임시 고정
+        long memberId = 31L; // test1234 계정 (member_id: 31)
         
         try {
             List<PrescriptionListItemDTO> prescriptions = prescriptionService.getPrescriptionList(memberId);
@@ -44,7 +44,30 @@ public class PrescriptionController extends HttpServlet {
                 HttpSession session = req.getSession();
                 session.setAttribute("completedDispensingId", dispensingId);
                 session.setAttribute("completedDate", java.time.LocalDate.now().toString());
-                session.setAttribute("completedPharmacyName", "건강약국"); // 실제로는 dispensingId로 약국명 조회
+                
+                // 세션에서 선택된 처방전과 약국 정보 가져오기
+                String[] selectedPrescriptions = (String[]) session.getAttribute("selectedPrescriptions");
+                String pharmacyInfo = (String) session.getAttribute("selectedPharmacyInfo");
+                
+                if (selectedPrescriptions != null && selectedPrescriptions.length > 0) {
+                    // 선택된 처방전 ID들을 세션에 저장
+                    session.setAttribute("completedPrescriptionIds", selectedPrescriptions);
+                }
+                
+                if (pharmacyInfo != null) {
+                    // 약국 정보에서 약국명 추출 (JSON 파싱)
+                    try {
+                        com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                        @SuppressWarnings("unchecked")
+                        java.util.Map<String, Object> pharmacyData = mapper.readValue(pharmacyInfo, java.util.Map.class);
+                        String pharmacyName = (String) pharmacyData.get("name");
+                        session.setAttribute("completedPharmacyName", pharmacyName != null ? pharmacyName : "선택한 약국");
+                    } catch (Exception e) {
+                        session.setAttribute("completedPharmacyName", "선택한 약국");
+                    }
+                } else {
+                    session.setAttribute("completedPharmacyName", "선택한 약국");
+                }
             }
             
             req.setAttribute("prescriptions", prescriptions);
