@@ -27,7 +27,7 @@ public class ReservationListController extends HttpServlet {
         try {
             // 프로퍼티 파일 로딩
             Properties props = new Properties();
-            InputStream input = getServletContext().getResourceAsStream("/WEB-INF/config/application.properties");
+            InputStream input = getServletContext().getResourceAsStream("/WEB-INF/classes/application.properties");
             if (input == null) {
                 throw new ServletException("Unable to find application.properties");
             }
