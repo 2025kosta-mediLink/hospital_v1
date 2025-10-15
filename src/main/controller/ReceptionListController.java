@@ -1,5 +1,6 @@
 package controller;
 
+import common.util.AuthSessionUtil;
 import dto.ReceptionListItemDTO;
 import dto.ReceptionListDetailDTO;
 import service.ReceptionListService;
@@ -43,8 +44,8 @@ public class ReceptionListController extends HttpServlet {
     private void handleList(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        // (임시) 로그인 미구현 → 고정 memberId
-        Long memberId = 1L;
+        String uuid = AuthSessionUtil.requireUuidOrRedirect(req, resp);
+        if (uuid == null) return; // 미로그인 → 로그인 페이지로 이동
 
         // ====== 쿼리 파라미터 수집 ======
         // 상태: 기본값은 ALL
@@ -78,7 +79,7 @@ public class ReceptionListController extends HttpServlet {
         }
 
         // ====== 서비스 조회 ======
-        List<ReceptionListItemDTO> list = receptionListService.getList(memberId, status, from, to);
+        List<ReceptionListItemDTO> list = receptionListService.getListByUuid(uuid, status, from, to);
 
         // ====== 뷰 바인딩 ======
         req.setAttribute("receptions", list);

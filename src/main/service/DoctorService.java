@@ -16,4 +16,9 @@ public class DoctorService {
   public DoctorDetailDTO getDoctorById(long doctorId) {
     return doctorDAO.findDoctorById(doctorId);
   }
+
+  // 의사 ID로 부서 ID 조회
+  public Long getDepartmentIdByDoctorId(long doctorId) {
+    return doctorDAO.findDepartmentIdByDoctorId(doctorId);
+  }
 }

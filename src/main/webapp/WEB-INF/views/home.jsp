@@ -7,16 +7,13 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>홈</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/home.css">
-    <script defer src="${pageContext.request.contextPath}/static/js/home.js"></script>
 </head>
 <!-- 컨트롤러에서 setAttribute -->
-<body data-is-logged-in="${isLoggedIn}" data-login-url="${loginUrl}">
-
+<body class="screen" data-ctx="${pageContext.request.contextPath}" data-is-logged-in="${isLoggedIn}" data-login-url="${loginUrl}">
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
-
-<div class="wrap">
-    <!-- 히어로: 가로 꽉차고 이미지가 넘치면 중앙 기준으로 잘림 -->
+<main class="main">
     <div class="hero" aria-hidden="true"></div>
 
     <div class="container">
@@ -71,16 +68,8 @@
             </div>
         </section>
     </div>
-
-    <!-- 하단 탭바 -->
-    <nav class="nav" aria-label="하단 내비게이션">
-        <a class="need-login" href="${ctx}/v1/reservation/departments">예약</a>
-        <a class="need-login" href="${ctx}/v1/reception/departments">접수</a>
-        <a class="active" href="${ctx}/v1/home">홈</a> <!-- 홈은 공개 -->
-        <a class="need-login" href="${ctx}/v1/prescription">처방전</a>
-        <a class="need-login" href="${ctx}/v1/reception/list">마이페이지</a>
-    </nav>
-</div>
+</main>
+    <jsp:include page="/WEB-INF/views/common/navigation.jsp"/>
 
 <!-- 비로그인 클릭 가드 -->
 <script>
@@ -99,6 +88,5 @@
         });
     })();
 </script>
-
 </body>
 </html>
