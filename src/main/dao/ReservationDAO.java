@@ -68,6 +68,25 @@ public class ReservationDAO {
         return null;
     }
 
+    public String findMemberUuidByReservationId(Long reservationId) {
+        String sql =
+                "SELECT m.uuid " +
+                        "FROM reservation r " +
+                        "JOIN member m ON m.member_id = r.member_id " +
+                        "WHERE r.reservation_id = ? " +
+                        "  AND (m.delete_at IS NULL)";
+        try (Connection conn = DBConnectionUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setLong(1, reservationId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getString(1);
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("예약 소유자 조회 중 DB 오류", e);
+        }
+    }
+
     // "HH:MM" 집합
     public Set<String> findTimesForDoctorOnDate(long doctorId, LocalDate date) {
         String sql = "SELECT DATE_FORMAT(appointment_at, '%H:%i') AS hhmm " +

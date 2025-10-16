@@ -1,6 +1,12 @@
 (function () {
     "use strict";
     const base = document.body.dataset.ctx || '';
+
+    const err = (document.body.dataset.error || '').trim();
+    if (err) {
+        alert(err);
+    }
+
     const form = document.getElementById('loginForm');
     if (!form) return;
 
