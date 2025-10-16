@@ -55,3 +55,6 @@ logs/
 
 ### application files ###
 *.properties
+
+### cookies ###
+cookies.txt
