@@ -7,13 +7,16 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>홈</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/home.css">
+    <script defer src="${pageContext.request.contextPath}/static/js/home.js"></script>
 </head>
 <!-- 컨트롤러에서 setAttribute -->
-<body class="screen" data-ctx="${pageContext.request.contextPath}" data-is-logged-in="${isLoggedIn}" data-login-url="${loginUrl}">
+<body data-is-logged-in="${isLoggedIn}" data-login-url="${loginUrl}">
+
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
-<main class="main">
+
+<div class="wrap">
+    <!-- 히어로: 가로 꽉차고 이미지가 넘치면 중앙 기준으로 잘림 -->
     <div class="hero" aria-hidden="true"></div>
 
     <div class="container">
@@ -28,12 +31,11 @@
                 <c:choose>
                     <c:when test="${not empty summary.appointmentAt}">
                         <div class="muted">
-                            진료과: <c:out value="${summary.departmentName}"/>
+                            <c:out value="${summary.departmentName}"/> 진료과
                             <span class="dot"></span>
                             의료진: <c:out value="${summary.doctorName}"/>
-                            <span class="dot"></span>
-                        <fmt:formatDate value="${summary.appointmentAt}" pattern="a hh:mm"/>
                         </div>
+                        <div class="big"><fmt:formatDate value="${summary.appointmentAt}" pattern="a hh:mm"/></div>
                     </c:when>
                     <c:otherwise>
                         <div class="muted">오늘 예약된 일정이 없습니다.</div>
@@ -50,7 +52,7 @@
         <!-- 퀵 액션 (모두 보호: 비로그인 시 클릭 -> 로그인으로) -->
         <section class="panel" aria-label="빠른 실행">
             <div class="grid3">
-                <a class="quick need-login" href="${ctx}/v1/reservation/departments">진료예약</a>
+                <a class="quick need-login" href="${ctx}/v1/reservations/departments">진료예약</a>
                 <a class="quick need-login" href="${ctx}/v1/reception/departments">진료접수</a>
                 <a class="quick need-login" href="${ctx}/v1/prescription">처방전</a>
             </div>
@@ -69,8 +71,10 @@
             </div>
         </section>
     </div>
-</main>
+
+    <!-- 공통 하단 네비게이션 -->
     <jsp:include page="/WEB-INF/views/common/navigation.jsp"/>
+</div>
 
 <!-- 비로그인 클릭 가드 -->
 <script>
@@ -89,5 +93,6 @@
         });
     })();
 </script>
+
 </body>
 </html>

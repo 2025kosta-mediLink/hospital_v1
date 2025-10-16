@@ -14,7 +14,7 @@ import java.io.IOException;
  * - 로그인 시: uuid 기반 개인화 요약
  * - 비로그인 시: 게스트용 요약
  */
-@WebServlet("/v1/home")
+@WebServlet({"/", "/v1/home"})
 public class HomeController extends HttpServlet {
 
   private final HomeService homeService = new HomeService();

@@ -37,3 +37,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+
+// 뒤로가기 (referrer 없으면 폴백 이동)
+function goBackOr(url) {
+    if (document.referrer) {
+        history.back();
+    } else {
+        location.href = url;
+    }
+}

@@ -6,24 +6,20 @@ import dto.ReceptionDetailDTO;
 import java.sql.*;
 
 public class ReceptionDAO {
-
-  public Long insertReceptionWithSymptoms(String uuid,
+  public Long insertReceptionWithSymptoms(Long memberId,
                                           Long doctorId,
                                           String[] symptomIds,
                                           String noteToDoctor,
                                           boolean consentNotice) {
-    // uuid → member_id 해석
-    final String qSelectMemberIdByUuid = "SELECT member_id FROM member WHERE uuid = ?";
-
     // 전체 병원 기준으로 다음 접수번호 조회
-    final String qSelectReceptionNo = "SELECT COALESCE(MAX(reception_no), 1000) + 1 AS next_no FROM reception";
+    String selectReceptionNoSql = "SELECT COALESCE(MAX(reception_no), 1000) + 1 AS next_no FROM reception";
 
-    final String qInsertReception = "INSERT INTO reception " +
+    String insertReceptionSql = "INSERT INTO reception " +
             "(reservation_id, member_id, doctor_id, reception_no, type, status, " +
-            " consent_notice, consent_at, note_to_doctor, created_at, updated_at) " +
+            "consent_notice, consent_at, note_to_doctor, created_at, updated_at) " +
             "VALUES (NULL, ?, ?, ?, 'DIRECT', 'WAITING', ?, NOW(), ?, NOW(), NOW())";
 
-    final String qInsertSymptom = "INSERT INTO reception_symptom " +
+    String insertSymptomSql = "INSERT INTO reception_symptom " +
             "(reception_id, symptom_id, created_at) VALUES (?, ?, NOW())";
 
     Connection conn = null;
@@ -33,23 +29,9 @@ public class ReceptionDAO {
       conn = DBConnectionUtil.getConnection();
       conn.setAutoCommit(false); // 트랜잭션 시작
 
-      // 0️⃣ uuid → member_id
-      Long memberId = null;
-      try (PreparedStatement ps = conn.prepareStatement(qSelectMemberIdByUuid)) {
-        ps.setString(1, uuid);
-        try (ResultSet rs = ps.executeQuery()) {
-          if (rs.next()) {
-            memberId = rs.getLong("member_id");
-          }
-        }
-      }
-      if (memberId == null) {
-        throw new IllegalStateException("유효하지 않은 사용자(uuid)입니다.");
-      }
-
       // 1️⃣ 다음 접수번호 조회
       int nextReceptionNo = 1001;
-      try (PreparedStatement ps = conn.prepareStatement(qSelectReceptionNo);
+      try (PreparedStatement ps = conn.prepareStatement(selectReceptionNoSql);
            ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
           nextReceptionNo = rs.getInt("next_no");
@@ -57,7 +39,7 @@ public class ReceptionDAO {
       }
 
       // 2️⃣ reception 테이블에 insert
-      try (PreparedStatement ps = conn.prepareStatement(qInsertReception, Statement.RETURN_GENERATED_KEYS)) {
+      try (PreparedStatement ps = conn.prepareStatement(insertReceptionSql, Statement.RETURN_GENERATED_KEYS)) {
         ps.setLong(1, memberId);
         ps.setLong(2, doctorId);
         ps.setInt(3, nextReceptionNo);
@@ -74,7 +56,7 @@ public class ReceptionDAO {
 
       // 3️⃣ 선택된 증상 매핑 저장
       if (symptomIds != null && symptomIds.length > 0 && receptionId != null) {
-        try (PreparedStatement ps2 = conn.prepareStatement(qInsertSymptom)) {
+        try (PreparedStatement ps2 = conn.prepareStatement(insertSymptomSql)) {
           for (String sid : symptomIds) {
             ps2.setLong(1, receptionId);
             ps2.setLong(2, Long.parseLong(sid));
@@ -94,6 +76,8 @@ public class ReceptionDAO {
 
     return receptionId;
   }
+
+
 
   // ✅ receptionId로 접수 상세 조회
   public ReceptionDetailDTO findReceptionDetail(Long receptionId) {
@@ -125,4 +109,5 @@ public class ReceptionDAO {
     }
     return dto;
   }
+
 }

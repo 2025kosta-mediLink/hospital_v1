@@ -111,7 +111,7 @@
 
 <!-- 예약 폼 -->
 <form method="post">
-  <input type="hidden" id="selectedDoctorId" name="doctorId" value="${doctorList[0].id}">
+  <input type="hidden" name="doctorId" value="${doctorList[0].id}">
   <button type="submit" class="btn-primary">다음</button>
 </form>
 

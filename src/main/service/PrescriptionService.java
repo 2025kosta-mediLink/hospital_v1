@@ -16,43 +16,34 @@ public class PrescriptionService {
      * 회원의 처방전 목록 조회
      */
     public List<PrescriptionListItemDTO> getPrescriptionList(long memberId) {
-        // 테스트용 가라데이터 반환
-        return getTestPrescriptionData();
-    }
-    
-    /**
-     * 테스트용 처방전 데이터
-     */
-    private List<PrescriptionListItemDTO> getTestPrescriptionData() {
-        java.util.List<PrescriptionListItemDTO> prescriptions = new java.util.ArrayList<>();
-        
-        // 처방전 1 - 선택 가능 (내과)
-        PrescriptionListItemDTO prescription1 = new PrescriptionListItemDTO();
-        prescription1.setPrescriptionId(1L);
-        prescription1.setTreatmentDate("2025-01-15");
-        prescription1.setDepartmentName("내과");
-        prescription1.setDoctorName("김의사");
-        prescription1.setCanSelect(true);
-        prescription1.setStatus("처방완료");
-        prescriptions.add(prescription1);
-        
-        // 처방전 2 - 선택 가능 (정형외과)
-        PrescriptionListItemDTO prescription2 = new PrescriptionListItemDTO();
-        prescription2.setPrescriptionId(2L);
-        prescription2.setTreatmentDate("2025-01-14");
-        prescription2.setDepartmentName("정형외과");
-        prescription2.setDoctorName("박의사");
-        prescription2.setCanSelect(true);
-        prescription2.setStatus("처방완료");
-        prescriptions.add(prescription2);
-        
-        return prescriptions;
+        return prescriptionDAO.getPrescriptionListByMemberId(memberId);
     }
 
     /**
-     * 처방전 상태 업데이트
+     * 접수 데이터를 기반으로 처방전 생성
      */
-    public boolean updatePrescriptionStatus(long prescriptionId, String status, String pharmacyName, java.time.LocalDateTime completedDate) {
-        return prescriptionDAO.updatePrescriptionStatus(prescriptionId, status, pharmacyName, completedDate);
+    public Long createPrescriptionFromReception(Long receptionId, String content) {
+        return prescriptionDAO.createPrescriptionFromReception(receptionId, content);
+    }
+
+    /**
+     * 처방전을 약국으로 전송
+     */
+    public Long sendPrescriptionToPharmacy(Long prescriptionId, String pharmacyName, String pharmacyAddress) {
+        return prescriptionDAO.sendPrescriptionToPharmacy(prescriptionId, pharmacyName, pharmacyAddress);
+    }
+
+    /**
+     * 조제 상태 업데이트
+     */
+    public boolean updateDispensingStatus(Long pharmacyPrescriptionId, String status) {
+        return prescriptionDAO.updateDispensingStatus(pharmacyPrescriptionId, status);
+    }
+
+    /**
+     * 수령 완료 처리
+     */
+    public boolean completePickup(Long pharmacyPrescriptionId, String verifiedBy) {
+        return prescriptionDAO.completePickup(pharmacyPrescriptionId, verifiedBy);
     }
 }

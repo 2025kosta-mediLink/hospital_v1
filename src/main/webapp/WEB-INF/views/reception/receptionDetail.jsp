@@ -7,21 +7,20 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>상세 접수 내역</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common/common.css">
-    <link rel="stylesheet" href="${ctx}/static/css/reception/receptionDetail.css">
-    <script defer src="${ctx}/static/js/reception/receptionDetail.js"></script>
+    <c:set var="ctx" value="${pageContext.request.contextPath}"/>
+    <!-- 캐시 버스팅 -->
+    <link rel="stylesheet" href="${ctx}/static/css/reception/receptionDetail.css?v=20251014">
+    <script defer src="${ctx}/static/js/reception/receptionDetail.js?v=20251014"></script>
 </head>
-<body class="screen" data-ctx="${pageContext.request.contextPath}">
-<c:set var="ctx" value="${pageContext.request.contextPath}"/>
-<jsp:include page="/WEB-INF/views/common/header.jsp"/>
+<body>
 
-<%--<div class="wrap">--%>
-<main class="main">
-<%--    <div class="topbar">--%>
-<%--        <a class="back" href="javascript:history.back()">←</a>--%>
-<%--        <div class="title">상세 접수 내역</div>--%>
-<%--        <a class="home" href="${ctx}/">⌂</a>--%>
-<%--    </div>--%>
+<div class="wrap">
+
+    <div class="topbar">
+        <a class="back" href="javascript:history.back()">←</a>
+        <div class="title">상세 접수 내역</div>
+        <a class="home" href="${ctx}/">⌂</a>
+    </div>
 
     <c:if test="${not empty error}">
         <div class="card" style="border:1px solid #fecaca; background:#fef2f2; color:#991b1b; margin-bottom:12px;">
@@ -92,7 +91,7 @@
 
             <div class="card">
                 <div class="warn-box">
-                    <h4>⚠️ 주의사항</h4>
+                    <h3>⚠️ 주의사항</h3>
                     <ul style="margin:0; padding-left:18px;">
                         <li>호출 후 10분이 지나면 접수가 자동 취소될 수 있어요.</li>
                         <li>신분증을 꼭 지참해 주세요.</li>
@@ -111,7 +110,7 @@
                                 <input type="hidden" name="receptionId" value="${reception.receptionId}"/>
 <%--                                <input type="hidden" name="reason" id="cancelReasonHidden"/>--%>
                                 <!-- 버튼을 submit가 아닌 button으로 → JS가 모달을 열고, 확인 시에만 submit() -->
-                                <button type="button" id="openCancelModalBtn" class="btn btn-primary" style="width:100%;">접수 취소</button>
+                                <button type="button" id="openCancelModalBtn" class="btn btn-danger" style="width:100%;">접수 취소</button>
                             </form>
                             <a class="btn btn-ghost" href="${ctx}/v1/reception/list">목록으로</a>
                         </c:when>
@@ -151,14 +150,13 @@
 
             <div class="modal-actions">
                 <button type="button" class="btn btn-ghost" data-close="true">돌아가기</button>
-                <button type="button" class="btn btn-primary" id="cancelModalConfirm">네, 취소합니다</button>
+                <button type="button" class="btn btn-danger" id="cancelModalConfirm">네, 취소합니다</button>
             </div>
 
             <button type="button" class="modal-x" title="닫기" aria-label="닫기" data-close="true">×</button>
         </div>
     </div>
 
-<%--</div>--%>
-</main>
+</div>
 </body>
 </html>

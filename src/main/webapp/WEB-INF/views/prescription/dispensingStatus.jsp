@@ -7,9 +7,20 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>조제 상황</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/prescription/dispensingStatus.css?v=20250115_modal">
+    
+    <!-- 카카오 지도 API 로드 (길찾기 서비스 포함) -->
+    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=371a027cd1dac68dce2424d2ac0fd3ca&libraries=services"></script>
+    
+    <!-- API 설정 및 지도 서비스 -->
+    <script src="${pageContext.request.contextPath}/static/js/prescription/config/api-config.js?v=20250115_001"></script>
+    <script src="${pageContext.request.contextPath}/static/js/prescription/map/route-service.js?v=20250115_001"></script>
     <script src="${pageContext.request.contextPath}/static/js/prescription/dispensingStatus.js?v=20250115_modal"></script>
+    
+    <!-- 약국 정보를 JavaScript로 전달 -->
+    <c:if test="${not empty pharmacyInfo}">
+        <div data-pharmacy-info='${pharmacyInfo}' style="display: none;"></div>
+    </c:if>
 </head>
 <body>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
@@ -21,19 +32,18 @@
 
     <!-- 지도 및 경로 안내 -->
     <div class="map-container">
-        <div class="map-placeholder">
-            <div class="map-content">
-                <!-- 지도 API가 들어갈 영역 -->
-                <div class="map-mock">
-                    <div class="route-info">
-                        <div class="route-start">출발</div>
-                        <div class="route-line"></div>
-                        <div class="route-end">도착</div>
-                    </div>
-                </div>
+        <!-- 경로 정보 표시 (지도 상단) -->
+        <div class="route-info-header">
+            <span class="route-path">강북삼성병원 외래동 → <span id="pharmacyName">약국명</span></span>
+            <div class="route-details" id="routeDetails">
+                <span class="route-distance" id="routeDistance">-</span>
+                <span class="route-duration" id="routeDuration">-</span>
             </div>
         </div>
         
+        <div id="routeMap" class="route-map">
+            <!-- 카카오맵 길찾기가 들어갈 영역 -->
+        </div>
     </div>
 
 
@@ -52,63 +62,35 @@
                 <!-- 조제 진행 상황 -->
                 <div class="progress-steps">
                     <!-- 1단계: 약국이 처방전을 수령 -->
-                    <div class="step ${'RECEIVED'.equals(status.status) ? 'current' : (status.receivedAt != null ? 'completed' : 'pending')}">
+                    <div class="step completed">
                         <div class="step-icon">
-                            <c:choose>
-                                <c:when test="${status.receivedAt != null}">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                        <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </c:when>
-                                <c:otherwise>
-                                    <div class="step-circle ${'RECEIVED'.equals(status.status) ? 'active' : ''}"></div>
-                                </c:otherwise>
-                            </c:choose>
+                            <div class="step-circle completed"></div>
                         </div>
                         <div class="step-content">
                             <div class="step-title">약국이 처방전을 수령했습니다.</div>
-                            <c:if test="${status.receivedAt != null}">
-                                <div class="step-time"><c:out value="${status.receivedAt}"/></div>
-                            </c:if>
                         </div>
                     </div>
 
-                    <!-- 2단계: 조제 중 -->
-                    <div class="step ${'DISPENSING'.equals(status.status) ? 'current' : (('COMPLETED'.equals(status.status) || 'RECEIVED_BY_USER'.equals(status.status)) ? 'completed' : 'pending')}">
+                    <!-- 2단계: 조제 중 (현재 진행 중) -->
+                    <div class="step current" id="secondStep">
                         <div class="step-icon">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
+                            <div class="step-circle active"></div>
                         </div>
                         <div class="step-content">
-                            <div class="step-title">약을 제조 중입니다.</div>
-                            <c:if test="${not empty status.dispenserName}">
-                                <div class="step-detail">
-                                    (제조자: <c:out value="${status.dispenserName}"/>)
-                                </div>
-                            </c:if>
-                            <c:if test="${not empty status.estimatedCompletionTime}">
-                                <div class="step-detail">
-                                    예상 완료 시간: <c:out value="${status.estimatedCompletionTime}"/>
-                                </div>
-                            </c:if>
+                            <div class="step-title">약을 조제 중입니다.</div>
+                            <div class="step-detail">
+                                (조제자 : 윤민지, 예상 완료 시간: 14:26)
+                            </div>
                         </div>
                     </div>
 
-                    <!-- 3단계: 조제 완료 -->
-                    <div class="step ${'COMPLETED'.equals(status.status) ? 'current' : ('RECEIVED_BY_USER'.equals(status.status) ? 'completed' : 'pending')}">
+                    <!-- 3단계: 조제 대기 (비활성) -->
+                    <div class="step" id="completionStep">
                         <div class="step-icon">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
+                            <div class="step-circle"></div>
                         </div>
                         <div class="step-content">
-                            <div class="step-title">제조가 완료되었습니다.</div>
-                            <c:if test="${status.completedAt != null}">
-                                <div class="step-time">
-                                    (<c:out value="${status.completedAt}"/>)
-                                </div>
-                            </c:if>
+                            <div class="step-title">조제가 완료되었습니다.</div>
                         </div>
                     </div>
                 </div>
@@ -141,6 +123,19 @@
 
     <!-- 공통 하단 네비게이션 -->
     <jsp:include page="../common/navigation.jsp"/>
+</div>
+
+<!-- 조제 완료 알림 모달 -->
+<div class="completion-notification-modal" id="completionNotificationModal" style="display: none;">
+    <div class="completion-notification-overlay"></div>
+    <div class="completion-notification-content">
+        <div class="completion-notification-character">
+            <img src="/static/images/icons/pharmacist.png" alt="약사" class="pharmacist-image">
+        </div>
+        <div class="completion-notification-time">25.09.26.14:20</div>
+        <div class="completion-notification-message">약 조제가 완료되었습니다!</div>
+        <button class="completion-notification-btn" onclick="closeCompletionNotification()">확인</button>
+    </div>
 </div>
 
 <!-- 수령 완료 확인 모달 -->

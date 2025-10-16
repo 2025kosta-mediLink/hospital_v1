@@ -10,6 +10,9 @@ public class DoctorSelectDTO {
     private List<NoticeDetailDTO> notices = new ArrayList<>();
     private List<ScheduleDetailDTO> schedule = new ArrayList<>();
 
+    // Constructors, getters, setters
+    public DoctorSelectDTO() {}
+
     public DoctorSelectDTO(Long id, String name, String profileImageUrl) {
         this.id = id;
         this.name = name;

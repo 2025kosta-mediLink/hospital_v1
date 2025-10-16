@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <c:set var="ctx" value="${pageContext.request.contextPath}" />
 
@@ -10,7 +11,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>처방전 조회</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common/common.css">
     <link rel="stylesheet" href="${ctx}/static/css/prescription/prescriptionList.css">
     <style>
     /* 강제 네비바 업데이트 - 2025-01-15 */
@@ -27,6 +27,8 @@
     </style>
 </head>
 <body>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+
 <c:set var="headerTitle" value="처방전 조회" scope="request"/>
 
 <div class="wrap">
@@ -50,9 +52,9 @@
                             <label class="prescription-checkbox">
                                 <input type="checkbox" class="checkbox-input" 
                                        data-prescription-id="${prescription.prescriptionId}"
-                                       ${prescription.canSelect && !prescription.completed && !(sessionScope.completedDispensingId != null && prescription.prescriptionId == 1) ? '' : 'disabled'}
+                                       ${prescription.canSelect && !prescription.completed && !(sessionScope.completedDispensingId != null && fn:contains(fn:join(sessionScope.completedPrescriptionIds, ','), prescription.prescriptionId)) ? '' : 'disabled'}
                                        onchange="togglePrescriptionSelection(this)">
-                                <div class="checkbox-custom ${prescription.completed || (sessionScope.completedDispensingId != null && prescription.prescriptionId == 1) ? 'completed' : ''}"></div>
+                                <div class="checkbox-custom ${prescription.completed || (sessionScope.completedDispensingId != null && fn:contains(fn:join(sessionScope.completedPrescriptionIds, ','), prescription.prescriptionId)) ? 'completed' : ''}"></div>
                             </label>
 
                             <!-- Department Row -->
@@ -103,7 +105,7 @@
                                 </div>
                                 
                                 <!-- Completed Status Text (오른쪽에 정렬) -->
-                                <c:if test="${prescription.completed || (sessionScope.completedDispensingId != null && prescription.prescriptionId == 1)}">
+                                <c:if test="${prescription.completed || (sessionScope.completedDispensingId != null && fn:contains(fn:join(sessionScope.completedPrescriptionIds, ','), prescription.prescriptionId))}">
                                     <div class="completed-status-right">
                                         <div class="completed-date-right">
                                             <c:choose>
@@ -176,12 +178,16 @@
     }
 
     function findPharmacies() {
+        console.log('=== 약국 찾기 버튼 클릭 ===');
+        console.log('선택된 처방전:', selectedPrescriptions);
+        
         if (selectedPrescriptions.size === 0) {
             alert('처방전을 선택해주세요.');
             return;
         }
         
         const prescriptionIds = Array.from(selectedPrescriptions);
+        console.log('전송할 처방전 ID:', prescriptionIds);
         
         // 서버에 선택된 처방전 ID들을 전송
         fetch('${ctx}/v1/prescription/select', {
@@ -222,5 +228,6 @@
         window.location.href = '${ctx}/v1/dispensing/status?prescriptionId=' + prescriptionId;
     }
 </script>
+
 </body>
 </html>

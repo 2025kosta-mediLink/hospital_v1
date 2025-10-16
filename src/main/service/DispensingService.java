@@ -1,6 +1,7 @@
 package service;
 
 import dao.DispensingDAO;
+import dao.PrescriptionDAO;
 import dto.DispensingStatusDTO;
 
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 public class DispensingService {
 
     private final DispensingDAO dispensingDAO = new DispensingDAO();
+    private final PrescriptionDAO prescriptionDAO = new PrescriptionDAO();
 
     /**
      * 조제 현황 조회
@@ -59,12 +61,11 @@ public class DispensingService {
         boolean success = dispensingDAO.completeReceipt(dispensingId);
         
         if (success) {
-            // 관련 처방전 상태도 업데이트
-            DispensingStatusDTO status = dispensingDAO.getDispensingStatus(dispensingId);
-            if (status != null) {
-                // 처방전 상태를 수령 완료로 업데이트
-                // TODO: 실제 처방전 ID를 조회하여 상태 업데이트
-            }
+            // 모든 처방전을 완료 상태로 업데이트 (테스트용)
+            prescriptionDAO.updateAllPrescriptionsCompleted(
+                "서대문권약국", 
+                java.time.LocalDate.now().toString()
+            );
         }
         
         return success;

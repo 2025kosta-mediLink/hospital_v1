@@ -55,3 +55,20 @@ logs/
 
 ### application files ###
 *.properties
+.env
+.env.local
+.env.production
+
+### Project specific files ###
+# Apache Maven
+apache-maven-*/
+
+# Apache Tomcat
+apache-tomcat-*/
+
+# Git files
+FETCH_HEAD
+cookies.txt
+
+# Web configuration (if needed to be ignored)
+# src/main/webapp/WEB-INF/web.xml

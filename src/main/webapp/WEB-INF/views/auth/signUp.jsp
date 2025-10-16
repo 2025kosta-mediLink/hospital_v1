@@ -45,7 +45,7 @@
             <label class="label" for="password">비밀번호</label>
             <input class="input" id="password" name="password" type="password"
                    autocomplete="new-password" placeholder="비밀번호">
-            <div class="helper">사용 가능한 문자는 영문, 숫자, 특수문자이며, 8~16자 이내여야 합니다.<br></div>
+            <div class="helper">사용 가능한 문자는 영문, 숫자, 특수문자 포함하여 8~16자 이내여야 합니다.<br></div>
         </div>
 
         <!-- 비밀번호 확인 -->

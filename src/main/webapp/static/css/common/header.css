@@ -1,29 +1,70 @@
-/* ===== Header ===== */
-.header{
-    display:flex;
-    flex-direction:row;
-    justify-content:space-between;
-    align-items:center;
-    padding:0 16px;
-    width:100%;
-    max-width:375px;
-    height:64px;
-    background:#FFFFFF;
-    border-radius:0;
-    position:sticky;
-    top:0;
-    z-index:10;
-    margin:0 auto; /* 가운데 정렬 */
+/* 공통 헤더 스타일 - 처방전 조회와 동일 */
+.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 16px;
+    width: 375px;
+    height: 64px;
+    background: #FFFFFF;
+    border-radius: 0px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    margin: 0 auto;
 }
-.header .btn-back{
-    display:flex; justify-content:center; align-items:center;
-    width:44px; height:44px; background:none; border:none; cursor:pointer; margin-right:auto;
+
+.header .btn-back {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0px;
+    width: 44px;
+    height: 44px;
+    border-radius: 0px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-right: auto;
 }
-.header .btn-back svg{ width:24px; height:24px; stroke:#6B7280; }
-.header .nav-actions{ display:flex; align-items:center; gap:8px; }
-.header .btn-close{
-    display:flex; justify-content:center; align-items:center;
-    width:44px; height:44px; background:none; border:none; cursor:pointer; margin-left:auto;
+
+.header .btn-back svg {
+    width: 24px;
+    height: 24px;
+    border-radius: 0px;
+    stroke: #6B7280;
 }
-.header .btn-close svg{ width:24px; height:24px; stroke:#6B7280; }
-.header h1{ display:none; }
+
+.header .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.header .btn-close {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0px;
+    width: 44px;
+    height: 44px;
+    border-radius: 0px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: auto;
+}
+
+.header .btn-close svg {
+    width: 24px;
+    height: 24px;
+    border-radius: 0px;
+    stroke: #6B7280;
+}
+
+.header h1 {
+    display: none;
+}

@@ -30,9 +30,9 @@
                 </div>
                 <span class="nav-label">홈</span>
             </div>
-            <div class="nav-item ${pageContext.request.servletPath.contains('prescription') ? 'active' : ''}" onclick="window.location.href='${ctx}/v1/prescription'">
+            <div class="nav-item" onclick="window.location.href='${ctx}/v1/prescription'">
                 <div class="nav-icon">
-                    <img src="${ctx}/static/images/icons/pill_blue.png" alt="처방전" class="nav-icon-img">
+                    <img src="${ctx}/static/images/icons/pill_gray.png" alt="처방전" class="nav-icon-img">
                 </div>
                 <span class="nav-label">처방전</span>
             </div>
@@ -49,21 +49,35 @@
 <script>
 // 네비게이션 아이콘 호버 효과
 document.addEventListener('DOMContentLoaded', function() {
-    const navItems = document.querySelectorAll('.nav-item:not(.active)');
+    const navItems = document.querySelectorAll('.nav-item');
     
     navItems.forEach(item => {
         const img = item.querySelector('.nav-icon-img');
         if (!img) return;
         
-        const currentSrc = img.src;
-        const blueSrc = currentSrc.replace('_gray.png', '_blue.png');
+        // 원본 src를 저장
+        const originalSrc = img.src;
+        
+        // 파란색 아이콘 경로 생성
+        let blueSrc = originalSrc;
+        if (originalSrc.includes('calendar_gray.png')) {
+            blueSrc = originalSrc.replace('calendar_gray.png', 'calendar_blue.png');
+        } else if (originalSrc.includes('clipboard_gray.png')) {
+            blueSrc = originalSrc.replace('clipboard_gray.png', 'clipboard_blue.png');
+        } else if (originalSrc.includes('home_gray.png')) {
+            blueSrc = originalSrc.replace('home_gray.png', 'home_blue.png');
+        } else if (originalSrc.includes('pill_gray.png')) {
+            blueSrc = originalSrc.replace('pill_gray.png', 'pill_blue.png');
+        } else if (originalSrc.includes('person_gray.png')) {
+            blueSrc = originalSrc.replace('person_gray.png', 'person_blue.png');
+        }
         
         item.addEventListener('mouseenter', function() {
             img.src = blueSrc;
         });
         
         item.addEventListener('mouseleave', function() {
-            img.src = currentSrc;
+            img.src = originalSrc;
         });
     });
 });

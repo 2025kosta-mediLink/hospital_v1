@@ -7,14 +7,23 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>주변 약국 찾기</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common/common.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/prescription/pharmacySearch.css?v=20250115_002">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/prescription/pharmacySearch.css?v=20250115_004">
+    
+    <!-- 카카오 지도 API 로드 (JavaScript 키 사용) -->
+    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=371a027cd1dac68dce2424d2ac0fd3ca"></script>
+    
+    <!-- API 설정 및 지도 서비스 -->
+    <script src="${pageContext.request.contextPath}/static/js/prescription/config/api-config.js?v=20250115_001"></script>
+    <script src="${pageContext.request.contextPath}/static/js/prescription/map/kakao-map-service.js?v=20250115_001"></script>
+    <script src="${pageContext.request.contextPath}/static/js/prescription/pharmacySearch.js?v=20250115_001"></script>
 </head>
 <body>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 
+<c:set var="headerTitle" value="주변 약국 찾기" scope="request"/>
 
 <div class="wrap">
+    <!-- 공통 헤더 -->
     <jsp:include page="../common/header.jsp"/>
 
     <!-- 필터 바 -->
@@ -27,26 +36,7 @@
     <!-- 전체 화면 지도 -->
     <div class="map-container">
         <div id="map" class="map-fullscreen">
-            <!-- 네이버 지도 API가 들어갈 영역 -->
-        <div class="map-placeholder">
-                <!-- 약국 마커들 -->
-                <div class="pharmacy-marker" style="top: 30%; left: 60%;" data-pharmacy-id="pharmacy_001" onclick="selectPharmacy('pharmacy_001')">
-                    <div class="marker-icon">💊</div>
-                    <div class="marker-number">2+</div>
-                </div>
-                <div class="pharmacy-marker" style="top: 45%; left: 70%;" data-pharmacy-id="pharmacy_002" onclick="selectPharmacy('pharmacy_002')">
-                    <div class="marker-icon">💊</div>
-            </div>
-                <div class="pharmacy-marker" style="top: 60%; left: 50%;" data-pharmacy-id="pharmacy_003" onclick="selectPharmacy('pharmacy_003')">
-                    <div class="marker-icon">💊</div>
-                    <div class="marker-number">10+</div>
-                    </div>
-                <!-- 내 위치 마커 -->
-                <div class="user-location-marker" style="top: 50%; left: 45%;">
-                    <div class="location-dot"></div>
-                    <div class="location-ring"></div>
-                </div>
-            </div>
+            <!-- 카카오맵 API가 들어갈 영역 -->
         </div>
     </div>
 
@@ -55,42 +45,16 @@
         <div class="list-header">
             <div class="location-selector">현재 지도 중심 ∨</div>
             <div class="sort-selector">관련도순 ∨</div>
-            </div>
+        </div>
 
         <div class="pharmacy-list">
-        <c:choose>
-            <c:when test="${not empty pharmacies}">
-                <c:forEach var="pharmacy" items="${pharmacies}">
-                        <div class="pharmacy-list-item" data-pharmacy-id="${pharmacy.pharmacyId}" onclick="selectPharmacy('${pharmacy.pharmacyId}')">
-                        <div class="pharmacy-info">
-                                <div class="pharmacy-name"><c:out value="${pharmacy.pharmacyName}"/></div>
-                                <div class="pharmacy-distance">
-                                    <fmt:formatNumber value="${pharmacy.distance * 1000}" pattern="0"/>m
-                                </div>
-                                <div class="pharmacy-address">
-                                    <c:out value="${pharmacy.address}"/>
-                                </div>
-                            </div>
-                                <div class="pharmacy-status">
-                                    <c:choose>
-                                        <c:when test="${pharmacy.isOpen}">
-                                        <span class="status-badge open">영업중</span>
-                                        </c:when>
-                                        <c:otherwise>
-                                        <span class="status-badge closed">영업마감</span>
-                                        </c:otherwise>
-                                    </c:choose>
-                        </div>
-                    </div>
-                </c:forEach>
-            </c:when>
-            <c:otherwise>
-                <div class="empty-state">
-                    <div class="empty-icon">🏥</div>
-                    <div class="empty-text">주변에 약국이 없습니다.</div>
+            <!-- 카카오 API에서 로드된 약국 데이터가 여기에 동적으로 추가됩니다 -->
+            <div class="loading-message">
+                <div style="text-align: center; padding: 20px; color: #666;">
+                    <div style="font-size: 18px; margin-bottom: 10px;">🔍</div>
+                    <div>주변 약국을 검색 중입니다...</div>
                 </div>
-            </c:otherwise>
-        </c:choose>
+            </div>
         </div>
     </div>
 
@@ -162,270 +126,9 @@
         </div>
     </div>
 
-
     <!-- 공통 하단 네비게이션 -->
     <jsp:include page="../common/navigation.jsp"/>
 </div>
 
-<script>
-    console.log('=== JavaScript 파일 로드됨 ===');
-    
-    // 페이지 로드 시 초기화
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('=== DOM 로드 완료 ===');
-        
-        // 모달 핸들 드래그 이벤트
-        const modalHandle = document.querySelector('.modal-handle');
-        if (modalHandle) {
-            modalHandle.addEventListener('click', function() {
-                closePharmacyDetail();
-            });
-        }
-        
-        // 처방전 전달 폼 이벤트
-        const prescriptionForm = document.getElementById('sendPrescriptionForm');
-        if (prescriptionForm) {
-            prescriptionForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                sendPrescription();
-            });
-        }
-    });
-    
-    function selectPharmacy(pharmacyId) {
-        console.log('=== 약국 선택 시작 ===');
-        console.log('선택된 약국 ID:', pharmacyId);
-        
-        // 약국 데이터에서 해당 약국 찾기
-        const pharmacies = [
-            <c:forEach var="pharmacy" items="${pharmacies}" varStatus="status">
-            {
-                pharmacyId: "${pharmacy.pharmacyId}",
-                pharmacyName: "${pharmacy.pharmacyName}",
-                address: "${pharmacy.address}",
-                distance: ${pharmacy.distance},
-                phoneNumber: "${pharmacy.phoneNumber}",
-                operatingHours: "${pharmacy.operatingHours}",
-                isOpen: ${pharmacy.isOpen},
-                rating: ${pharmacy.rating}
-            }<c:if test="${!status.last}">,</c:if>
-            </c:forEach>
-        ];
-        
-        console.log('전체 약국 데이터:', pharmacies);
-        
-        const pharmacy = pharmacies.find(p => p.pharmacyId === pharmacyId);
-        console.log('찾은 약국:', pharmacy);
-        
-        if (pharmacy) {
-            console.log('약국 상세 정보 표시 시작');
-            console.log('전달할 약국 객체:', pharmacy);
-            showPharmacyDetail(pharmacy);
-        } else {
-            console.log('약국을 찾을 수 없습니다.');
-        }
-    }
-    
-    function showPharmacyDetail(pharmacy) {
-        console.log('=== 상세 정보 표시 시작 ===');
-        console.log('약국 데이터:', pharmacy);
-        
-        // pharmacy 객체 검증
-        if (!pharmacy) {
-            console.error('pharmacy 객체가 null 또는 undefined입니다!');
-            return;
-        }
-        
-        if (!pharmacy.pharmacyId) {
-            console.error('pharmacy.pharmacyId가 없습니다!');
-            return;
-        }
-        
-        console.log('약국 ID 확인:', pharmacy.pharmacyId);
-        
-        // 모달 요소들 확인
-        const modalName = document.getElementById('modalPharmacyName');
-        const modalAddress = document.getElementById('modalAddress');
-        const modalDistance = document.getElementById('modalDistance');
-        const modalId = document.getElementById('modalPharmacyId');
-        const modal = document.getElementById('pharmacyDetailModal');
-        
-        console.log('모달 요소들:', {
-            modalName: modalName,
-            modalAddress: modalAddress,
-            modalDistance: modalDistance,
-            modalId: modalId,
-            modal: modal
-        });
-        
-        if (!modalName || !modalAddress || !modalDistance || !modalId || !modal) {
-            console.error('모달 요소를 찾을 수 없습니다!');
-            return;
-        }
-        
-        // 약국 이름
-        modalName.textContent = pharmacy.pharmacyName;
-        console.log('약국 이름 설정:', pharmacy.pharmacyName);
-        
-        // 영업 상태
-        const modalStatus = document.getElementById('modalStatus');
-        if (modalStatus) {
-            modalStatus.textContent = pharmacy.isOpen ? '영업중' : '영업마감';
-            modalStatus.className = pharmacy.isOpen ? 'status-badge open' : 'status-badge closed';
-        }
-        
-        // 영업시간
-        const modalHours = document.getElementById('modalHours');
-        if (modalHours) {
-            modalHours.textContent = pharmacy.operatingHours || '목 08:30-21:00';
-        }
-        
-        // 주소
-        modalAddress.textContent = pharmacy.address;
-        console.log('약국 주소 설정:', pharmacy.address);
-        
-        // 거리
-        modalDistance.textContent = Math.round(pharmacy.distance * 1000) + 'm';
-        console.log('약국 거리 설정:', Math.round(pharmacy.distance * 1000) + 'm');
-        
-        // 약국 ID (처방전 전달용)
-        modalId.value = pharmacy.pharmacyId;
-        console.log('약국 ID 설정:', pharmacy.pharmacyId);
-        
-        // 약국 리스트 오버레이 숨기기
-        const pharmacyListOverlay = document.querySelector('.pharmacy-list-overlay');
-        if (pharmacyListOverlay) {
-            pharmacyListOverlay.style.display = 'none';
-        }
-        
-        // 모달 표시
-        console.log('모달 표시 시작');
-        modal.style.display = 'block';
-        
-        // 애니메이션 효과
-        setTimeout(() => {
-            console.log('모달 애니메이션 시작');
-            modal.style.transform = 'translateX(-50%) translateY(0)';
-        }, 10);
-        
-        console.log('=== 상세 정보 표시 완료 ===');
-    }
-    
-    function closePharmacyDetail() {
-        const modal = document.getElementById('pharmacyDetailModal');
-        modal.style.transform = 'translateX(-50%) translateY(100%)';
-        
-        // 약국 리스트 오버레이 다시 보이기
-        const pharmacyListOverlay = document.querySelector('.pharmacy-list-overlay');
-        if (pharmacyListOverlay) {
-            pharmacyListOverlay.style.display = 'block';
-        }
-        
-        setTimeout(() => {
-            modal.style.display = 'none';
-        }, 300);
-    }
-    
-    function callPharmacy() {
-        // 전화 걸기 기능
-        const phoneNumber = document.getElementById('modalPhone')?.textContent || '02-1234-5678';
-        window.location.href = 'tel:' + phoneNumber;
-    }
-    
-    function copyAddress() {
-        // 주소 복사 기능
-        const address = document.getElementById('modalAddress')?.textContent || '';
-        if (navigator.clipboard) {
-            navigator.clipboard.writeText(address).then(() => {
-                alert('주소가 클립보드에 복사되었습니다.');
-            });
-        } else {
-            alert('주소: ' + address);
-        }
-    }
-    
-    function showDirections(latitude, longitude) {
-        // 지도 앱 연동 (향후 구현)
-        alert('길찾기 기능은 추후 구현 예정입니다.');
-    }
-    
-    function sharePharmacy() {
-        if (navigator.share) {
-            navigator.share({
-                title: '약국 정보',
-                text: '약국 정보를 공유합니다.',
-                url: window.location.href
-            });
-        } else {
-            // 클립보드에 복사
-            navigator.clipboard.writeText(window.location.href).then(() => {
-                alert('링크가 클립보드에 복사되었습니다.');
-            });
-        }
-    }
-    
-    function sendPrescription() {
-        const pharmacyId = document.getElementById('modalPharmacyId').value;
-        const pharmacyName = document.getElementById('modalPharmacyName').textContent;
-        
-        console.log('약국 ID:', pharmacyId);
-        console.log('약국 이름:', pharmacyName);
-        
-        if (!pharmacyId) {
-            alert('약국 정보를 찾을 수 없습니다.');
-            return;
-        }
-        
-        if (!pharmacyName || pharmacyName.trim() === '') {
-            console.error('약국 이름이 비어있습니다!');
-            showConfirmModal('약국');
-            return;
-        }
-        
-        showConfirmModal(pharmacyName);
-    }
-    
-    function showConfirmModal(pharmacyName) {
-        console.log('showConfirmModal 호출됨, 약국 이름:', pharmacyName);
-        
-        const modal = document.getElementById('confirmModal');
-        const message = document.getElementById('confirmMessage');
-        
-        console.log('모달 요소들:', { modal, message });
-        
-        if (!modal || !message) {
-            console.error('모달 요소를 찾을 수 없습니다!');
-            return;
-        }
-        
-        const confirmText = `"${pharmacyName}"에 처방전을 전달하시겠습니까?`;
-        console.log('설정할 텍스트:', confirmText);
-        
-        message.textContent = confirmText;
-        modal.style.display = 'flex';
-        
-        // 애니메이션
-        setTimeout(() => {
-            modal.style.opacity = '1';
-        }, 10);
-    }
-    
-    function closeConfirmModal() {
-        const modal = document.getElementById('confirmModal');
-        modal.style.opacity = '0';
-        
-        setTimeout(() => {
-            modal.style.display = 'none';
-        }, 300);
-    }
-    
-    function confirmSendPrescription() {
-        // 폼을 직접 제출하여 서버에서 리다이렉트 처리
-        const form = document.getElementById('sendPrescriptionForm');
-        closeConfirmModal();
-        form.submit();
-    }
-</script>
 </body>
 </html>
-

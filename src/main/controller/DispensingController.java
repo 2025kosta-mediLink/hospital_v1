@@ -54,7 +54,15 @@ public class DispensingController extends HttpServlet {
                 return;
             }
             
+            // 세션에서 약국 정보 가져오기
+            HttpSession session = req.getSession();
+            String pharmacyInfo = (String) session.getAttribute("selectedPharmacyInfo");
+            
+            System.out.println("DispensingController - 세션 ID: " + session.getId());
+            System.out.println("DispensingController - 세션에서 가져온 약국 정보: " + pharmacyInfo);
+            
             req.setAttribute("status", status);
+            req.setAttribute("pharmacyInfo", pharmacyInfo);
             req.getRequestDispatcher("/WEB-INF/views/prescription/dispensingStatus.jsp").forward(req, resp);
         } catch (Exception e) {
             req.setAttribute("error", "조제 현황을 불러오는 중 오류가 발생했습니다.");
@@ -75,7 +83,7 @@ public class DispensingController extends HttpServlet {
             
             if (success) {
                 // 처방전 목록으로 리다이렉트 (완료 상태 표시)
-                resp.sendRedirect(req.getContextPath() + "/v1/prescription?completed=true");
+                resp.sendRedirect(req.getContextPath() + "/v1/prescription?completed=true&dispensingId=" + dispensingId);
             } else {
                 req.setAttribute("error", "수령 완료 처리 중 오류가 발생했습니다.");
                 req.getRequestDispatcher("/WEB-INF/views/prescription/dispensingStatus.jsp").forward(req, resp);
