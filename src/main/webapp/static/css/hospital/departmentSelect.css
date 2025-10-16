@@ -1,99 +1,148 @@
-/* 공통 스타일 */
-body {
-    background-color: #f5f7fb;
-    font-family: 'Noto Sans', sans-serif;
+/* === /static/css/reception/departmentList.css (REPLACE ENTIRE FILE) === */
+
+/* 공통 토큰(common.css)을 그대로 사용한다는 전제 */
+*{ box-sizing:border-box; }
+html, body{ height:100%; }
+
+/* 화면 전체 배경은 전역, 컨텐츠 배경은 섹션별로 제어 */
+body{
+    margin:0;
+    color:var(--text);
+    font:14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR",
+    AppleSDGothicNeo, "Helvetica Neue", Arial, "Malgun Gothic", sans-serif;
+    background:var(--bg);
 }
 
-/* 진료과 카드 */
-.card {
-    background-color: #fff;
-    padding: 16px;
-    border-radius: 16px;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-    margin-bottom: 16px;
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    transition: transform 0.08s ease, border-color 0.08s ease;
+/* ===== 래퍼: 상단/하단 여유를 주고, 내부 스크롤은 폼으로 ===== */
+.wrap{
+    max-width:375px;
+    margin:0 auto;
+    display:flex;
+    flex-direction:column;
+    gap:0;
+    /* 하단 네비와 겹치지 않도록 안쪽 패딩 확보 */
+    padding:
+            calc(env(safe-area-inset-top) + 0px)
+            0
+            calc(var(--navbar-h) + 24px + env(safe-area-inset-bottom));
 }
 
-.card:hover {
-    background-color: #eff6ff;
+/* ===== 검색 섹션 (Figma 규격 반영) ===== */
+/* Search Section: padding: 16px 16px 12px; background #fff */
+.search{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:12px;
+    padding:16px 16px 12px;
+    background:#FFFFFF;
+}
+.search .search-row{
+    display:flex; gap:8px; width:100%;
+}
+.search input{
+    flex:1;
+    height:44px;
+    border:1px solid var(--line);
+    border-radius:12px;
+    background:#fff;
+    padding:0 12px;
+    outline:none;
+    font-size:14px;
+}
+.search input::placeholder{ color:#9AA3B2; }
+.search input:focus{ border-color:var(--primary); }
+
+/* 검색 버튼은 공통 버튼 사용(.btn .btn-primary) – 여긴 높이만 44로 맞춤 */
+.search .btn.btn-primary{
+    height:44px;
+    padding:0 14px;
 }
 
-/* 진료과 선택 버튼 */
-.item {
-    position: relative;
-    display: block;
+/* ===== 목록 섹션 (Figma: Department Grid 컨테이너) ===== */
+/* Department Grid: padding: 0 16px 16px; gap: 16px; */
+.grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:16px;
+    padding:0 16px 16px;
+    background:transparent; /* 배경은 상위가 white일 때만 필요 */
 }
 
-.radio {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    cursor: pointer;
+/* ===== 카드(진료과 버튼) ===== */
+/* Figma: 180x128, bg #fff, border #E5E7EB, radius 16, 내부 padding 20, gap 16 */
+.item{
+    position:relative; display:block;
+}
+.radio{
+    position:absolute; inset:0; opacity:0; cursor:pointer;
+}
+.card{
+    display:flex; flex-direction:column; justify-content:center; align-items:center;
+    width:100%;                   /* 그리드 내에서 가득 차고 */
+    min-height:128px;             /* Figma 높이 보장 */
+    background:#FFFFFF;
+    border:1px solid var(--line); /* #E5E7EB == var(--line) */
+    border-radius:16px;
+    padding:20px;
+    gap:16px;
+    transition:transform .08s ease, border-color .08s ease, box-shadow .08s ease;
+    box-shadow:0 1px 2px rgba(0,0,0,.02);
+}
+.icon{
+    width:28px; height:28px; border-radius:999px; display:grid; place-items:center;
+    color:#2563EB; background:#EFF6FF; font-size:18px;
+}
+.name{ font-weight:800; text-align:center; color:#111827; }
+
+/* 선택/포커스 효과 */
+.radio:checked + .card{
+    border-color:var(--primary);
+    box-shadow:0 0 0 3px rgba(37,99,235,.10);
+    transform:translateY(-1px);
+}
+.radio:focus-visible + .card{ outline:3px solid rgba(37,99,235,.25) }
+
+/* ===== 폼을 스크롤 컨테이너로 (상/하단 여백은 wrap이 챙김) ===== */
+#deptForm{
+    flex:1;
+    overflow:auto;
+    -webkit-overflow-scrolling:touch;
+    /* 탭바 + 하단 버튼 컨테이너 여유 */
+    padding-bottom:96px;
 }
 
-.card .icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    background: var(--primary-weak);
-    display: grid;
-    place-items: center;
-    color: var(--primary);
-    font-size: 18px;
+/* ===== 하단 고정 버튼 – 네비 위에 떠서 항상 여유 있게 ===== */
+.footer{
+    position:fixed;
+    left:50%;
+    transform:translateX(-50%);
+    bottom:calc(var(--navbar-h) + 12px + env(safe-area-inset-bottom));
+    width:calc(100% - 32px);         /* 좌우 16px 패딩과 동일한 시각 폭 */
+    max-width:375px;
+    z-index:1000;
+    padding:8px;
+    background:rgba(255,255,255,.98);
+    border:1px solid var(--line);
+    border-radius:12px;
+    box-shadow:0 8px 24px rgba(17,24,39,.10);
 }
 
-.card .name {
-    font-weight: 800;
-    text-align: center;
+/* 버튼은 공통 .btn .btn-primary 규격 사용 */
+.footer .btn.btn-primary{
+    height:48px;           /* 공통 버튼 높이 */
+    border-radius:12px;    /* 공통 라운드 */
 }
 
-/* 검색 바 */
-.search {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    background: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 8px 10px;
-    margin: 8px 0 14px;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+/* 빈 상태 */
+.empty{
+    background:#fff;
+    border:1px dashed var(--line);
+    padding:24px;
+    border-radius:12px;
+    color:#6B7280;
+    text-align:center;
+    margin:0 16px;
 }
 
-.search input {
-    flex: 1;
-    border: 0;
-    outline: 0;
-    font-size: 14px;
-    background: transparent;
-}
-
-.search button {
-    border: 0;
-    background: var(--primary);
-    color: #fff;
-    font-weight: 800;
-    border-radius: 10px;
-    padding: 8px 12px;
-    cursor: pointer;
-}
-/* 버튼 스타일 */
-.btn-primary {
-    width: 100%;
-    padding: 14px;
-    border-radius: 12px;
-    background-color: #2563eb;
-    color: #fff;
-    font-weight: 700;
-    cursor: pointer;
-}
-
-.btn-primary:hover {
-    background-color: #1c5fca;
-}
-
-
-
+/* 하단 네비게이션은 공통 navigation.css 사용(여긴 건드리지 않음) */

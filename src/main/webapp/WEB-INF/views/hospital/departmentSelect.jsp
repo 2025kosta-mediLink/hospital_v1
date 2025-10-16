@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>진료과 선택</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common/common.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/reception/departmentList.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/hospital/departmentSelect.css">
     <script defer src="${pageContext.request.contextPath}/static/js/common.js"></script>
     <script defer src="${pageContext.request.contextPath}/static/js/hospital/departmentSelect.js"></script>
 </head>
@@ -20,7 +20,7 @@
     <!-- 진료과 검색 -->
     <div class="search">
         <input type="text" id="searchTerm" placeholder="진료과명을 입력하세요" aria-label="진료과 검색" value="${param.searchTerm}" />
-        <button type="button" onclick="searchDepartments()">검색</button>
+        <button type="button" class="btn btn-primary" onclick="searchDepartments()">검색</button>
     </div>
 
     <!-- 진료과 목록 -->
