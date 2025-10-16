@@ -114,12 +114,12 @@
         </c:forEach>
     </div>
 
-    <!-- 아래 화살표 네비(추가) -->
-    <div class="cards-nav">
-        <button type="button" class="cards-prev" aria-label="이전 카드">←</button>
-        <button type="button" class="cards-next" aria-label="다음 카드">→</button>
-    </div>
-</div>
+<%--    <!-- 아래 화살표 네비(추가) -->--%>
+    <%--    <div class="cards-nav">--%>
+    <%--        <button type="button" class="cards-prev" aria-label="이전 카드">←</button>--%>
+    <%--        <button type="button" class="cards-next" aria-label="다음 카드">→</button>--%>
+    <%--    </div>--%>
+    <%--</div>--%>
 
 
 <!-- 예약 폼 -->

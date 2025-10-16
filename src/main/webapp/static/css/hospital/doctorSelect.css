@@ -148,7 +148,7 @@
 /* 스택 컨테이너 */
 .doctor-cards {
   position: relative;
-  height: 480px;
+  height: 410px;
   overflow: hidden;
 }
 

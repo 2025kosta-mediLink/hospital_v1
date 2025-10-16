@@ -75,20 +75,6 @@ function selectDoctor(index) {
   updateDoctorCards();
 }
 
-function slideDoctorName(next = true) {
-  const nameNodes = getNameNodes();
-  if (!nameNodes.length) {
-    return;
-  }
-
-  currentDoctorIndex = next
-      ? (currentDoctorIndex + 1) % nameNodes.length
-      : (currentDoctorIndex - 1 + nameNodes.length) % nameNodes.length;
-
-  updateDoctorNames();
-  updateDoctorCards();
-}
-
 // 의사 카드 슬라이드 (캐러셀: 앞 1장, 뒤 1장 예고)
 function updateDoctorCards() {
   const cards = getCardNodes();
@@ -114,20 +100,6 @@ function updateDoctorCards() {
   updateSelectedDoctorId();
 }
 
-function slideDoctorCard(next = true) {
-  const cards = getCardNodes();
-  if (!cards.length) {
-    return;
-  }
-
-  currentDoctorIndex = next
-      ? (currentDoctorIndex + 1) % cards.length
-      : (currentDoctorIndex - 1 + cards.length) % cards.length;
-
-  updateDoctorNames();
-  updateDoctorCards();
-}
-
 function getSelectedDoctorId() {
   const cards = getCardNodes();
   if (!cards.length) {
@@ -148,7 +120,7 @@ function updateSelectedDoctorId() {
   }
 }
 
-// 이벤트 리스너 (네가 준 블록 + 화살표 바인딩 합침)
+// 이벤트 리스너 (화살표 바인딩 제거, 이름 클릭만)
 document.addEventListener('DOMContentLoaded', () => {
   updateNoticeDisplay();
   updateDoctorNames();
@@ -166,24 +138,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 캐러셀 화살표 바인딩
-  const prevBtn = document.querySelector('.cards-prev');
-  const nextBtn = document.querySelector('.cards-next');
+  // 화살표 관련 코드 제거됨
+  // const prevBtn = document.querySelector('.cards-prev');
+  // const nextBtn = document.querySelector('.cards-next');
+  // if (prevBtn) prevBtn.addEventListener('click', () => slideDoctorCard(false));
+  // if (nextBtn) nextBtn.addEventListener('click', () => slideDoctorCard(true));
 
-  if (prevBtn) {
-    prevBtn.addEventListener('click', () => slideDoctorCard(false));
-  }
-  if (nextBtn) {
-    nextBtn.addEventListener('click', () => slideDoctorCard(true));
-  }
-
-  //(옵션) 키보드 좌우 화살표로 넘기기
-  window.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft') {
-      slideDoctorCard(false);
-    }
-    if (e.key === 'ArrowRight') {
-      slideDoctorCard(true);
-    }
-  });
+  // (옵션) 키보드 좌우 화살표로 넘기기 제거됨
+  // window.addEventListener('keydown', (e) => {
+  //   if (e.key === 'ArrowLeft') slideDoctorCard(false);
+  //   if (e.key === 'ArrowRight') slideDoctorCard(true);
+  // });
 });
