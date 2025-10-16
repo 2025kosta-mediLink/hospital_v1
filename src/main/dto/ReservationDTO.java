@@ -7,7 +7,8 @@ public class ReservationDTO {
     private Long memberId;
     private String appointmentAt;
     private String status;
-    private String reservationNo;  // 예약 번호 추가
+    private String reservationNo;
+    private String timeLabel;
 
     // Getters and Setters
     public Long getReservationId() {
@@ -51,10 +52,18 @@ public class ReservationDTO {
     }
 
     public String getReservationNo() {
-        return reservationNo;  // 예약 번호 getter 추가
+        return reservationNo;
     }
 
     public void setReservationNo(String reservationNo) {
-        this.reservationNo = reservationNo;  // 예약 번호 setter 추가
+        this.reservationNo = reservationNo;
+    }
+
+    public String getTimeLabel() {
+        return timeLabel;
+    }
+
+    public void setTimeLabel(String timeLabel) {
+        this.timeLabel = timeLabel;
     }
 }
