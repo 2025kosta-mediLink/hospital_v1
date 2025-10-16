@@ -1,16 +1,57 @@
-/* 로그인 전용 */
+/* login.css */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css");
 html { -webkit-text-size-adjust: 100%; }
 :root { color-scheme: light; }
 
-body {
-    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans KR",
-    AppleSDGothicNeo,"Helvetica Neue",Arial,"Malgun Gothic",sans-serif;
-    font-size:14px; line-height:1.45; background:var(--bg);
+body{
+    font-family:"Pretendard Variable", "Noto Sans KR", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, AppleSDGothicNeo, "Helvetica Neue",
+    Arial, "Malgun Gothic", sans-serif;
+    font-size:14px;
+    line-height:1.45;
+    background:#E5E7EB;
+    color:var(--text);
 }
 
-.card.auth { margin-top:84px; }
-.card-title { letter-spacing:-.2px; }
+/* 카드 간격: 헤더(64px) 고려해서 시각적 여백 정돈 */
+.card.auth{
+    margin-top:84px;         /* 기존 유지 */
+    padding:28px 22px;       /* 내부 여백 확대 (기존 대비 +6px/+4px 정도) */
+}
 
-/* 버튼 간격 */
+/* 타이틀: reservation 톤에 맞춰 살짝 또렷하게 */
+.card-title{
+    letter-spacing:-.2px;
+    font-weight:800;         /* 공통 card-title 톤 유지 */
+    font-size:20px;          /* 공통 규격 유지 */
+    text-align:center;
+    color:var(--text);
+}
+
+/* 필드 톤: 레이블/플레이스홀더/포커스 컬러 통일 */
+.label{ color:var(--muted); font-size:14px; margin:0 0 8px 2px; }
+.input{
+    width:100%;
+    background:transparent;
+    border:none;
+    outline:none;
+    border-bottom:1px solid var(--line);
+    padding:12px 4px 14px;
+    font-size:16px;
+    color:var(--text);
+    caret-color:var(--primary);
+}
+.input::placeholder{ color:#94A3B8; }
+.input:focus{ border-bottom-color:var(--primary); }
+
+/* 버튼 간격: 스택 유틸 유지 */
 .stack-16{ margin-top:16px; }
 .stack-24{ margin-top:24px; }
+
+.screen{ background:#E5E7EB; }
+.form-group{ margin:20px 0; }
+.input{ padding:14px 6px 16px; }
+.screen{
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
