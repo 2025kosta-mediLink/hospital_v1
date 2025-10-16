@@ -155,6 +155,7 @@
 <jsp:include page="/WEB-INF/views/common/navigation.jsp"/>
 
 <!-- 카카오톡 API 스크립트 -->
+<!-- 따로 파일로 생성하면 kakaoJsKey 값 적용이 안되서 여기서 생성 -->
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.6/kakao.min.js" integrity="sha384-WAtVcQYcmTO/N+C1N+1m6Gp8qxh+3NlnP7X1U7qP6P5dQY/MsRBNTh+e1ahJrkEm" crossorigin="anonymous"></script>
 
 <script>
