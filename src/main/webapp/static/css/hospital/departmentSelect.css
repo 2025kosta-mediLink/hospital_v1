@@ -1,148 +1,333 @@
-/* === /static/css/reception/departmentList.css (REPLACE ENTIRE FILE) === */
+/* =============================
+   Department List (안정화: 폼만 스크롤 + 하단 버튼 sticky)
+============================= */
 
-/* 공통 토큰(common.css)을 그대로 사용한다는 전제 */
-*{ box-sizing:border-box; }
-html, body{ height:100%; }
+/* 토큰 */
+:root {
+  --bg: #f5f7fb;
+  --card: #fff;
+  --text: #111827;
+  --muted: #6b7280;
+  --line: #e6eef5;
+  --primary: #2563eb;
+  --primary-weak: #eff6ff;
+  --shadow-card: 0 4px 12px rgba(17, 24, 39, .05);
+  --radius: 16px;
+  --tabbar-h: 72px;
 
-/* 화면 전체 배경은 전역, 컨텐츠 배경은 섹션별로 제어 */
-body{
-    margin:0;
-    color:var(--text);
-    font:14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR",
-    AppleSDGothicNeo, "Helvetica Neue", Arial, "Malgun Gothic", sans-serif;
-    background:var(--bg);
+  /* iPhone16 프레임 */
+  --vw: 393px;
+  --vh: 852px;
+}
+
+* {
+  box-sizing: border-box
+}
+
+html, body {
+  height: 100%
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, AppleSDGothicNeo, "Noto Sans KR", "Malgun Gothic", sans-serif;
 }
 
 /* ===== 래퍼: 상단/하단 여유를 주고, 내부 스크롤은 폼으로 ===== */
-.wrap{
-    max-width:375px;
-    margin:0 auto;
-    display:flex;
-    flex-direction:column;
-    gap:0;
-    /* 하단 네비와 겹치지 않도록 안쪽 패딩 확보 */
-    padding:
-            calc(env(safe-area-inset-top) + 0px)
-            0
-            calc(var(--navbar-h) + 24px + env(safe-area-inset-bottom));
+.wrap {
+  width: 100%; /* 가로폭을 100%로 수정 */
+  max-width: 375px; /* 최대폭을 375px로 설정 */
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: calc(env(safe-area-inset-top) + 0px) 0 calc(var(--navbar-h) + 24px + env(safe-area-inset-bottom));
+  overflow: hidden;
+  position: relative;
 }
 
-/* ===== 검색 섹션 (Figma 규격 반영) ===== */
-/* Search Section: padding: 16px 16px 12px; background #fff */
-.search{
-    display:flex;
-    flex-direction:column;
-    align-items:flex-start;
-    gap:12px;
-    padding:16px 16px 12px;
-    background:#FFFFFF;
-}
-.search .search-row{
-    display:flex; gap:8px; width:100%;
-}
-.search input{
-    flex:1;
-    height:44px;
-    border:1px solid var(--line);
-    border-radius:12px;
-    background:#fff;
-    padding:0 12px;
-    outline:none;
-    font-size:14px;
-}
-.search input::placeholder{ color:#9AA3B2; }
-.search input:focus{ border-color:var(--primary); }
-
-/* 검색 버튼은 공통 버튼 사용(.btn .btn-primary) – 여긴 높이만 44로 맞춤 */
-.search .btn.btn-primary{
-    height:44px;
-    padding:0 14px;
+/* 상단 영역은 고정 높이 컨텐츠 */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  padding: 0;
+  margin: 0 0 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .04);
 }
 
-/* ===== 목록 섹션 (Figma: Department Grid 컨테이너) ===== */
-/* Department Grid: padding: 0 16px 16px; gap: 16px; */
-.grid{
-    display:grid;
-    grid-template-columns:repeat(2, 1fr);
-    gap:16px;
-    padding:0 16px 16px;
-    background:transparent; /* 배경은 상위가 white일 때만 필요 */
+.title {
+  font-weight: 800;
+  font-size: 20px;
+  margin: 0 4px
 }
 
-/* ===== 카드(진료과 버튼) ===== */
-/* Figma: 180x128, bg #fff, border #E5E7EB, radius 16, 내부 padding 20, gap 16 */
-.item{
-    position:relative; display:block;
-}
-.radio{
-    position:absolute; inset:0; opacity:0; cursor:pointer;
-}
-.card{
-    display:flex; flex-direction:column; justify-content:center; align-items:center;
-    width:100%;                   /* 그리드 내에서 가득 차고 */
-    min-height:128px;             /* Figma 높이 보장 */
-    background:#FFFFFF;
-    border:1px solid var(--line); /* #E5E7EB == var(--line) */
-    border-radius:16px;
-    padding:20px;
-    gap:16px;
-    transition:transform .08s ease, border-color .08s ease, box-shadow .08s ease;
-    box-shadow:0 1px 2px rgba(0,0,0,.02);
-}
-.icon{
-    width:28px; height:28px; border-radius:999px; display:grid; place-items:center;
-    color:#2563EB; background:#EFF6FF; font-size:18px;
-}
-.name{ font-weight:800; text-align:center; color:#111827; }
-
-/* 선택/포커스 효과 */
-.radio:checked + .card{
-    border-color:var(--primary);
-    box-shadow:0 0 0 3px rgba(37,99,235,.10);
-    transform:translateY(-1px);
-}
-.radio:focus-visible + .card{ outline:3px solid rgba(37,99,235,.25) }
-
-/* ===== 폼을 스크롤 컨테이너로 (상/하단 여백은 wrap이 챙김) ===== */
-#deptForm{
-    flex:1;
-    overflow:auto;
-    -webkit-overflow-scrolling:touch;
-    /* 탭바 + 하단 버튼 컨테이너 여유 */
-    padding-bottom:96px;
+.desc {
+  color: var(--muted);
+  font-size: 12px
 }
 
-/* ===== 하단 고정 버튼 – 네비 위에 떠서 항상 여유 있게 ===== */
-.footer{
-    position:fixed;
-    left:50%;
-    transform:translateX(-50%);
-    bottom:calc(var(--navbar-h) + 12px + env(safe-area-inset-bottom));
-    width:calc(100% - 32px);         /* 좌우 16px 패딩과 동일한 시각 폭 */
-    max-width:375px;
-    z-index:1000;
-    padding:8px;
-    background:rgba(255,255,255,.98);
-    border:1px solid var(--line);
-    border-radius:12px;
-    box-shadow:0 8px 24px rgba(17,24,39,.10);
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--line);
+  background: #fff;
+  padding: 8px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #111;
+  text-decoration: none;
+  font-weight: 800;
+  box-shadow: var(--shadow-card);
+  margin-left: 8px;
 }
 
-/* 버튼은 공통 .btn .btn-primary 규격 사용 */
-.footer .btn.btn-primary{
-    height:48px;           /* 공통 버튼 높이 */
-    border-radius:12px;    /* 공통 라운드 */
+.back:hover {
+  background: #f8fafc
+}
+
+.back .chev {
+  font-weight: 900;
+  font-size: 14px
+}
+
+/* 검색 바 */
+.search {
+  display: flex;
+  gap: 8px; /* 버튼과 입력란 간격 */
+  align-items: center;
+  background: var(--card);
+  border: 1px solid var(--line);
+  padding: 10px 10px;
+  box-shadow: var(--shadow-card);
+}
+
+.search input {
+  flex: 1;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  padding: 0 12px;
+  outline: none;
+  font-size: 14px;
+}
+
+.search input::placeholder {
+  color: #9AA3B2;
+}
+
+.search input:focus {
+  border-color: var(--primary);
+}
+
+.search button {
+  height: 44px;
+  padding: 0 14px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+  border: 0;
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.search button:hover {
+  filter: brightness(.98)
+}
+
+/* 폼을 스크롤 컨테이너로 */
+#deptForm {
+  flex: 1;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: calc(var(--tabbar-h) + 96px); /* 하단 버튼 여유 */
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px; /* 부서 카드들 간의 간격을 8px에서 4px로 줄임 */
+  padding: 0 16px 16px;
+  background: transparent;
+}
+
+/* 카드 (진료과 버튼) */
+.item {
+  position: relative;
+  display: block;
+  margin-top: 0;
+}
+
+.radio {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 120px;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 20px;
+  gap: 16px; /* 버튼 간의 간격을 고정 */
+  transition: transform .08s ease, border-color .08s ease, box-shadow .08s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
+}
+
+.icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  color: var(--primary);
+  background: var(--primary-weak);
+  font-size: 18px;
+}
+
+.name {
+  font-weight: 800;
+  text-align: center;
+  color: #111827;
+  font-size: 16px;
+}
+
+/* 선택 효과 */
+.radio:checked + .card {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, .12);
+  transform: translateY(0); /* transform을 0으로 설정하여 세로 간격 유지 */
+  margin-bottom: 0; /* 선택 시 하단 간격을 0으로 설정 */
+}
+
+/* 카드 선택 시 focus 효과 */
+.radio:focus-visible + .card {
+  outline: 3px solid rgba(37, 99, 235, .25);
+}
+
+/* 하단 고정 버튼 */
+.footer {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(var(--tabbar-h) + 12px + env(safe-area-inset-bottom));
+  width: calc(100% - 32px);
+  max-width: 375px;
+  z-index: 1000;
+  padding: 8px;
+  background: rgba(255, 255, 255, .98);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(17, 24, 39, .10);
+}
+
+.footer .btn-primary {
+  width: 100%;
+  height: 44px;
+  border: 0;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 800;
+  color: #fff;
+  background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.footer .btn-primary:hover {
+  filter: brightness(.98)
+}
+
+.footer .btn-primary:active {
+  transform: translateY(1px)
+}
+
+.footer .btn-primary:disabled {
+  opacity: .5;
+  cursor: not-allowed
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  background-color: #2563eb;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: #1c5fca;
+}
+
+.btn-primary:active {
+  transform: translateY(1px)
+}
+
+.btn-primary:disabled {
+  opacity: .5;
+  cursor: not-allowed
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+  margin-top: 8px
 }
 
 /* 빈 상태 */
-.empty{
-    background:#fff;
-    border:1px dashed var(--line);
-    padding:24px;
-    border-radius:12px;
-    color:#6B7280;
-    text-align:center;
-    margin:0 16px;
+.empty {
+  background: var(--card);
+  border: 1px dashed var(--line);
+  padding: 24px;
+  border-radius: 12px;
+  color: var(--muted);
+  text-align: center;
 }
 
-/* 하단 네비게이션은 공통 navigation.css 사용(여긴 건드리지 않음) */
+/* 하단 탭바 (고정) */
+.nav {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0;
+  width: var(--vw);
+  background: #fff;
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -6px 18px rgba(0, 0, 0, .06);
+  padding: 8px 6px calc(8px + env(safe-area-inset-bottom));
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: var(--tabbar-h);
+  z-index: 999;
+}
+
+.nav a {
+  color: #4b5563;
+  text-decoration: none;
+  font-weight: 700;
+  padding: 8px 10px;
+  border-radius: 10px;
+}
+
+.nav a.active {
+  color: var(--primary);
+  background: var(--primary-weak)
+}
