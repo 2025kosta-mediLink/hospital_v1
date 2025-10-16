@@ -6,7 +6,6 @@ class RouteService {
         this.map = null;
         this.routeDisplay = null;
         this.isLoaded = false;
-        this.routeType = 'walking'; // 기본값: 도보
     }
 
     // 카카오맵 API 로드
@@ -99,9 +98,9 @@ class RouteService {
                         resolve();
                     })
                     .catch(error => {
-                        console.error('도보 경로 표시 실패, 개선된 경로로 대체:', error);
-                        // 실패 시 개선된 경로로 대체
-                        this.showImprovedRoute(startLat, startLng, endLat, endLng);
+                        console.error('도보 경로 표시 실패, 직선 경로로 대체:', error);
+                        // 실패 시 직선 경로로 대체
+                        this.showSimpleRoute(startLat, startLng, endLat, endLng);
                         this.fitMapToRoute(startLat, startLng, endLat, endLng);
                         resolve();
                     });
@@ -113,51 +112,10 @@ class RouteService {
         });
     }
 
-    // 개선된 대체 경로 표시 (중간 경유점 포함)
-    showImprovedRoute(startLat, startLng, endLat, endLng) {
-        try {
-            console.log('개선된 경로 표시 시작:', startLat, startLng, '→', endLat, endLng);
-            
-            // 기존 경로 제거
-            if (this.routeDisplay) {
-                this.routeDisplay.setMap(null);
-            }
-            
-            // 출발지와 도착지 좌표
-            const start = new kakao.maps.LatLng(startLat, startLng);
-            const end = new kakao.maps.LatLng(endLat, endLng);
-            
-            // 중간 경유점 계산 (더 현실적인 경로)
-            const waypoints = this.calculateWaypoints(startLat, startLng, endLat, endLng);
-            
-            // 경로 배열 생성
-            const path = [start, ...waypoints, end];
-            
-            // 개선된 경로 표시 (점선으로 실제 도로가 아님을 표시)
-            const polyline = new kakao.maps.Polyline({
-                path: path,
-                strokeWeight: 6,
-                strokeColor: '#f59e0b', // 주황색으로 직선 경로임을 표시
-                strokeOpacity: 0.8,
-                strokeStyle: 'shortdash' // 점선으로 실제 도로가 아님을 표시
-            });
-            
-            polyline.setMap(this.map);
-            this.routeDisplay = polyline;
-            
-            console.log('개선된 경로 표시 완료 (경유점 수:', waypoints.length, ')');
-            
-        } catch (error) {
-            console.error('개선된 경로 표시 오류:', error);
-            // 최후의 수단으로 직선 경로
-            this.showSimpleRoute(startLat, startLng, endLat, endLng);
-        }
-    }
-
-    // 간단한 직선 경로 표시 (최후의 수단)
+    // 간단한 직선 경로 표시
     showSimpleRoute(startLat, startLng, endLat, endLng) {
         try {
-            console.log('직선 경로 표시 시작:', startLat, startLng, '→', endLat, endLng);
+            console.log('간단한 직선 경로 표시 시작:', startLat, startLng, '→', endLat, endLng);
             
             // 기존 경로 제거
             if (this.routeDisplay) {
@@ -171,10 +129,10 @@ class RouteService {
             // 직선 경로 표시
             const polyline = new kakao.maps.Polyline({
                 path: [start, end],
-                strokeWeight: 4,
-                strokeColor: '#ef4444', // 빨간색으로 긴급 경로임을 표시
-                strokeOpacity: 0.7,
-                strokeStyle: 'shortdashdot' // 점선으로 실제 도로가 아님을 표시
+                strokeWeight: 8,
+                strokeColor: '#2563eb',
+                strokeOpacity: 0.9,
+                strokeStyle: 'solid'
             });
             
             polyline.setMap(this.map);
@@ -184,91 +142,6 @@ class RouteService {
             
         } catch (error) {
             console.error('직선 경로 표시 오류:', error);
-        }
-    }
-
-    // 중간 경유점 계산 (더 현실적인 경로 생성)
-    calculateWaypoints(startLat, startLng, endLat, endLng) {
-        const waypoints = [];
-        
-        // 거리 계산
-        const distance = this.calculateDistance(startLat, startLng, endLat, endLng);
-        
-        // 거리가 500m 이상일 때만 중간 경유점 추가
-        if (distance > 500) {
-            // 중간점 계산
-            const midLat = (startLat + endLat) / 2;
-            const midLng = (startLng + endLng) / 2;
-            
-            // 중간점을 약간 이동시켜서 더 현실적인 경로 생성
-            const latOffset = (endLat - startLat) * 0.1; // 10% 오프셋
-            const lngOffset = (endLng - startLng) * 0.1;
-            
-            // 2개의 경유점 추가
-            waypoints.push(new kakao.maps.LatLng(
-                midLat - latOffset, 
-                midLng - lngOffset
-            ));
-            waypoints.push(new kakao.maps.LatLng(
-                midLat + latOffset, 
-                midLng + lngOffset
-            ));
-        }
-        
-        return waypoints;
-    }
-
-    // 경로 타입에 따른 우선순위 설정
-    getRoutePriority() {
-        switch (this.routeType) {
-            case 'walking':
-                return kakao.maps.services.Directions.Priority.SHORTEST_PATH;
-            case 'bicycle':
-                return kakao.maps.services.Directions.Priority.SHORTEST_PATH;
-            case 'public_transport':
-                return kakao.maps.services.Directions.Priority.MINIMUM_TIME;
-            default:
-                return kakao.maps.services.Directions.Priority.SHORTEST_PATH;
-        }
-    }
-
-    // 경로 타입 설정
-    setRouteType(type) {
-        this.routeType = type;
-        console.log('경로 타입 변경:', type);
-    }
-
-    // 경로 타입에 따른 스타일 반환
-    getRouteStyle() {
-        switch (this.routeType) {
-            case 'walking':
-                return {
-                    weight: 8,
-                    color: '#2563eb', // 파란색 - 도보
-                    opacity: 0.9,
-                    style: 'solid'
-                };
-            case 'bicycle':
-                return {
-                    weight: 6,
-                    color: '#10b981', // 초록색 - 자전거
-                    opacity: 0.8,
-                    style: 'solid'
-                };
-            case 'public_transport':
-                return {
-                    weight: 5,
-                    color: '#8b5cf6', // 보라색 - 대중교통
-                    opacity: 0.8,
-                    style: 'solid'
-                };
-            default:
-                return {
-                    weight: 8,
-                    color: '#2563eb',
-                    opacity: 0.9,
-                    style: 'solid'
-                };
         }
     }
 
@@ -289,8 +162,8 @@ class RouteService {
                 
                 // Directions 서비스 사용 가능 여부 확인
                 if (!window.kakao || !window.kakao.maps || !window.kakao.maps.services || !window.kakao.maps.services.Directions) {
-                    console.warn('Directions 서비스가 사용 불가능합니다. 개선된 경로로 대체합니다.');
-                    this.showImprovedRoute(startLat, startLng, endLat, endLng);
+                    console.warn('Directions 서비스가 사용 불가능합니다. 직선 경로로 대체합니다.');
+                    this.showSimpleRoute(startLat, startLng, endLat, endLng);
                     this.fitMapToRoute(startLat, startLng, endLat, endLng);
                     resolve();
                     return;
@@ -302,17 +175,17 @@ class RouteService {
                     directionsService = new kakao.maps.services.Directions();
                 } catch (error) {
                     console.error('Directions 서비스 생성 실패:', error);
-                    this.showImprovedRoute(startLat, startLng, endLat, endLng);
+                    this.showSimpleRoute(startLat, startLng, endLat, endLng);
                     this.fitMapToRoute(startLat, startLng, endLat, endLng);
                     resolve();
                     return;
                 }
                 
-                // 경로 검색 (타입에 따른 우선순위 적용)
+                // 도보 경로 검색
                 directionsService.route({
                     origin: start,
                     destination: end,
-                    priority: this.getRoutePriority()
+                    priority: kakao.maps.services.Directions.Priority.SHORTEST_PATH
                 }, (result, status) => {
                     console.log('도보 경로 검색 결과:', status, result);
                     
@@ -349,14 +222,13 @@ class RouteService {
                             console.log('추출된 도보 경로 포인트 수:', path.length);
                             
                             if (path.length > 0) {
-                                // 실제 경로 Polyline 표시 (타입에 따른 스타일 적용)
-                                const routeStyle = this.getRouteStyle();
+                                // 실제 도보 경로 Polyline 표시
                                 const polyline = new kakao.maps.Polyline({
                                     path: path,
-                                    strokeWeight: routeStyle.weight,
-                                    strokeColor: routeStyle.color,
-                                    strokeOpacity: routeStyle.opacity,
-                                    strokeStyle: routeStyle.style
+                                    strokeWeight: 8,
+                                    strokeColor: '#2563eb',
+                                    strokeOpacity: 0.9,
+                                    strokeStyle: 'solid'
                                 });
                                 
                                 polyline.setMap(this.map);
@@ -437,8 +309,8 @@ class RouteService {
                 
                 // Directions 서비스 사용 가능 여부 확인
                 if (!window.kakao || !window.kakao.maps || !window.kakao.maps.services || !window.kakao.maps.services.Directions) {
-                    console.warn('Directions 서비스가 사용 불가능합니다. 개선된 경로로 대체합니다.');
-                    this.showImprovedRoute(startLat, startLng, endLat, endLng);
+                    console.warn('Directions 서비스가 사용 불가능합니다. 직선 경로로 대체합니다.');
+                    this.showSimpleRoute(startLat, startLng, endLat, endLng);
                     this.fitMapToRoute(startLat, startLng, endLat, endLng);
                     resolve();
                     return;
@@ -450,17 +322,17 @@ class RouteService {
                     console.log('길찾기 서비스 생성 완료');
                 } catch (error) {
                     console.error('길찾기 서비스 생성 실패:', error);
-                    this.showImprovedRoute(startLat, startLng, endLat, endLng);
+                    this.showSimpleRoute(startLat, startLng, endLat, endLng);
                     this.fitMapToRoute(startLat, startLng, endLat, endLng);
                     resolve();
                     return;
                 }
 
-                // 길찾기 요청 (타입에 따른 우선순위 적용)
+                // 길찾기 요청
                 directionsService.route({
                     origin: start,
                     destination: end,
-                    priority: this.getRoutePriority()
+                    priority: kakao.maps.services.Directions.Priority.SHORTEST_PATH
                 }, (result, status) => {
                     console.log('길찾기 응답:', status, result);
                     
@@ -504,15 +376,14 @@ class RouteService {
                             
                             console.log('추출된 경로 포인트 수:', path.length);
                             
-                            // 경로가 있으면 Polyline으로 표시 (타입에 따른 스타일 적용)
+                            // 경로가 있으면 Polyline으로 표시
                             if (path.length > 0) {
-                                const routeStyle = this.getRouteStyle();
                                 const polyline = new kakao.maps.Polyline({
                                     path: path,
-                                    strokeWeight: routeStyle.weight,
-                                    strokeColor: routeStyle.color,
-                                    strokeOpacity: routeStyle.opacity,
-                                    strokeStyle: routeStyle.style
+                                    strokeWeight: 8,
+                                    strokeColor: '#2563eb',
+                                    strokeOpacity: 1.0,
+                                    strokeStyle: 'solid'
                                 });
                                 
                                 polyline.setMap(this.map);
@@ -609,7 +480,7 @@ class RouteService {
                 directionsService.route({
                     origin: start,
                     destination: end,
-                    priority: this.getRoutePriority()
+                    priority: kakao.maps.services.Directions.Priority.SHORTEST_PATH
                 }, (result, status) => {
                     console.log('경로 정보 응답:', status, result);
                     

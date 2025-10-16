@@ -41,22 +41,6 @@
             </div>
         </div>
         
-        <!-- 경로 옵션 선택 -->
-        <div class="route-options">
-            <button class="route-option-btn active" data-route-type="walking">
-                <span class="route-icon">🚶</span>
-                <span class="route-label">도보</span>
-            </button>
-            <button class="route-option-btn" data-route-type="bicycle">
-                <span class="route-icon">🚴</span>
-                <span class="route-label">자전거</span>
-            </button>
-            <button class="route-option-btn" data-route-type="public_transport">
-                <span class="route-icon">🚌</span>
-                <span class="route-label">대중교통</span>
-            </button>
-        </div>
-        
         <div id="routeMap" class="route-map">
             <!-- 카카오맵 길찾기가 들어갈 영역 -->
         </div>

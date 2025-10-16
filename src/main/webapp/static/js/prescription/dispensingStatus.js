@@ -4,58 +4,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // 페이지 로드 시 실행할 코드
     console.log('Dispensing status page loaded');
     
-    // 경로 옵션 이벤트 리스너 추가
-    setupRouteOptions();
-    
     // 길찾기 지도 초기화
     initializeRouteMap();
     
     // 조제 완료 상태 확인 및 알림 표시
     checkCompletionStatus();
 });
-
-// 경로 옵션 설정
-function setupRouteOptions() {
-    const routeButtons = document.querySelectorAll('.route-option-btn');
-    
-    routeButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            // 모든 버튼에서 active 클래스 제거
-            routeButtons.forEach(btn => btn.classList.remove('active'));
-            
-            // 클릭된 버튼에 active 클래스 추가
-            this.classList.add('active');
-            
-            // 경로 타입 설정
-            const routeType = this.getAttribute('data-route-type');
-            routeService.setRouteType(routeType);
-            
-            // 경로 다시 그리기
-            redrawRoute();
-        });
-    });
-}
-
-// 경로 다시 그리기
-async function redrawRoute() {
-    try {
-        const pharmacyInfo = getPharmacyInfo();
-        const startLat = 37.5685;
-        const startLng = 126.9672;
-        const endLat = pharmacyInfo.lat;
-        const endLng = pharmacyInfo.lng;
-        
-        // 경로 다시 표시
-        await routeService.showRoute(startLat, startLng, endLat, endLng);
-        
-        // 경로 정보 다시 계산
-        const routeInfo = await routeService.calculateRouteInfo(startLat, startLng, endLat, endLng);
-        displayRouteInfo(routeInfo);
-        
-    } catch (error) {
-        console.error('경로 다시 그리기 실패:', error);
-    }
-}
 
 // 조제 완료 상태 확인
 function checkCompletionStatus() {
