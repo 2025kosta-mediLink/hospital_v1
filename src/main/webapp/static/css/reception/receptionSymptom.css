@@ -50,7 +50,7 @@
     max-width:none !important;
     aspect-ratio: auto !important;  /* 혹시 적용된 정사각형 비율 제거 */
     line-height:normal !important;
-    font-size:16px; font-weight:800;
+    font-size:16px; font-weight:500;
     border-radius:12px;
 }
 
