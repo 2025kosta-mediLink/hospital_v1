@@ -139,6 +139,7 @@
 
 /* 캐러셀 래퍼 */
 .doctor-cards-wrap {
+  height: 470px;
   padding: 16px 16px 8px;
   background: #F8FAFC;
   border-radius: 0;

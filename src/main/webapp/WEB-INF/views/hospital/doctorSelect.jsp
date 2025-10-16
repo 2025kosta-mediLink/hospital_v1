@@ -114,7 +114,7 @@
         </c:forEach>
     </div>
 
-<%--    <!-- 아래 화살표 네비(추가) -->--%>
+    <%--    <!-- 아래 화살표 네비(추가) -->--%>
     <%--    <div class="cards-nav">--%>
     <%--        <button type="button" class="cards-prev" aria-label="이전 카드">←</button>--%>
     <%--        <button type="button" class="cards-next" aria-label="다음 카드">→</button>--%>
@@ -122,15 +122,16 @@
     <%--</div>--%>
 
 
-<!-- 예약 폼 -->
-<form method="post">
-    <input type="hidden" id="selectedDoctorId" name="doctorId" value="${doctorList[0].id}">
-    <button type="submit" class="btn-primary">다음</button>
-</form>
+    <!-- 예약 폼 -->
+    <form method="post">
+        <input type="hidden" id="selectedDoctorId" name="doctorId" value="${doctorList[0].id}">
+        <button type="submit" class="btn-primary">다음</button>
+    </form>
 
-<jsp:include page="/WEB-INF/views/common/navigation.jsp"/>
+    <jsp:include page="/WEB-INF/views/common/navigation.jsp"/>
 
-<script defer src="${pageContext.request.contextPath}/static/js/common.js"></script>
-<script defer src="${pageContext.request.contextPath}/static/js/hospital/doctorSelect.js"></script>
+    <script defer src="${pageContext.request.contextPath}/static/js/common.js"></script>
+    <script defer
+            src="${pageContext.request.contextPath}/static/js/hospital/doctorSelect.js"></script>
 </body>
 </html>

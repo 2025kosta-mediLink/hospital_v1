@@ -262,18 +262,17 @@ body {
 }
 
 .btn-primary {
-  flex: 1;
-  height: 44px;
-  color: #fff;
-  border: 0;
+  width: 100%;
+  padding: 14px;
   border-radius: 12px;
-  font-weight: 800;
+  background-color: #2563eb;
+  color: #fff;
+  font-weight: 700;
   cursor: pointer;
-  background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
 }
 
 .btn-primary:hover {
-  filter: brightness(.98)
+  background-color: #1c5fca;
 }
 
 .btn-primary:active {
