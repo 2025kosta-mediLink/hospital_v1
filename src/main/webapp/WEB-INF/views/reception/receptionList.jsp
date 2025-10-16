@@ -6,25 +6,23 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8" />
+    <title>접수 내역</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>전체 접수 내역 조회</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/reception/receptionList.css">
 </head>
-<body>
+<body class="screen" data-ctx="${pageContext.request.contextPath}">
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<jsp:include page="/WEB-INF/views/common/header.jsp"/>
 
-<div class="wrap">
+    <!-- 탭 (마이페이지 공통) -->
+    <nav class="mypage-tabs" role="tablist" aria-label="내 내역 종류">
+        <a class="tab-item" href="${pageContext.request.contextPath}/v1/reservation/list">예약내역</a>
+        <a class="tab-item  active" href="${pageContext.request.contextPath}/v1/reception/list">접수내역</a>
+    </nav>
 
-    <div class="topbar">
-        <div class="title">전체 접수 내역</div>
-    </div>
-
-    <div class="tabs">
-        <a class="tab" href="${ctx}/v1/reservation/list">예약내역</a>
-        <a class="tab active" href="${ctx}/v1/reception/list">접수내역</a>
-    </div>
-
-    <!-- 목록 -->
+<!-- 목록 -->
+<main class="main">
     <c:choose>
         <c:when test="${empty receptions}">
             <div class="empty">조회된 접수 내역이 없습니다.</div>
@@ -93,15 +91,7 @@
             </c:forEach>
         </c:otherwise>
     </c:choose>
-
-    <!-- 하단 탭바 -->
-    <nav class="nav" aria-label="하단 내비게이션">
-        <a href="${ctx}/v1/reservation/departments">예약</a>
-        <a href="${ctx}/v1/reception/departments">접수</a>
-        <a href="${ctx}/v1/home">홈</a>
-        <a href="${ctx}/v1/prescription">처방전</a>
-        <a class="active" href="${ctx}/v1/reception/list">마이페이지</a>
-    </nav>
-</div>
+</main>
+    <jsp:include page="/WEB-INF/views/common/navigation.jsp"/>
 </body>
 </html>
