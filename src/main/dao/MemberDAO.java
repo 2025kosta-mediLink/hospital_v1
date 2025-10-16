@@ -1,8 +1,8 @@
-// src/main/java/dao/MemberDAO.java
 package dao;
 
 import common.util.DBConnectionUtil;
-import domain.Member;
+import dto.MemberDTO;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -29,7 +29,7 @@ public class MemberDAO {
     /**
      * 회원가입: 도메인 엔티티 저장
      */
-    public Long insert(Member m) {
+    public Long insert(MemberDTO m) {
         String sql = "INSERT INTO member " +
             "(uuid, login_id, password, name, phone, gender, address, rrn, created_at, updated_at, delete_at) "
             +
@@ -62,7 +62,7 @@ public class MemberDAO {
     /**
      * 로그인/조회: 도메인으로 반환
      */
-    public Member findByLoginId(String loginId) {
+    public MemberDTO findByLoginId(String loginId) {
         String sql =
             "SELECT member_id, uuid, login_id, password, name, phone, gender, address, rrn, " +
                 "       created_at, updated_at, delete_at " +
@@ -72,7 +72,7 @@ public class MemberDAO {
             ps.setString(1, loginId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    Member m = new Member();
+                    MemberDTO m = new MemberDTO();
                     m.setMemberId(rs.getLong("member_id"));
                     m.setUuid(rs.getString("uuid"));
                     m.setLoginId(rs.getString("login_id"));
