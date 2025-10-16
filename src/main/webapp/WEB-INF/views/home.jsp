@@ -49,7 +49,7 @@
         <!-- 퀵 액션 (모두 보호: 비로그인 시 클릭 -> 로그인으로) -->
         <section class="panel" aria-label="빠른 실행">
             <div class="grid3">
-                <a class="quick need-login" href="${ctx}/v1/reservations/departments">진료예약</a>
+                <a class="quick need-login" href="${ctx}/v1/reservation/departments">진료예약</a>
                 <a class="quick need-login" href="${ctx}/v1/reception/departments">진료접수</a>
                 <a class="quick need-login" href="${ctx}/v1/prescription">처방전</a>
             </div>
