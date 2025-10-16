@@ -172,14 +172,13 @@
     function shareReservation(reservationId, departmentName, doctorName, dateLabel, timeLabel) {
         const month = new URLSearchParams(window.location.search).get('month');
         const status = new URLSearchParams(window.location.search).get('status');
-        const shareUrl = `${window.location.origin}/v1/reservation/list?month=${month}&status=${status}`;
+        const shareUrl = 'http://localhost:8080/v1/reservation/list';
 
-        console.log(`${dateLabel} 병원 예약 일정 안내`);
         if (typeof Kakao !== 'undefined' && Kakao.Share) {
             Kakao.Share.createDefaultButton({
-                container: '#kakaotalk-sharing-btn-' + reservationId,  // 해당 버튼에 대한 ID를 container로 설정
+                container: '#kakaotalk-sharing-btn-' + reservationId,
                 objectType: 'feed',
-                content: {
+                /*content: {
                     title: `${dateLabel} 병원 예약 일정 안내`,
                     description: `${departmentName}, ${doctorName}, 예약 일시(${dateLabel} ${timeLabel})`,
                     imageUrl: 'http://k.kakaocdn.net/dn/Q2iNx/btqgeRgV54P/VLdBs9cvyn8BJXB3o7N8UK/kakaolink40_original.png',
@@ -187,25 +186,29 @@
                         mobileWebUrl: shareUrl,
                         webUrl: shareUrl
                     },
-                },
-                social: {
-                    likeCount: 286,
-                    commentCount: 45,
-                    sharedCount: 845,
+                },*/
+                content: {
+                    title: '10/22(수) 예약 일정 안내',
+                    description: '📍 피부과 - 박수현 교수\n📅 10/22(수) 오전 10시',
+                    imageUrl: 'https://github.com/user-attachments/assets/b6e8ace1-c0ef-496e-a30e-e5eafc18129c',
+                    link: {
+                        mobileWebUrl: 'http://localhost:8080/v1/reservation/list',
+                        webUrl: 'http://localhost:8080/v1/reservation/list'
+                    },
                 },
                 buttons: [
                     {
                         title: '웹으로 보기',
                         link: {
-                            mobileWebUrl: shareUrl,
-                            webUrl: shareUrl,
+                            mobileWebUrl: 'http://localhost:8080/v1/reservation/list',
+                            webUrl: 'http://localhost:8080/v1/reservation/list',
                         },
                     },
                     {
                         title: '앱으로 보기',
                         link: {
-                            mobileWebUrl: shareUrl,
-                            webUrl: shareUrl,
+                            mobileWebUrl: 'http://localhost:8080/v1/reservation/list',
+                            webUrl: 'http://localhost:8080/v1/reservation/list',
                         },
                     },
                 ],
