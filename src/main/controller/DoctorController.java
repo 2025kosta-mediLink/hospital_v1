@@ -65,7 +65,7 @@ public class DoctorController extends HttpServlet {
         if ("/v1/reservation/doctors".equals(servletPath)) {
             resp.sendRedirect(ctx + "/v1/reservation/date-selection?doctorId=" + java.net.URLEncoder.encode(doctorId, "UTF-8"));
         } else if ("/v1/reception/doctors".equals(servletPath)) {
-            resp.sendRedirect(ctx + "/v1/reception/confirm?doctorId=" + java.net.URLEncoder.encode(doctorId, "UTF-8"));
+            resp.sendRedirect(ctx + "/v1/reception/symptom?doctorId=" + java.net.URLEncoder.encode(doctorId, "UTF-8"));
         } else {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
         }

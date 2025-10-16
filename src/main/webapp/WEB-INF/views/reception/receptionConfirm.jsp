@@ -5,26 +5,18 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8" />
+    <title>접수하기</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>접수하기 - 최종 확인</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/reception/receptionConfirm.css">
     <script defer src="${pageContext.request.contextPath}/static/js/reception/receptionConfirm.js"></script>
 </head>
-<body>
+<body class="screen" data-ctx="${pageContext.request.contextPath}">
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<jsp:include page="/WEB-INF/views/common/header.jsp"/>
 
-<div class="wrap">
-
-    <!-- 상단 -->
-    <div class="topbar">
-        <button class="back" type="button"
-                onclick="goBackOr('${pageContext.request.contextPath}/v1/reception/symptom?departmentId=${departmentId}&doctorId=${doctorId}')">
-            <span class="chev">←</span>
-        </button>
-        <div class="title">최종확인</div>
-        <a class="close" href="${pageContext.request.contextPath}/v1/reception/departments">X</a>
-    </div>
-
+<!-- 목록 -->
+<main class="main">
     <!-- 폼 시작 -->
     <form method="post" action="${pageContext.request.contextPath}/v1/reception/done">
         <!-- 숨김값 전달 -->
@@ -96,19 +88,11 @@
         </div>
 
         <!-- 제출 버튼 -->
-        <div class="actions">
+        <div class="footer">
             <button id="submitBtn" class="btn-primary" type="submit">바로 접수하기</button>
         </div>
     </form>
-
-    <!-- 하단 탭바 -->
-    <nav class="nav" aria-label="하단 내비게이션">
-        <a href="${ctx}/v1/reservation/departments">예약</a>
-        <a class="active" href="${ctx}/v1/reception/departments">접수</a>
-        <a href="${ctx}/v1/home">홈</a>
-        <a href="${ctx}/v1/prescription">처방전</a>
-        <a href="${ctx}/v1/reception/list">마이페이지</a>
-    </nav>
-</div>
+</main>
+<jsp:include page="/WEB-INF/views/common/navigation.jsp"/>
 </body>
 </html>

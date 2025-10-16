@@ -50,4 +50,23 @@ public class DoctorDAO {
             }
         } catch (SQLException e) { throw new RuntimeException(e); }
     }
+
+
+    // 의사 ID로 부서 ID 조회
+    public Long findDepartmentIdByDoctorId(long doctorId) {
+        String sql = "SELECT department_id FROM doctor WHERE doctor_id = ?";
+        try (Connection c = DBConnectionUtil.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setLong(1, doctorId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    long depId = rs.getLong("department_id");
+                    return rs.wasNull() ? null : depId;
+                }
+                return null; // 의사 없음
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
