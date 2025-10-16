@@ -3,6 +3,7 @@ package controller;
 import common.util.AuthSessionUtil;
 import common.util.JsonUtil;
 import dto.DoctorDetailDTO;
+import dto.ReservationDTO;
 import service.DoctorService;
 import service.ReservationService;
 
@@ -72,14 +73,19 @@ public class ReservationController extends HttpServlet {
 
             Long reservationId = Long.parseLong(idStr);
 
+            if (!reservationService.isOwnedByUuid(reservationId, uuid)) {
+                resp.sendError(403, "예약한 사용자와 현재 세션의 사용자가 일치하지 않습니다.");
+                return;
+            }
+
             // DTO 조회
-            dto.ReservationDTO reservation = reservationService.getReservationById(reservationId);
+            ReservationDTO reservation = reservationService.getReservationById(reservationId);
             if (reservation == null) {
                 resp.sendError(404, "예약을 찾을 수 없습니다.");
                 return;
             }
 
-            dto.DoctorDetailDTO doctor = doctorService.getDoctorById(reservation.getDoctorId());
+            DoctorDetailDTO doctor = doctorService.getDoctorById(reservation.getDoctorId());
 
             req.setAttribute("reservation", reservation);
             req.setAttribute("doctor", doctor);

@@ -17,7 +17,7 @@
 <div class="sign-done">
   <h2 class="done-title">회원가입이 완료되었습니다</h2>
 
-  <a class="btn btn-primary done-btn" href="${pageContext.request.contextPath}/home">확인</a>
+  <a class="btn btn-primary done-btn" href="${pageContext.request.contextPath}/v1/home">확인</a>
 </div>
 
 <% request.setAttribute("activeKey", "home"); %>

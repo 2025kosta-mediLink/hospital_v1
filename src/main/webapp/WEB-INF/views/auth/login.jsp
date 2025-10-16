@@ -10,7 +10,7 @@
     <script defer src="${pageContext.request.contextPath}/static/js/common.js"></script>
     <script defer src="${pageContext.request.contextPath}/static/js/auth/login.js"></script>
 </head>
-<body class="screen" data-ctx="${pageContext.request.contextPath}">
+<body class="screen" data-ctx="${pageContext.request.contextPath}" data-error="${sessionScope.error}">
 <jsp:include page="/WEB-INF/views/common/header.jsp"/>
 
 <div class="card auth">
@@ -34,6 +34,6 @@
 </div>
 
 <jsp:include page="/WEB-INF/views/common/navigation.jsp"/>
-
+<% session.removeAttribute("error"); %>
 </body>
 </html>
