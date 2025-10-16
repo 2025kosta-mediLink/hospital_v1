@@ -62,6 +62,8 @@ public class ReservationController extends HttpServlet {
 
         // 3) 예약 완료 페이지
         if ("/v1/reservation/complete".equals(path)) {
+            String uuid = AuthSessionUtil.requireUuidOrRedirect(req, resp);
+            if (uuid == null) return;
             String idStr = req.getParameter("reservationId");
             if (idStr == null) {
                 resp.sendError(400, "예약 ID가 필요합니다.");
