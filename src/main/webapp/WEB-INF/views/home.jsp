@@ -28,11 +28,12 @@
                 <c:choose>
                     <c:when test="${not empty summary.appointmentAt}">
                         <div class="muted">
-                            <c:out value="${summary.departmentName}"/> 진료과
+                            진료과: <c:out value="${summary.departmentName}"/>
                             <span class="dot"></span>
                             의료진: <c:out value="${summary.doctorName}"/>
+                            <span class="dot"></span>
+                        <fmt:formatDate value="${summary.appointmentAt}" pattern="a hh:mm"/>
                         </div>
-                        <div class="big"><fmt:formatDate value="${summary.appointmentAt}" pattern="a hh:mm"/></div>
                     </c:when>
                     <c:otherwise>
                         <div class="muted">오늘 예약된 일정이 없습니다.</div>
