@@ -52,6 +52,8 @@ work/
 logs/
 **/.smarttomcat/
 **/.SmartTomcat/
+apache-tomcat-*/
+apache-maven-*/
 
 ### application files ###
 *.properties
