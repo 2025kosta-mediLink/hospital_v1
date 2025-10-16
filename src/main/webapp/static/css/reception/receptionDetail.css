@@ -15,7 +15,7 @@
 
 .grid{display:grid; grid-template-columns:auto 1fr; row-gap:6px; column-gap:10px}
 .label{color:var(--muted); width:92px}
-.val{font-weight:800; word-break:break-word; text-align: right}
+.val{font-weight:500; word-break:break-word; text-align: right}
 
 /* 섹션 타이틀 */
 .section-title{display:flex; align-items:center; gap:8px; font-weight:900; margin-bottom:8px}
@@ -30,7 +30,7 @@
 .actions{display:flex; gap:8px; margin-top:12px}
 .btn{
     flex:1; text-align:center; padding:12px; border-radius:12px;
-    text-decoration:none; font-weight:900; display:inline-block;
+    text-decoration:none; font-weight:500; display:inline-block;
 }
 .btn-primary{
     color:#fff;

@@ -19,7 +19,7 @@ form[action*="/reception/consent"]{
 .muted{color:var(--muted)}
 .kv{display:grid; grid-template-columns:80px 1fr; row-gap:8px; column-gap:8px}
 .k{color:var(--muted)}
-.v{font-weight:800}
+.v{font-weight:500}
 .kv>.v{ justify-self:end; text-align:right }  /* 값 우측 정렬 */
 
 .pill{
@@ -67,7 +67,7 @@ form[action*="/reception/consent"]{
     max-width:none !important;
     aspect-ratio: auto !important;  /* 혹시 적용된 정사각형 비율 제거 */
     line-height:normal !important;
-    font-size:16px; font-weight:800;
+    font-size:16px; font-weight:500;
     border-radius:12px;
 }
 
