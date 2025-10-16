@@ -62,9 +62,11 @@ logs/
 ### Project specific files ###
 # Apache Maven
 apache-maven-*/
+apache-maven-*.tar.gz
 
 # Apache Tomcat
 apache-tomcat-*/
+apache-tomcat-*.tar.gz
 
 # Git files
 FETCH_HEAD
