@@ -43,7 +43,7 @@ public class PrescriptionService {
     /**
      * 수령 완료 처리
      */
-    public boolean completePickup(Long pharmacyPrescriptionId, String verifiedBy) {
-        return prescriptionDAO.completePickup(pharmacyPrescriptionId, verifiedBy);
+    public boolean completePickup(Long pharmacyPrescriptionId, Long memberId, String verifiedBy) {
+        return prescriptionDAO.completePickup(pharmacyPrescriptionId, memberId, verifiedBy);
     }
 }
