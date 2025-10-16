@@ -9,6 +9,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 @WebServlet(urlPatterns = {
         "/v1/reservation/list",
@@ -17,10 +19,23 @@ import java.io.IOException;
 public class ReservationListController extends HttpServlet {
 
     private ReservationService reservationService;
+    private String kakaoJsKey;
 
     @Override
-    public void init() {
+    public void init() throws ServletException {
         reservationService = new ReservationService();
+        try {
+            // 프로퍼티 파일 로딩
+            Properties props = new Properties();
+            InputStream input = getServletContext().getResourceAsStream("/WEB-INF/classes/application.properties");
+            if (input == null) {
+                throw new ServletException("Unable to find application.properties");
+            }
+            props.load(input);
+            kakaoJsKey = props.getProperty("kakao.javascript.key");
+        } catch (IOException e) {
+            throw new ServletException("Error loading properties file", e);
+        }
     }
 
     @Override
@@ -40,6 +55,7 @@ public class ReservationListController extends HttpServlet {
         req.setAttribute("monthOptions", result.getMonthOptions());
         req.setAttribute("selectedMonth", result.getSelectedMonth());
         req.setAttribute("selectedStatus", result.getSelectedStatus());
+        req.setAttribute("kakaoJsKey", kakaoJsKey); // 카카오 키를 JSP로 전달
         req.getRequestDispatcher("/WEB-INF/views/reservation/reservationList.jsp").forward(req, resp);
     }
 

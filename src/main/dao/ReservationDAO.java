@@ -1,6 +1,7 @@
 package dao;
 
 import common.util.DBConnectionUtil;
+import dto.ReservationDTO;
 import dto.ReservationOptionDTO;
 import dto.ReservationListItemDTO;
 
@@ -23,19 +24,48 @@ public class ReservationDAO {
         } catch (SQLException e) { throw new RuntimeException(e); }
     }
 
-    public void insert(long memberId, long doctorId, String appointmentAt, String no) {
-        String sql = "INSERT INTO reservation(member_id, doctor_id, " +
-                "reservation_no, appointment_at, status, created_at, " +
-                "updated_up) " +
+    public Long insert(long memberId, long doctorId, String appointmentAt, String no) {
+        String sql = "INSERT INTO reservation(member_id, doctor_id, reservation_no, appointment_at, status, created_at, updated_at) " +
                 "VALUES(?,?,?,?, 'RESERVED', NOW(), NOW())";
         try (Connection c = DBConnectionUtil.getConnection();
-             PreparedStatement ps = c.prepareStatement(sql)) {
+             PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setLong(1, memberId);
             ps.setLong(2, doctorId);
             ps.setString(3, no);
             ps.setString(4, appointmentAt);
             ps.executeUpdate();
-        } catch (SQLException e) { throw new RuntimeException(e); }
+            try (ResultSet keys = ps.getGeneratedKeys()) {
+                if (keys.next()) {
+                    return keys.getLong(1);  // reservationId 리턴
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+    public ReservationDTO findById(Long reservationId) {
+        String sql = "SELECT reservation_id, doctor_id, member_id, reservation_no, appointment_at, status FROM reservation WHERE reservation_id = ?";
+        try (Connection c = DBConnectionUtil.getConnection();
+             PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setLong(1, reservationId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    ReservationDTO reservation = new ReservationDTO();
+                    reservation.setReservationId(rs.getLong("reservation_id"));
+                    reservation.setDoctorId(rs.getLong("doctor_id"));
+                    reservation.setMemberId(rs.getLong("member_id"));
+                    reservation.setReservationNo(rs.getString("reservation_no"));
+                    reservation.setAppointmentAt(rs.getString("appointment_at"));
+                    reservation.setStatus(rs.getString("status"));
+                    return reservation;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     // "HH:MM" 집합
@@ -54,7 +84,7 @@ public class ReservationDAO {
         return set;
     }
     /** 회원 예약내역 조회 (월/상태 옵션 필터) */
-    public List<ReservationListItemDTO> findHistoryByMember(Long memberId, String month /*YYYY-MM*/, String status /*RESERVED/DONE/CANCELLED or null*/) {
+    public List<ReservationListItemDTO> findListByMember(Long memberId, String month /*YYYY-MM*/, String status /*RESERVED/DONE/CANCELLED or null*/) {
         StringBuilder sql = new StringBuilder(
                 "SELECT r.reservation_id, r.reservation_no, r.status, " +
                         "       DATE_FORMAT(r.appointment_at,'%Y-%m-%d %H:%i') AS appointment_at, " +

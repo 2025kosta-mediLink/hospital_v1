@@ -45,15 +45,34 @@ public class ReservationService {
         return res;
     }
 
-    public void createReservationByUuid(String memberUuid, long doctorId, String appointmentAt) {
+    public Long createReservationByUuid(String memberUuid, long doctorId, String appointmentAt) {
         Long memberId = memberDAO.findIdByUuid(memberUuid);
-        if (memberId == null) throw new IllegalStateException("member-not-found");
+        if (memberId == null) {
+            throw new IllegalStateException("member-not-found");
+        }
 
         if (reservationDAO.exists(doctorId, appointmentAt)) {
             throw new IllegalStateException("occupied");
         }
         String no = genNo();
-        reservationDAO.insert(memberId, doctorId, appointmentAt, no);
+        return reservationDAO.insert(memberId, doctorId, appointmentAt, no);  // reservationId 리턴
+    }
+
+    public ReservationDTO getReservationById(Long reservationId) {
+        ReservationDTO reservation = reservationDAO.findById(reservationId);
+
+        if (reservation != null) {
+            // 예약 시간 표시용 문자열 생성
+            String appointmentAt = reservation.getAppointmentAt();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime dateTime = LocalDateTime.parse(appointmentAt, formatter);
+
+            // 오전/오후 시간을 포함한 형식으로 변환
+            String timeLabel = dateTime.format(DateTimeFormatter.ofPattern("a h:mm"));  // 오전 10:30 형식
+            reservation.setTimeLabel(timeLabel);
+        }
+
+        return reservation;
     }
 
     public ReservationListDTO getReservationList(String memberUuid, String month, String statusUi) {
@@ -65,7 +84,7 @@ public class ReservationService {
         String dbStatus = (st == null) ? null : st.name();
 
         List<ReservationListItemDTO> rows =
-                reservationDAO.findHistoryByMember(memberId, month, dbStatus);
+                reservationDAO.findListByMember(memberId, month, dbStatus);
 
         // 날짜/시간 한글 표기 + 상태 라벨/배지 세팅
         for (ReservationListItemDTO it : rows) {
