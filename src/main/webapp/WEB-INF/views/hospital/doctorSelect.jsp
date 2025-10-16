@@ -47,7 +47,9 @@
     <c:forEach var="doctor" items="${doctorList}" varStatus="s">
         <button
                 type="button"
-                class="doctor-chip ${s.first ? 'selected' : ''}"
+                class="doctor-chip
+                    ${doctor.notices != null && !doctor.notices.isEmpty() && s.index == currentDoctorIndex - 2 ? 'selected' : ''}
+                    ${doctor.notices == null || doctor.notices.isEmpty() && s.index == currentDoctorIndex ? 'selected' : ''}"
                 data-index="${s.index}"
                 data-id="${doctor.id}">
                 ${doctor.name}
