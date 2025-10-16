@@ -1,11 +1,10 @@
-// src/main/java/domain/Member.java
-package domain;
+package dto;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 import common.util.PasswordUtil;
 
-public class Member {
+public class MemberDTO {
     private Long memberId;
     private String uuid;
     private String loginId;
@@ -14,17 +13,17 @@ public class Member {
     private String phone;
     private String gender;   // "M"/"F"
     private String address;
-    private String rrn;      // 민감정보: 외부 노출 금지
+    private String rrn;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime deleteAt;
 
-    public Member() {}
+    public MemberDTO() {}
 
     // 회원가입용 팩토리
-    public static Member register(String loginId, String rawPassword, String name,
-                                  String phone, String gender, String address, String rrn) {
-        Member m = new Member();
+    public static MemberDTO register(String loginId, String rawPassword, String name,
+                                     String phone, String gender, String address, String rrn) {
+        MemberDTO m = new MemberDTO();
         m.uuid = UUID.randomUUID().toString();
         m.loginId = loginId;
         m.passwordHash = PasswordUtil.sha256(rawPassword);
@@ -35,15 +34,6 @@ public class Member {
         m.rrn = rrn;
         return m;
     }
-
-    // 인증/행위
-    public boolean matchesPassword(String rawPassword){
-        return PasswordUtil.sha256(rawPassword).equals(this.passwordHash);
-    }
-    public void changePassword(String rawPassword){
-        this.passwordHash = PasswordUtil.sha256(rawPassword);
-    }
-    public void softDelete(LocalDateTime now){ this.deleteAt = now; }
 
     // Getter/Setter (필요 범위)
     public Long getMemberId() { return memberId; }

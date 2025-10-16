@@ -62,7 +62,6 @@
         </div>
 
         <div class="actions">
-            <a href="${pageContext.request.contextPath}/v1/home" class="btn-primary">홈으로</a>
             <a href="${pageContext.request.contextPath}/v1/reservation/departments" class="btn-primary">추가 예약하기</a>
             <a href="${pageContext.request.contextPath}/v1/reservation/list" class="btn-primary">예약 내역 보기</a>
         </div>

@@ -58,6 +58,12 @@ public class ReservationService {
         return reservationDAO.insert(memberId, doctorId, appointmentAt, no);  // reservationId 리턴
     }
 
+    public boolean isOwnedByUuid(Long reservationId, String uuid) {
+        String ownerUuid = reservationDAO.findMemberUuidByReservationId(reservationId);
+        if (ownerUuid == null) return false; // 예약이 없거나 회원이 삭제된 경우
+        return ownerUuid.equals(uuid);
+    }
+
     public ReservationDTO getReservationById(Long reservationId) {
         ReservationDTO reservation = reservationDAO.findById(reservationId);
 

@@ -155,6 +155,7 @@
 <jsp:include page="/WEB-INF/views/common/navigation.jsp"/>
 
 <!-- 카카오톡 API 스크립트 -->
+<!-- 따로 파일로 생성하면 kakaoJsKey 값 적용이 안되서 여기서 생성 -->
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.6/kakao.min.js" integrity="sha384-WAtVcQYcmTO/N+C1N+1m6Gp8qxh+3NlnP7X1U7qP6P5dQY/MsRBNTh+e1ahJrkEm" crossorigin="anonymous"></script>
 
 <script>
@@ -172,26 +173,21 @@
     function shareReservation(reservationId, departmentName, doctorName, dateLabel, timeLabel) {
         const month = new URLSearchParams(window.location.search).get('month');
         const status = new URLSearchParams(window.location.search).get('status');
-        const shareUrl = `${window.location.origin}/v1/reservation/list?month=${month}&status=${status}`;
+        const shareUrl = 'http://localhost:8080/v1/reservation/list';
+        const monthDate = dateLabel.substring(5);
 
-        console.log(`${dateLabel} 병원 예약 일정 안내`);
         if (typeof Kakao !== 'undefined' && Kakao.Share) {
             Kakao.Share.createDefaultButton({
-                container: '#kakaotalk-sharing-btn-' + reservationId,  // 해당 버튼에 대한 ID를 container로 설정
+                container: '#kakaotalk-sharing-btn-' + reservationId,
                 objectType: 'feed',
                 content: {
-                    title: `${dateLabel} 병원 예약 일정 안내`,
-                    description: `${departmentName}, ${doctorName}, 예약 일시(${dateLabel} ${timeLabel})`,
-                    imageUrl: 'http://k.kakaocdn.net/dn/Q2iNx/btqgeRgV54P/VLdBs9cvyn8BJXB3o7N8UK/kakaolink40_original.png',
+                    title: 'MediLink 병원 예약 일정 안내',
+                    description: '📍 ' + departmentName + ' - ' + doctorName + '\n📅' + monthDate + ' ' + timeLabel,
+                    imageUrl: 'https://github.com/user-attachments/assets/b6e8ace1-c0ef-496e-a30e-e5eafc18129c',
                     link: {
                         mobileWebUrl: shareUrl,
                         webUrl: shareUrl
                     },
-                },
-                social: {
-                    likeCount: 286,
-                    commentCount: 45,
-                    sharedCount: 845,
                 },
                 buttons: [
                     {
