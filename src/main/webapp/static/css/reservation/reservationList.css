@@ -1,3 +1,4 @@
+/* reservation.css */
 /* Tabs (마이페이지 탑바) */
 .mypage-tabs{
     /* 기존: display:flex; justify-content:center; gap:24px; ... */
@@ -109,11 +110,11 @@
     margin:24px 16px; padding:18px; border:1px dashed #E5E7EB; border-radius:12px;
     color:#6B7280; text-align:center;
 }
+
 /* 파일 선택 버튼을 숨기고, 사용자 정의 버튼 스타일링 */
 input[type="file"] {
     display: none; /* 기본 파일 선택 버튼 숨김 */
 }
-
 .custom-file-upload {
     display: inline-block;
     background-color: #4CAF50;
@@ -123,8 +124,34 @@ input[type="file"] {
     cursor: pointer;
     text-align: center;
 }
-
 .custom-file-upload:hover {
     background-color: #45a049;
 }
 
+/* === [PATCH] 공유/취소 버튼 색감 오버라이드 (크기/타이포/라운드 유지) === */
+.actions .btn-ghost.js-share{
+    background:#E7F0FF;  /* 기존 #EFF6FF → 한 단계 진하게 */
+    color:#1743B3;
+    border:none;
+}
+.actions .btn-ghost.js-share:hover{
+    background:#DCE6FF;  /* 호버도 한 단계 더 진하게 */
+}
+
+.actions .btn-ghost.js-cancel{
+    background:#ECEFF3;   /* 기존보다 한 단계 진한 그레이 */
+    color:#111827;
+    border:none;          /* 테두리 제거 */
+}
+
+/* 접근성: 키보드 포커스 링 유지 */
+.actions .btn-ghost:focus-visible{
+    outline:2px solid var(--primary);
+    outline-offset:2px;
+}
+.actions .btn-ghost,
+.actions .btn-primary{
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 15px;
+}
