@@ -63,22 +63,42 @@
         <!-- 퀵 액션 (모두 보호: 비로그인 시 클릭 -> 로그인으로) -->
         <section class="panel" aria-label="빠른 실행">
             <div class="grid3">
-                <a class="quick need-login" href="${ctx}/v1/reservation/departments">진료예약</a>
-                <a class="quick need-login" href="${ctx}/v1/reception/departments">진료접수</a>
-                <a class="quick need-login" href="${ctx}/v1/prescription">처방전</a>
+                <a class="quick need-login" href="${ctx}/v1/reservation/departments">
+                    <img class="quick-icon" src="${ctx}/static/images/icons/calendar_blue.png" alt="">
+                    <span class="quick-label">진료예약</span>
+                </a>
+
+                <a class="quick need-login" href="${ctx}/v1/reception/departments">
+                    <img class="quick-icon" src="${ctx}/static/images/icons/clipboard_blue.png" alt="">
+                    <span class="quick-label">진료접수</span>
+                </a>
+
+                <a class="quick need-login" href="${ctx}/v1/prescription">
+                    <img class="quick-icon" src="${ctx}/static/images/icons/pill_blue.png" alt="">
+                    <span class="quick-label">처방전</span>
+                </a>
             </div>
         </section>
 
-        <!-- 진료시간 안내 (공개 정보) -->
-        <section class="panel" aria-labelledby="hours-heading">
-            <h2 id="hours-heading" class="h1">진료시간 안내</h2>
-            <div class="list" role="list">
-                <div role="listitem">월~금&nbsp;&nbsp;오전 9:00 ~ 오후 6:00</div>
-                <div role="listitem">토&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;오전 9:00 ~ 오후 1:00</div>
-                <div class="muted" role="listitem">점심시간&nbsp; 오후 12:30 ~ 오후 1:30</div>
+        <!-- 진료시간 안내 -->
+        <section class="panel panel-hours" aria-labelledby="hours-heading">
+            <div class="hours-title-row">
+                <h2 id="hours-heading" class="hours-title">진료시간 안내</h2>
             </div>
-            <div class="list" style="margin-top:10px;">
-                <div class="muted">문의: 1588-1234 (09:00~18:00)</div>
+
+            <div class="hours-row">
+                <span class="hours-label">월~금</span>
+                <span class="hours-value">오전 9:00 ~ 오후 6:00</span>
+            </div>
+
+            <div class="hours-row">
+                <span class="hours-label">토</span>
+                <span class="hours-value">오전 9:00 ~ 오후 1:00</span>
+            </div>
+
+            <div class="hours-row">
+                <span class="hours-label">점심시간</span>
+                <span class="hours-value">오후 12:30 ~ 오후 1:30</span>
             </div>
         </section>
     </div>
