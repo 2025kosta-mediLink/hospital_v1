@@ -35,5 +35,6 @@
 </div>
 
 <% session.removeAttribute("error"); %>
+<jsp:include page="/WEB-INF/views/common/navigation.jsp"/>
 </body>
 </html>
