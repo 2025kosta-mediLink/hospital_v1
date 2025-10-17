@@ -1,7 +1,7 @@
 /* 히어로: 프레임 폭에 맞춤 */
 .hero{
     height:250px;
-    background-image:url('https://github.com/user-attachments/assets/279dd81d-3f47-466c-a659-57d1b94b414a');
+    background-image: url('../images/hospital_1.png');
     background-size:cover; background-position:center;
     border-bottom:1px solid var(--line);
     box-shadow: 0 18px 36px rgba(0,0,0,.18);
@@ -19,7 +19,7 @@
 }
 
 /* 콘텐츠 컨테이너 */
-.container{padding:0 16px; margin-top:-28px}
+.container{padding:0 16px;  margin-top:-28px}
 
 /* 카드 패널 (reception과 통일) */
 .panel{
@@ -46,37 +46,53 @@
 .big{font-size:24px; font-weight:900}
 
 /* 퀵 액션 */
-.grid3{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
-
-.quick{
-    display:flex;
-    flex-direction:column;           /* 아이콘 위, 텍스트 아래 */
-    align-items:center;
-    justify-content:center;
-    gap:8px;                          /* 아이콘-텍스트 간격 */
-    min-height:108px;                 /* 세로 길이 ↑ */
-    background:#f8fafc;
-    border:1px solid var(--line);
-    border-radius:14px;
-    padding:14px;
-    text-align:center;
-    text-decoration:none;
-    color:#111;
-    font-weight:700;
-    transition:background .15s ease, transform .05s ease, box-shadow .15s ease;
+.panel-quick{
+    /* .panel 기본값 덮어쓰기 */
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;               /* 패널 내부 패딩 제거 */
+    /* 그리드 컨테이너 */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
 }
 
-.quick:hover{ background:#eef2f7; box-shadow:0 2px 10px rgba(0,0,0,.06); }
-.quick:active{ transform:translateY(1px); }
+/* 버튼 카드 자체가 보이도록 (이전 규칙 유지 가능) */
+.panel-quick .quick{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 110px;
+    width: 100%;
+    background: #FFFFFF;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px;
+    text-align: center;
+    text-decoration: none;
+    color: #111;
+    font-weight: 700;
+    transition: background .15s ease, transform .05s ease, box-shadow .15s ease;
+}
+.panel-quick .quick:hover{
+    background: #eef2f7;
+    box-shadow: 0 2px 10px rgba(0,0,0,.06);
+}
+.panel-quick .quick:active{ transform: translateY(1px); }
 
-.quick-icon{
-    width:30px; height:30px;         /* 아이콘 크기 */
-    object-fit:contain;
+.panel-quick .quick-icon{
+    width: 32px; height: 32px; object-fit: contain;
+}
+.panel-quick .quick-label{
+    font-size: 14px; line-height: 18px;
 }
 
-.quick-label{
-    font-size:14px;
-    line-height:18px;
+/* 초소형 기기에서 2열로 */
+@media (max-width: 340px){
+    .panel-quick{ grid-template-columns: repeat(2, 1fr); }
 }
 
 /* 공용 기본 버튼 (접수와 동일 그라데이션) */
@@ -197,4 +213,72 @@
     background:#E5E7EB;
     margin:8px 0 4px;
     border:0;
+}
+/* ===== 문의 푸터 (네비 위 고정) ===== */
+.contact-footer{
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: calc(var(--tabbar-h) + 6px + env(safe-area-inset-bottom)); /* 네비 위 */
+    width: calc(100% - 32px);
+    max-width: 375px;
+    z-index: 1001;                       /* 네비(999)보다 위 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    backdrop-filter: saturate(180%) blur(4px);
+    padding: 10px 14px;
+    margin-top: 4px;
+}
+
+/* 첫 줄 문구 */
+.contact-footer .cf-text{
+    color: #64748B;              /* 64748B */
+    font-size: 12px;             /* 11 */
+    font-weight: 500;            /* medium */
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* 두 번째 줄: 전화/영업시간 행 */
+.contact-footer .cf-row{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* 공통 아이콘 */
+.contact-footer .cf-ico{
+    width: 14px; height: 14px;
+    display: inline-block;
+    margin-right: 6px;
+    vertical-align: -2px;
+}
+
+/* 전화 */
+.contact-footer .cf-phone{
+    display: inline-flex;
+    align-items: center;
+    color: #3B82F6;              /* 3B82F6 */
+    font-size: 12px;
+    font-weight: 500;            /* medium */
+    text-decoration: none;
+}
+.contact-footer .cf-phone:hover{ text-decoration: underline; }
+
+/* 시간 */
+.contact-footer .cf-hours{
+    display: inline-flex;
+    align-items: center;
+    color: #64748B;              /* 64748B */
+    font-size: 12px;             /* 11 */
+    font-weight: 400;            /* regular */
+}
+
+/* 구분 점(선택) */
+.contact-footer .cf-sep{
+    width: 1px; height: 12px;
+    background: var(--line);
+    opacity: .9;
 }
