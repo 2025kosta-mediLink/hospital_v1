@@ -47,12 +47,12 @@
     <div class="modal-card">
         <div class="modal-title">예약 정보 확인</div>
         <div class="modal-row"><span
-                class="label"><strong>진료과</strong></span><span>${doctor.departmentName}</span>
+                class="label">진료과</span><span><strong>${doctor.departmentName}</strong></span>
         </div>
-        <div class="modal-row"><span class="label"><strong>의료진</strong></span><span>${doctor.name} 교수</span>
+        <div class="modal-row"><span class="label">의료진</span><span><strong>${doctor.name} 교수</strong></span>
         </div>
-        <div class="modal-row"><span class="label"><strong>예약 일시</strong></span><span
-                id="modalWhen"></span></div>
+        <div class="modal-row"><span class="label">예약 일시</span><strong><span
+                id="modalWhen"></span></strong></div>
         <div class="notice-box">
             <div class="notice-header">
                 <span class="notice-icon">ℹ️</span>
