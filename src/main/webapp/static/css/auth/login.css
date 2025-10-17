@@ -9,7 +9,6 @@ body{
     Arial, "Malgun Gothic", sans-serif;
     font-size:14px;
     line-height:1.45;
-    background:#E5E7EB;
     color:var(--text);
 }
 
@@ -48,7 +47,6 @@ body{
 .stack-16{ margin-top:16px; }
 .stack-24{ margin-top:24px; }
 
-.screen{ background:#E5E7EB; }
 .form-group{ margin:20px 0; }
 .input{ padding:14px 6px 16px; }
 .screen{

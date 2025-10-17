@@ -28,11 +28,11 @@
                 <c:choose>
                     <c:when test="${not empty summary.appointmentAt}">
                         <div class="muted">
-                            진료과: <c:out value="${summary.departmentName}"/>
+                            <c:out value="${summary.departmentName}"/>
                             <span class="dot"></span>
-                            의료진: <c:out value="${summary.doctorName}"/>
+                            <c:out value="${summary.doctorName}"/> 교수
                             <span class="dot"></span>
-                        <fmt:formatDate value="${summary.appointmentAt}" pattern="a hh:mm"/>
+                            <fmt:formatDate value="${summary.appointmentAt}" pattern="a hh:mm"/>
                         </div>
                     </c:when>
                     <c:otherwise>
@@ -42,7 +42,7 @@
             </div>
 
             <div class="row" style="margin-top:12px;">
-                <div class="muted">대기 순번</div>
+                <div class="muted"><strong>대기 순번</strong></div>
                 <div class="big"><c:out value="${empty summary.myQueueNo ? '-' : summary.myQueueNo}"/></div>
             </div>
         </section>

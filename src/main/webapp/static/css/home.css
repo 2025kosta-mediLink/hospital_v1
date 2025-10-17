@@ -1,9 +1,21 @@
 /* 히어로: 프레임 폭에 맞춤 */
 .hero{
-    height:200px;
-    background-image:url('https://images.unsplash.com/photo-1584433144859-1fc3ab64a957?q=80&w=1200&auto=format&fit=crop');
+    height:250px;
+    background-image:url('https://github.com/user-attachments/assets/279dd81d-3f47-466c-a659-57d1b94b414a');
     background-size:cover; background-position:center;
     border-bottom:1px solid var(--line);
+    box-shadow: 0 18px 36px rgba(0,0,0,.18);
+}
+.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0;
+    bottom:-8px;     /* 섀도가 박스 밖으로 떨어지게 */
+    height:16px;     /* 섀도 두께 */
+    pointer-events:none;
+    /* 바닥으로 자연스럽게 퍼지는 느낌 */
+    background: radial-gradient(100% 16px at 100% 0,
+    rgba(0,0,0,.22) 0%, rgba(0,0,0,0) 70%);
 }
 
 /* 콘텐츠 컨테이너 */
@@ -34,7 +46,7 @@
 .big{font-size:24px; font-weight:900}
 
 /* 퀵 액션 */
-.grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:12px}
+.grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:10px;}
 .quick{
     background:#f8fafc; border:1px solid var(--line); border-radius:14px;
     padding:14px; text-align:center; text-decoration:none; color:#111; font-weight:700;
