@@ -1,13 +1,25 @@
 /* 히어로: 프레임 폭에 맞춤 */
 .hero{
-    height:200px;
-    background-image:url('https://images.unsplash.com/photo-1584433144859-1fc3ab64a957?q=80&w=1200&auto=format&fit=crop');
+    height:250px;
+    background-image: url('../images/hospital_1.png');
     background-size:cover; background-position:center;
     border-bottom:1px solid var(--line);
+    box-shadow: 0 18px 36px rgba(0,0,0,.18);
+}
+.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0;
+    bottom:-8px;     /* 섀도가 박스 밖으로 떨어지게 */
+    height:16px;     /* 섀도 두께 */
+    pointer-events:none;
+    /* 바닥으로 자연스럽게 퍼지는 느낌 */
+    background: radial-gradient(100% 16px at 100% 0,
+    rgba(0,0,0,.22) 0%, rgba(0,0,0,0) 70%);
 }
 
 /* 콘텐츠 컨테이너 */
-.container{padding:0 16px; margin-top:-28px}
+.container{padding:0 16px;  margin-top:-28px}
 
 /* 카드 패널 (reception과 통일) */
 .panel{
@@ -34,14 +46,54 @@
 .big{font-size:24px; font-weight:900}
 
 /* 퀵 액션 */
-.grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:12px}
-.quick{
-    background:#f8fafc; border:1px solid var(--line); border-radius:14px;
-    padding:14px; text-align:center; text-decoration:none; color:#111; font-weight:700;
-    transition:background .15s ease, transform .05s ease;
+.panel-quick{
+    /* .panel 기본값 덮어쓰기 */
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;               /* 패널 내부 패딩 제거 */
+    /* 그리드 컨테이너 */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
 }
-.quick:hover{background:#eef2f7}
-.quick:active{transform:translateY(1px)}
+
+/* 버튼 카드 자체가 보이도록 (이전 규칙 유지 가능) */
+.panel-quick .quick{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 110px;
+    width: 100%;
+    background: #FFFFFF;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px;
+    text-align: center;
+    text-decoration: none;
+    color: #111;
+    font-weight: 700;
+    transition: background .15s ease, transform .05s ease, box-shadow .15s ease;
+}
+.panel-quick .quick:hover{
+    background: #eef2f7;
+    box-shadow: 0 2px 10px rgba(0,0,0,.06);
+}
+.panel-quick .quick:active{ transform: translateY(1px); }
+
+.panel-quick .quick-icon{
+    width: 32px; height: 32px; object-fit: contain;
+}
+.panel-quick .quick-label{
+    font-size: 14px; line-height: 18px;
+}
+
+/* 초소형 기기에서 2열로 */
+@media (max-width: 340px){
+    .panel-quick{ grid-template-columns: repeat(2, 1fr); }
+}
 
 /* 공용 기본 버튼 (접수와 동일 그라데이션) */
 .btn-primary{
@@ -57,3 +109,176 @@
 /* 보조 */
 .divider{height:1px; background:var(--line); margin:12px 0}
 .sp-8{height:8px}.sp-12{height:12px}.sp-16{height:16px}
+
+.panel-today .title-center{
+    display:flex;
+    justify-content:center;       /* 가로 가운데 정렬 */
+    align-items:center;
+    gap:8px;
+    margin-bottom:10px;
+}
+.panel-today .title-center .title{
+    font-weight:600;              /* semi-bold */
+    font-size:17px;
+    color:#1F2937;
+}
+.panel-today .title-center .icon{
+    width:18px; height:18px;      /* 캘린더 아이콘 */
+    object-fit:contain;
+}
+
+.panel-today .info-line{
+    color:#6B7280;
+    font-size:13px;
+    font-weight:500;              /* medium */
+    margin:0 0 10px 0;
+    text-align: center;
+}
+
+.panel-today .divider{
+    height:1px;
+    background:#E5E7EB;          /* 얇은 회색 줄 */
+    margin:10px 0 12px;
+    border:0;
+}
+
+.panel-today .queue-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.panel-today .queue-label{
+    color:#1F2937;
+    font-weight:600;              /* semi-bold */
+    font-size:18px;
+}
+
+.panel-today .queue-badge{
+    display:inline-flex;
+    justify-content:center;
+    align-items:center;
+    width:28px; height:28px;      /* 원형 배지 */
+    border-radius:999px;
+    background:#2F80ED;
+    color:#FFFFFF;
+    font-size:15px;
+    font-weight:700;
+    line-height:1;
+}
+
+.panel-today .queue-dash{
+    color:#2F80ED;
+    font-size:15px;
+    font-weight:700;
+}
+/* === 진료시간 안내 (panel-hours) === */
+.panel-hours .hours-title-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:10px;
+}
+.panel-hours .hours-icon{
+    width:18px; height:18px; object-fit:contain;
+}
+.panel-hours .hours-title{
+    font-size:16px;
+    font-weight:600;              /* semi-bold */
+    color:#1F2937;
+}
+
+/* 라벨/값 좌우 정렬 행 */
+.panel-hours .hours-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:4px 0;
+}
+.panel-hours .hours-label{
+    color:#6B7280;                /* 6B7280, medium, 13 */
+    font-size:14px;
+    font-weight:500;
+}
+.panel-hours .hours-value{
+    color:#1F2937;                /* 1F2937, medium, 13 */
+    font-size:14px;
+    font-weight:500;
+}
+
+/* 구분선 (옵션: 필요없으면 삭제 가능) */
+.panel-hours .divider{
+    height:1px;
+    background:#E5E7EB;
+    margin:8px 0 4px;
+    border:0;
+}
+/* ===== 문의 푸터 (네비 위 고정) ===== */
+.contact-footer{
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: calc(var(--tabbar-h) + 6px + env(safe-area-inset-bottom)); /* 네비 위 */
+    width: calc(100% - 32px);
+    max-width: 375px;
+    z-index: 1001;                       /* 네비(999)보다 위 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    backdrop-filter: saturate(180%) blur(4px);
+    padding: 10px 14px;
+    margin-top: 4px;
+}
+
+/* 첫 줄 문구 */
+.contact-footer .cf-text{
+    color: #64748B;              /* 64748B */
+    font-size: 12px;             /* 11 */
+    font-weight: 500;            /* medium */
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* 두 번째 줄: 전화/영업시간 행 */
+.contact-footer .cf-row{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* 공통 아이콘 */
+.contact-footer .cf-ico{
+    width: 14px; height: 14px;
+    display: inline-block;
+    margin-right: 6px;
+    vertical-align: -2px;
+}
+
+/* 전화 */
+.contact-footer .cf-phone{
+    display: inline-flex;
+    align-items: center;
+    color: #3B82F6;              /* 3B82F6 */
+    font-size: 12px;
+    font-weight: 500;            /* medium */
+    text-decoration: none;
+}
+.contact-footer .cf-phone:hover{ text-decoration: underline; }
+
+/* 시간 */
+.contact-footer .cf-hours{
+    display: inline-flex;
+    align-items: center;
+    color: #64748B;              /* 64748B */
+    font-size: 12px;             /* 11 */
+    font-weight: 400;            /* regular */
+}
+
+/* 구분 점(선택) */
+.contact-footer .cf-sep{
+    width: 1px; height: 12px;
+    background: var(--line);
+    opacity: .9;
+}

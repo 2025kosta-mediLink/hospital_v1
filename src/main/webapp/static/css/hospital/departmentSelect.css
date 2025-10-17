@@ -22,7 +22,11 @@
 
 * { box-sizing: border-box }
 
-html, body { height: 100% }
+.screen{
+  --bg: #FFFFFF;         /* 토큰 덮어쓰기 */
+  background: #FFFFFF;   /* 안전빵 */
+}
+html, body { height: 100%; background: #FFFFFF;}
 
 body {
   margin: 0;
@@ -97,19 +101,17 @@ body {
 /* 검색 바 */
 .search {
   display: flex;
-  gap: 8px;
+  gap: 5px;
   align-items: center;
   background: var(--card);
-  border: 1px solid var(--line);
   padding: 10px 10px;
-  box-shadow: var(--shadow-card);
 }
 
 .search input {
   flex: 1;
   height: 44px;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: 10px;
   background: #fff;
   padding: 0 12px;
   outline: none;
@@ -122,7 +124,7 @@ body {
 .search button {
   height: 44px;
   padding: 0 14px;
-  border-radius: 12px;
+  border-radius: 10px;
   background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
   border: 0;
   color: #fff;

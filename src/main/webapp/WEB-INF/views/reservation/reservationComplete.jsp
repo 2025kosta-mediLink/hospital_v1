@@ -97,9 +97,9 @@
                 <span>진료 안내사항</span>
             </div>
             <div class="notice-inner">
-                <div class="notice-content">진료 30분 전까지 접수를 완료해 주세요</div>
-                <div class="notice-content">신분증과 건강보험증을 지참해 주세요</div>
-                <div class="notice-content">예약 변경은 진료 1일 전까지 가능합니다</div>
+                <div class="notice-content">&nbsp;•&nbsp;진료 30분 전까지 접수를 완료해 주세요</div>
+                <div class="notice-content">&nbsp;•&nbsp;신분증과 건강보험증을 지참해 주세요</div>
+                <div class="notice-content">&nbsp;•&nbsp;예약 변경은 진료 1일 전까지 가능합니다</div>
             </div>
         </div>
 
