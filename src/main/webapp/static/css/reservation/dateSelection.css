@@ -202,12 +202,10 @@
   align-items: flex-start;
   padding: 16px;
   gap: 8px;
-
   width: 315px;
   height: 72px;
-  background: #EFF6FF; /* 피그마 색상 적용 */
+  background: #E6F0FA;
   border-radius: 12px;
-
   font-size: 13px;
   color: #2563EB; /* 안내사항 글자 색 */
 }
@@ -243,7 +241,7 @@
 /* 아이콘 */
 .notice-icon {
   color: #2563EB;
-  font-size: 18px;
+  font-size: 17px;
 }
 
 /* 버튼 스타일 */

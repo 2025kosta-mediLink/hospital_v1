@@ -311,7 +311,7 @@
 /* 표시 기호: 파란 점 / 연회색 대시 */
 .card-schedule .dot {
   color: #1E66F5; /* 파랑 ● */
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1;
 }
 
