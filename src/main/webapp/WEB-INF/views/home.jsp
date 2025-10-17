@@ -18,33 +18,46 @@
 
     <div class="container">
         <!-- 오늘의 예약일정 -->
-        <section class="panel" aria-labelledby="today-heading">
-            <div class="row">
-                <h2 id="today-heading" class="h1">오늘의 예약일정</h2>
-                <span class="chip">📅 <fmt:formatDate value="<%= new java.util.Date() %>" pattern="yyyy.MM.dd (E)"/></span>
+        <section class="panel panel-today" aria-labelledby="today-heading">
+            <!-- 상단: 아이콘 + 타이틀 (가로 가운데 정렬) -->
+            <div class="title-center">
+                <img class="icon" src="${pageContext.request.contextPath}/static/images/icons/calendar_blue.png" alt="">
+                <h2 id="today-heading" class="title">오늘의 예약일정</h2>
             </div>
 
-            <div class="list">
+            <!-- 진료과 / 의사 / 시간 -->
+            <div class="info-line">
                 <c:choose>
                     <c:when test="${not empty summary.appointmentAt}">
-                        <div class="muted">
-                            <c:out value="${summary.departmentName}"/>
-                            <span class="dot"></span>
-                            <c:out value="${summary.doctorName}"/> 교수
-                            <span class="dot"></span>
-                            <fmt:formatDate value="${summary.appointmentAt}" pattern="a hh:mm"/>
-                        </div>
+                        <c:out value="${summary.departmentName}"/>
+                        &nbsp;•&nbsp;
+                        <c:out value="${summary.doctorName}"/> 교수
+                        &nbsp;•&nbsp;
+                        <fmt:formatDate value="${summary.appointmentAt}" pattern="a hh:mm"/>
                     </c:when>
                     <c:otherwise>
-                        <div class="muted">오늘 예약된 일정이 없습니다.</div>
+                        오늘 예약된 일정이 없습니다.
                     </c:otherwise>
                 </c:choose>
             </div>
 
-            <div class="row" style="margin-top:12px;">
-                <div class="muted"><strong>대기 순번</strong></div>
-                <div class="big"><c:out value="${empty summary.myQueueNo ? '-' : summary.myQueueNo}"/></div>
+            <!-- 구분선 -->
+            <div class="divider" role="separator" aria-hidden="true"></div>
+
+            <!-- 대기 순번 -->
+            <div class="queue-row">
+                <div class="queue-label">대기 순번</div>
+
+                <c:choose>
+                    <c:when test="${not empty summary.myQueueNo}">
+                        <span class="queue-badge"><c:out value="${summary.myQueueNo}"/></span>
+                    </c:when>
+                    <c:otherwise>
+                        <span class="queue-badge">-</span>
+                    </c:otherwise>
+                </c:choose>
             </div>
+
         </section>
 
         <!-- 퀵 액션 (모두 보호: 비로그인 시 클릭 -> 로그인으로) -->

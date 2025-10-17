@@ -69,3 +69,66 @@
 /* 보조 */
 .divider{height:1px; background:var(--line); margin:12px 0}
 .sp-8{height:8px}.sp-12{height:12px}.sp-16{height:16px}
+
+.panel-today .title-center{
+    display:flex;
+    justify-content:center;       /* 가로 가운데 정렬 */
+    align-items:center;
+    gap:8px;
+    margin-bottom:10px;
+}
+.panel-today .title-center .title{
+    font-weight:600;              /* semi-bold */
+    font-size:17px;
+    color:#1F2937;
+}
+.panel-today .title-center .icon{
+    width:18px; height:18px;      /* 캘린더 아이콘 */
+    object-fit:contain;
+}
+
+.panel-today .info-line{
+    color:#6B7280;
+    font-size:13px;
+    font-weight:500;              /* medium */
+    margin:0 0 10px 0;
+    text-align: center;
+}
+
+.panel-today .divider{
+    height:1px;
+    background:#E5E7EB;          /* 얇은 회색 줄 */
+    margin:10px 0 12px;
+    border:0;
+}
+
+.panel-today .queue-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.panel-today .queue-label{
+    color:#1F2937;
+    font-weight:600;              /* semi-bold */
+    font-size:18px;
+}
+
+.panel-today .queue-badge{
+    display:inline-flex;
+    justify-content:center;
+    align-items:center;
+    width:28px; height:28px;      /* 원형 배지 */
+    border-radius:999px;
+    background:#2F80ED;
+    color:#FFFFFF;
+    font-size:15px;
+    font-weight:700;
+    line-height:1;
+}
+
+.panel-today .queue-dash{
+    color:#2F80ED;
+    font-size:15px;
+    font-weight:700;
+}
