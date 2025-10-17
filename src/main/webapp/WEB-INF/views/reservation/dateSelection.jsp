@@ -58,7 +58,7 @@
                 <span class="notice-icon">ℹ️</span>
                 <span>안내사항</span>
             </div>
-            <div class="notice-content">도착 10분 전 내원해주세요.</div>
+            <div class="notice-content">도착 10분 전 내원해주세요</div>
         </div>
         <div class="modal-actions">
             <button class="btn-ghost" id="btnCancel">취소</button>

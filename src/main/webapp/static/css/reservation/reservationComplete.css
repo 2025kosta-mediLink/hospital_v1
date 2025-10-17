@@ -1,141 +1,234 @@
 /* reservationComplete.css */
 
-/* Success Icon (체크 아이콘) */
-.success-icon {
-  display: flex;
-  justify-content: center;  /* 가로 가운데 정렬 */
-  align-items: center;      /* 세로 가운데 정렬 */
-  padding: 16px 0;
-  margin-bottom: 0px;      /* 체크 아이콘과 "예약 완료" 텍스트 간의 간격 */
+/* ===== Success Icon (체크 아이콘) ===== */
+.success-icon{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:12px 0;
+  margin-bottom:0;
+}
+.success-icon img{
+  width:44px;
+  height:44px;
+  border-radius:0;
+  object-fit:contain;
 }
 
-.success-icon img {
-  width: 80px;              /* 이미지 크기 조정 */
-  height: 80px;             /* 이미지 크기 조정 */
-  border-radius: 0px;       /* 원을 없애고 이미지 크기만 지정 */
+/* ===== 예약 완료 메시지 ===== */
+.reservation-complete-text{
+  font-family:'Inter',sans-serif;
+  font-style:normal;
+  font-weight:700;
+  font-size:22px;
+  line-height:29px;
+  text-align:center;
+  color:#1F2937;
+  margin-top:0;
 }
 
-/* 예약 완료 메시지 */
-.reservation-complete-text {
-  width: 227px;
-  height: 29px;
-  font-family: 'Inter', sans-serif;
-  font-style: normal;
-  font-weight: 700;
-  font-size: 22px;
-  line-height: 29px;
-  text-align: center;
-  color: #1F2937;
-  margin-top: 0px;          /* 예약 완료 텍스트와 아이콘 간 간격 줄이기 */
+/* ===== 예약 완료 페이지 레이아웃 ===== */
+.reservation-complete{
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  align-items:stretch;        /* 카드가 가로로 꽉 차도록 */
+  padding:20px 24px 32px;
+  gap:20px;
+  width:100%;                 /* 고정폭 제거 */
+  height:auto;                /* 고정높이 제거 */
+  background:#FFFFFF;
 }
 
-/* 예약 완료 페이지 */
-.reservation-complete {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;      /* 가로 가운데 정렬 */
-  padding: 20px 24px 32px;  /* 간격 줄이기 */
-  gap: 20px;
-  width: 393px;
-  height: 852px;
-  background: #FFFFFF;
-  border-radius: 0px;
+/* ===== 예약 정보 컨테이너/카드 ===== */
+.reservation-info{ width:100%; }
+.reservation-info-card{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  width:100%;
+  padding:16px 14px;          /* 모바일 컴팩트 */
+  background:#F1F5F9;
+  border-radius:12px;
+  box-shadow:none;
+  box-sizing:border-box;
 }
 
-/* 예약 정보 카드 */
-.reservation-info-card {
+/* ===== 제목 줄: 달력 아이콘 + 텍스트 ===== */
+.reservation-info-title{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-weight:600;            /* semi-bold */
+  font-size:17px;
+  color:#1F2937;
+}
+.reservation-info-title .icon{
+  width:20px;                 /* 아이콘 확 줄임 */
+  height:20px;
+  display:inline-block;
+  object-fit:contain;
+  vertical-align:-1px;
+}
+
+/* ===== 항목 줄: 좌 라벨 / 우 값 ===== */
+.info-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.info-row .label{
+  color:#6B7280;
+  font-size:14px;
+  font-weight:500;            /* medium */
+}
+.info-row .value{
+  color:#1F2937;
+  font-size:15px;
+  font-weight:600;            /* semi-bold */
+  text-align:right;
+}
+
+
+
+/* ===== 날짜 + 시간(두 줄) ===== */
+.datetime{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;       /* 우측 정렬 */
+  gap:5px;
+}
+.datetime .date{
+  color:#1F2937;
+  font-size:15px;
+  font-weight:600;
+}
+.datetime .time{
+  color:#2F80ED;              /* 파란색 */
+  font-size:15px;
+  font-weight:600;
+}
+
+/* ===== 안내사항 ===== */
+.notice-box {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 24px;
-  gap: 20px;
-  width: calc(100% - 48px);
-  height: 242px;
-  background: #F8FAFC; /* 연한 회색 배경 */
-  border-radius: 0px;
-}
-
-/* 예약 정보 제목 */
-.reservation-info-title {
-  display: flex;
-  align-items: center;
+  padding: 16px;
   gap: 8px;
-  font-weight: bold;
-  font-size: 16px;
-  color: #2563EB; /* 파란색 */
+  width: 327px;
+  height: 125px;
+  background: #E6F0FA;
+  border-radius: 12px;
+  font-size: 13px;
+  color: #2563EB; /* 안내사항 글자 색 */
 }
 
-/* 예약 정보 항목 */
-.info-item {
+/* Notice Header */
+.notice-header {
   display: flex;
-  justify-content: space-between;
-  font-size: 16px;
-  color: #6B7280; /* 연한 회색 글씨 */
-}
-
-.info-item span {
-  color: #111827; /* 검정색 글씨 */
-}
-
-.info-item .date-label {
-  color: #2563EB; /* 파란색 */
-}
-
-/* 예약 시간 (오전/오후) */
-.time-label {
-  color: #2563EB; /* 파란색 */
-}
-
-
-
-/* 안내사항 */
-.notice-box {
-  background-color: #f0f9ff;
-  padding: 12px;
-  border-radius: 8px;
-  margin-top: 20px;
-  font-size: 14px;
-  color: #2563eb;
-  display: flex;
+  flex-direction: row;
   align-items: center;
+  padding: 0px;
+  gap: 8px;
+
+  width: 265px;
+  height: 17px;
+  border-radius: 0px;
+  color: #2563EB; /* 제목 색상 */
+  font-size: 13px; /* 제목 글자 크기 */
+  font-weight: 650; /* 글자 굵게 설정 */
+  margin-bottom:4px;
 }
 
-.notice-box .notice-icon {
-  font-size: 20px;
-  margin-right: 8px;
+/* 안내사항 내용 */
+.notice-inner{
+  display: flex;
+  flex-direction: column;
+  gap: 4px;            /* 줄 사이 간격: 4px (필요하면 2~6px로 조절) */
 }
 
-/* 버튼 */
-.actions {
-  margin-top: 30px;
+.notice-content {
+  width: 265px;
+  height: 17px;
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 17px; /* 동일하게 설정 */
+  color: #6B7280; /* 도착~ 텍스트 색상 변경 */
 }
 
-.actions .btn-primary {
-  background-color: #2563eb;
-  color: white;
-  padding: 14px 20px;
-  font-size: 16px;
-  border-radius: 8px;
-  text-decoration: none;
-  text-align: center;
+/* 아이콘 */
+.notice-icon {
+  color: #2563EB;
+  font-size: 17px;
 }
 
-.actions .btn-primary:hover {
-  background-color: #1c5fca;
+/* ===== 버튼 ===== */
+/* ===== Buttons (cleaned) ===== */
+.actions{
+  margin-top:24px;
+  display:flex;
+  gap:8px;
 }
 
-.actions .btn {
-  background-color: #2563eb;
-  color: white;
-  padding: 14px 20px;
-  font-size: 16px;
-  border-radius: 8px;
-  text-align: center;
-  border: none;
-  cursor: pointer;
+/* 공통 버튼 스타일 (a.btn-primary 둘 다 적용) */
+.actions .btn-primary{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:13px 15px;     /* 현재 높이 */
+  min-height:40px;
+  font-size:14px;
+  line-height:17px;
+  font-weight:600;
+  border-radius:10px;
+  text-decoration:none;  /* 밑줄 제거 */
+  -webkit-tap-highlight-color:transparent;
+  transition:background-color .18s ease, border-color .18s ease, color .18s ease;
+  border:1px solid transparent;  /* 기본값 */
 }
 
-.actions .btn:hover {
-  background-color: #1c5fca;
+/* 1) 첫 번째 버튼: 파란 기본 */
+.actions .btn-primary:first-child{
+  background:#2563eb;
+  color:#fff;
+  border-color:transparent;
+}
+.actions .btn-primary:first-child:hover{
+  background:#1c5fca;   /* 확실한 변화 */
+}
+
+/* 2) 두 번째 버튼: 라이트/아웃라인 */
+.actions .btn-primary:last-child{
+  background:#f8fafc;
+  color:#111;
+  border:1px solid var(--line);
+}
+.actions .btn-primary:last-child:hover{
+  background:#e2e8f0;       /* #f8fafc → #e2e8f0로 변화 폭 ↑ */
+  border-color:#cbd5e1;      /* 라인도 살짝 진하게 */
+  color:#111;                /* 텍스트 고정 */
+}
+
+/* 전 상태 공통으로 밑줄 방지 + 포커스 접근성 */
+.actions .btn-primary:link,
+.actions .btn-primary:visited,
+.actions .btn-primary:hover,
+.actions .btn-primary:active,
+.actions .btn-primary:focus{
+  text-decoration:none;
+}
+.actions .btn-primary:focus-visible{
+  outline:2px solid rgba(37,128,235,.35);
+  outline-offset:2px;
+}
+
+/* 초소형 화면 보정 */
+@media (max-width:360px){
+  .reservation-info-title .icon{ width:12px; height:12px; }
+  .success-icon img{ width:36px; height:36px; }
+  .reservation-info-card{ padding:14px 12px; gap:10px; }
 }
