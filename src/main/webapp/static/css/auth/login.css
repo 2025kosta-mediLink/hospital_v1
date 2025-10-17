@@ -53,3 +53,27 @@ body{
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+.input:focus{
+    border-bottom-color: var(--primary);
+    background-color: #EFF6FF;          /* 연한 파랑 */
+    background-clip: padding-box;       /* iOS에서 색이 번지지 않게 */
+}
+
+/* 비밀번호 포커스도 확실히 강제 */
+input[type="password"].input:focus{
+    background-color: #EFF6FF;
+}
+
+/* Chrome/Safari 자동완성(autofill) 배경 덮어쓰기 */
+input.input:-webkit-autofill,
+input.input:-webkit-autofill:hover,
+input.input:-webkit-autofill:focus{
+    -webkit-box-shadow: 0 0 0 1000px #EFF6FF inset !important; /* 배경처럼 채우기 */
+    box-shadow: 0 0 0 1000px #EFF6FF inset !important;
+    -webkit-text-fill-color: var(--text);
+    caret-color: var(--primary);
+    transition: background-color 9999s ease-out; /* 일부 브라우저 깜빡임 방지 트릭 */
+}
+
+/* 터치 하이라이트 제거(모바일 파란 반짝임 방지) */
+.input{ -webkit-tap-highlight-color: transparent; }
