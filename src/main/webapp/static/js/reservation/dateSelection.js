@@ -121,14 +121,18 @@
   const modal = document.getElementById('confirmModal');
   const modalWhen = document.getElementById('modalWhen');
   const appointmentAt = document.getElementById('appointmentAt');
-  document.getElementById('btnCancel').onclick = () => modal.hidden = true;
+
+  document.getElementById('btnCancel').onclick = () => {
+    modal.hidden = true;
+    document.body.classList.remove('modal-open');   // ← 추가
+  };
+
   document.getElementById('btnOpenConfirm').onclick = () => {
-    if (!pickedDate || !pickedTime) {
-      return;
-    }
+    if (!pickedDate || !pickedTime) return;
     modalWhen.textContent = formatKoreanDateTime(pickedDate, pickedTime);
     appointmentAt.value = `${pickedDate} ${pickedTime}:00`;
     modal.hidden = false;
+    document.body.classList.add('modal-open');      // ← 추가
   };
 
   function formatKoreanDateTime(ymd, hm) {
