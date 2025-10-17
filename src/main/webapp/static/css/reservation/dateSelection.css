@@ -195,15 +195,53 @@
   font-size: 14px;
 }
 
-/* 안내 사항 박스 */
+/* Notice Section */
 .notice-box {
-  margin: 20px 0;
-  padding: 14px;
-  background: #F0F9FF; /* 연한 파란색 배경 */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 16px;
+  gap: 8px;
+  width: 315px;
+  height: 72px;
+  background: #E6F0FA;
   border-radius: 12px;
   font-size: 13px;
-  color: #2563EB; /* 글씨 색상 */
-  width: 100%;
+  color: #2563EB; /* 안내사항 글자 색 */
+}
+
+/* Notice Header */
+.notice-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0px;
+  gap: 8px;
+
+  width: 265px;
+  height: 17px;
+  border-radius: 0px;
+  color: #2563EB; /* 제목 색상 */
+  font-size: 13px; /* 제목 글자 크기 */
+  font-weight: 650; /* 글자 굵게 설정 */
+}
+
+/* 안내사항 내용 */
+.notice-content {
+  width: 265px;
+  height: 17px;
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 17px; /* 동일하게 설정 */
+  color: #6B7280; /* 도착~ 텍스트 색상 변경 */
+}
+
+/* 아이콘 */
+.notice-icon {
+  color: #2563EB;
+  font-size: 17px;
 }
 
 /* 버튼 스타일 */

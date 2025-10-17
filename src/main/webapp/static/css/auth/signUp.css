@@ -55,5 +55,10 @@ body { background:#fff; }
     border-radius:12px; padding:10px 0;    /* 두께 보정 */
 }
 .gender-item span{ flex:1; text-align:center; border-radius:12px; }
+
 .field { margin: 18px 16px; }
 .field:first-child { margin-top: 12px; }
+
+.form-section{
+    margin-bottom: calc(var(--navbar-h) + env(safe-area-inset-bottom) + 12px);
+}

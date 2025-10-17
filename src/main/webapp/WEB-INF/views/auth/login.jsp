@@ -1,3 +1,4 @@
+<%--login.jsp--%>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <!DOCTYPE html>
 <html lang="ko">
@@ -33,7 +34,6 @@
     </div>
 </div>
 
-<jsp:include page="/WEB-INF/views/common/navigation.jsp"/>
 <% session.removeAttribute("error"); %>
 </body>
 </html>

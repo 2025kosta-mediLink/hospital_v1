@@ -8,18 +8,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>진료과 선택</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common/common.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/reception/departmentList.css">
+    <link rel="stylesheet"
+          href="${pageContext.request.contextPath}/static/css/hospital/departmentSelect.css">
     <script defer src="${pageContext.request.contextPath}/static/js/common.js"></script>
-    <script defer src="${pageContext.request.contextPath}/static/js/hospital/departmentSelect.js"></script>
+    <script defer
+            src="${pageContext.request.contextPath}/static/js/hospital/departmentSelect.js"></script>
 </head>
 <body class="screen" data-ctx="${pageContext.request.contextPath}">
-<jsp:include page="/WEB-INF/views/common/header.jsp" />
+<jsp:include page="/WEB-INF/views/common/header.jsp"/>
 
 <div class="wrap">
 
     <!-- 진료과 검색 -->
     <div class="search">
-        <input type="text" id="searchTerm" placeholder="진료과명을 입력하세요" aria-label="진료과 검색" value="${param.searchTerm}" />
+        <input type="text" id="searchTerm" placeholder="진료과명을 입력하세요" aria-label="진료과 검색"
+               value="${param.searchTerm}"/>
         <button type="button" onclick="searchDepartments()">검색</button>
     </div>
 
@@ -36,10 +39,12 @@
                 <div class="grid">
                     <c:forEach var="d" items="${departmentSelect.departments}">
                         <label class="item">
-                            <input class="radio" type="radio" name="departmentId" value="${d.id}" required />
+                            <input class="radio" type="radio" name="departmentId" value="${d.id}"
+                                   required/>
                             <div class="card">
-                                <div class="icon"><c:out value="${fn:substring(d.name, 0, 1)}" /></div>
-                                <div class="name"><c:out value="${d.name}" /></div>
+                                <div class="icon"><c:out
+                                        value="${fn:substring(d.name, 0, 1)}"/></div>
+                                <div class="name"><c:out value="${d.name}"/></div>
                             </div>
                         </label>
                     </c:forEach>
@@ -52,7 +57,7 @@
     </form>
 </div>
 
-<jsp:include page="/WEB-INF/views/common/navigation.jsp" />
+<jsp:include page="/WEB-INF/views/common/navigation.jsp"/>
 
 </body>
 </html>

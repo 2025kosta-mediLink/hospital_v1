@@ -1,6 +1,6 @@
+/* reservationList.css */
 /* Tabs (마이페이지 탑바) */
 .mypage-tabs{
-    /* 기존: display:flex; justify-content:center; gap:24px; ... */
     display: grid;
     grid-template-columns: 1fr 1fr;  /* 2등분 */
     align-items: end;                 /* 밑줄과 높이 맞춤 */
@@ -8,9 +8,7 @@
     border-bottom: 1px solid var(--line);
     background: #fff;
 }
-
 .tab-item{
-    /* 기존: position:relative; padding:0 6px 8px; ... */
     position: relative;
     display: flex;
     justify-content: center;  /* 가운데 정렬 */
@@ -27,7 +25,6 @@
     position:absolute; left:50%; bottom:-1px; transform:translateX(-50%);
     width:32px; height:3px; background:#2563EB; border-radius:2px;
 }
-
 
 /* Header (필터) */
 .history-header{
@@ -87,6 +84,7 @@
 .meta .row{ display:flex; align-items:center; gap:8px; color:#374151; font-size:14px; }
 .meta .icon{ font-size:16px; }
 
+/* 상태 칩 */
 .status-chip{
     padding:6px 10px; border-radius:999px; font-size:12px; font-weight:700;
 }
@@ -94,14 +92,28 @@
 .status-DONE{ background:#E7F0FF; color:#1743B3; }      /* 접수완료 */
 .status-CANCELLED{ background:#FDECEC; color:#B42318; } /* 취소 */
 
+/* 액션 영역 */
 .actions{ display:flex; gap:8px; margin-top:12px; }
-.btn-ghost{
-    background:#fff; border:1px solid var(--line); color:#111827;
-    padding:10px 12px; border-radius:10px; font-weight:700; font-size:14px;
+
+/* 공통 .btn-ghost는 common.css 기준. 여긴 '색상만' 오버라이드 */
+.actions .btn-ghost.js-share{
+    background:#E7F0FF;  /* 예약 리스트 기준 파랑톤 */
+    color:#1743B3;
+    border:none;
 }
-.btn-primary{
-    background:#2563EB; color:#fff; padding:10px 12px; border-radius:10px;
-    font-weight:700; border:0;
+.actions .btn-ghost.js-share:hover{
+    background:#DCE6FF;
+}
+.actions .btn-ghost.js-cancel{
+    background:#ECEFF3;  /* 테두리 제거 + 더 진한 그레이 */
+    color:#111827;
+    border:none;
+}
+
+/* 접근성: 키보드 포커스 링 유지 */
+.actions .btn-ghost:focus-visible{
+    outline:2px solid var(--primary);
+    outline-offset:2px;
 }
 
 /* 빈 상태 */
@@ -109,22 +121,16 @@
     margin:24px 16px; padding:18px; border:1px dashed #E5E7EB; border-radius:12px;
     color:#6B7280; text-align:center;
 }
+
 /* 파일 선택 버튼을 숨기고, 사용자 정의 버튼 스타일링 */
-input[type="file"] {
-    display: none; /* 기본 파일 선택 버튼 숨김 */
+input[type="file"] { display:none; }
+.custom-file-upload{
+    display:inline-block;
+    background-color:#4CAF50;
+    color:#fff;
+    padding:10px 20px;
+    border-radius:5px;
+    cursor:pointer;
+    text-align:center;
 }
-
-.custom-file-upload {
-    display: inline-block;
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    text-align: center;
-}
-
-.custom-file-upload:hover {
-    background-color: #45a049;
-}
-
+.custom-file-upload:hover{ background-color:#45a049; }
