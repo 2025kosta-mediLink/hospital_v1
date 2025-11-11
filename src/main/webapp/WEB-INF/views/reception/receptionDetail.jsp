@@ -55,7 +55,7 @@
         <c:otherwise>
             <div class="card">
                 <div class="card-head">
-                    <div class="rec-no">접수번호 <c:out value="${reception.receptionNo}"/>번</div>
+                    <div class="rec-no"><c:out value="${reception.receptionNo}"/></div>
                     <c:choose>
                         <c:when test="${reception.status=='WAITING'}"><span class="badge b-wait">대기</span></c:when>
                         <c:when test="${reception.status=='CALLED'}"><span class="badge b-in">호출됨</span></c:when>

@@ -68,7 +68,7 @@ public class ReceptionListDAO {
                 while (rs.next()) {
                     ReceptionListItemDTO dto = new ReceptionListItemDTO();
                     dto.setReceptionId(rs.getLong("reception_id"));
-                    dto.setReceptionNo(rs.getInt("reception_no"));
+                    dto.setReceptionNo(rs.getString("reception_no"));
                     dto.setType(rs.getString("type"));
                     dto.setStatus(rs.getString("status"));
                     dto.setDoctorId(rs.getLong("doctor_id"));
@@ -121,7 +121,7 @@ public class ReceptionListDAO {
                 if (rs.next()) {
                     dto = new ReceptionListDetailDTO();
                     dto.setReceptionId(rs.getLong("receptionId"));
-                    dto.setReceptionNo(rs.getInt("receptionNo"));
+                    dto.setReceptionNo(rs.getString("receptionNo"));
                     dto.setType(rs.getString("type"));
                     dto.setStatus(rs.getString("status"));
                     dto.setConsentNotice(rs.getBoolean("consentNotice"));

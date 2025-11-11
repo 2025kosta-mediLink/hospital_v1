@@ -6,7 +6,7 @@ import java.util.Date;
 public class ReceptionListItemDTO {
 
     private Long receptionId;
-    private Integer receptionNo;
+    private String receptionNo;
     private String type;          // DIRECT/RESERVATION
     private String status;        // WAITING/DONE/...
     private Long doctorId;
@@ -17,8 +17,8 @@ public class ReceptionListItemDTO {
     public Long getReceptionId() { return receptionId; }
     public void setReceptionId(Long receptionId) { this.receptionId = receptionId; }
 
-    public Integer getReceptionNo() { return receptionNo; }
-    public void setReceptionNo(Integer receptionNo) { this.receptionNo = receptionNo; }
+    public String getReceptionNo() { return receptionNo; }
+    public void setReceptionNo(String receptionNo) { this.receptionNo = receptionNo; }
 
     public String getType() { return type; }
     public void setType(String type) { this.type = type; }

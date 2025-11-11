@@ -3,7 +3,7 @@ package dto;
 /** 접수 상세 조회 DTO (camelCase 필드) */
 public class ReceptionListDetailDTO {
     private Long receptionId;       // 접수 ID
-    private Integer receptionNo;    // 접수 번호
+    private String receptionNo;    // 접수 번호
     private String type;            // 'RESERVATION' | 'DIRECT'
     private String status;          // 'WAITING' | 'IN_SERVICE' | 'DONE' | 'CANCELLED'
     private Boolean consentNotice;  // 개인정보 안내 동의 여부
@@ -19,8 +19,8 @@ public class ReceptionListDetailDTO {
     public Long getReceptionId() { return receptionId; }
     public void setReceptionId(Long receptionId) { this.receptionId = receptionId; }
 
-    public Integer getReceptionNo() { return receptionNo; }
-    public void setReceptionNo(Integer receptionNo) { this.receptionNo = receptionNo; }
+    public String getReceptionNo() { return receptionNo; }
+    public void setReceptionNo(String receptionNo) { this.receptionNo = receptionNo; }
 
     public String getType() { return type; }
     public void setType(String type) { this.type = type; }

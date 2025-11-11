@@ -31,7 +31,7 @@
             <c:forEach var="r" items="${receptions}">
                 <div class="card">
                     <div class="card-head">
-                        <div class="rec-no">접수번호 <c:out value="${r.receptionNo}"/>번</div>
+                        <div class="rec-no"><c:out value="${r.receptionNo}"/></div>
 
                             <%-- 상태 배지: 다양한 관용 표기를 모두 취급 --%>
                         <c:set var="st" value="${fn:toUpperCase(r.status)}"/>

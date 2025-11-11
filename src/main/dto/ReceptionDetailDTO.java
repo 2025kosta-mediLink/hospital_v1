@@ -2,7 +2,7 @@ package dto;
 
 public class ReceptionDetailDTO {
     private Long receptionId;
-    private int receptionNo;
+    private String receptionNo;
     private String status;
     private String doctorName;
     private String departmentName;
@@ -10,8 +10,8 @@ public class ReceptionDetailDTO {
     public Long getReceptionId() { return receptionId; }
     public void setReceptionId(Long receptionId) { this.receptionId = receptionId; }
 
-    public int getReceptionNo() { return receptionNo; }
-    public void setReceptionNo(int receptionNo) { this.receptionNo = receptionNo; }
+    public String getReceptionNo() { return receptionNo; }
+    public void setReceptionNo(String receptionNo) { this.receptionNo = receptionNo; }
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }

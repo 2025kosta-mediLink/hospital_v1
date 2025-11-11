@@ -4,6 +4,9 @@ import common.util.DBConnectionUtil;
 import dto.ReceptionDetailDTO;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class ReceptionDAO {
 
@@ -15,13 +18,14 @@ public class ReceptionDAO {
     // uuid → member_id 해석
     final String qSelectMemberIdByUuid = "SELECT member_id FROM member WHERE uuid = ?";
 
-    // 전체 병원 기준으로 다음 접수번호 조회
-    final String qSelectReceptionNo = "SELECT COALESCE(MAX(reception_no), 1000) + 1 AS next_no FROM reception";
+    // [변경] MAX(reception_no) 조회 부분 제거 (랜덤 생성 방식으로 대체)
+//    final String qSelectReceptionNo = "SELECT COALESCE(MAX(reception_no), 1000) + 1 AS next_no FROM reception";
 
+    // [변경] reception_no를 VARCHAR로 저장하므로 %s 포맷으로 교체
     final String qInsertReception = "INSERT INTO reception " +
-            "(reservation_id, member_id, doctor_id, reception_no, type, status, " +
-            " consent_notice, consent_at, note_to_doctor, created_at, updated_at) " +
-            "VALUES (NULL, ?, ?, ?, 'DIRECT', 'WAITING', ?, NOW(), ?, NOW(), NOW())";
+        "(reservation_id, member_id, doctor_id, reception_no, type, status, " +
+        " consent_notice, consent_at, note_to_doctor, created_at, updated_at) " +
+        "VALUES (NULL, ?, ?, ?, 'DIRECT', 'WAITING', ?, NOW(), ?, NOW(), NOW())";
 
     final String qInsertSymptom = "INSERT INTO reception_symptom " +
             "(reception_id, symptom_id, created_at) VALUES (?, ?, NOW())";
@@ -47,33 +51,44 @@ public class ReceptionDAO {
         throw new IllegalStateException("유효하지 않은 사용자(uuid)입니다.");
       }
 
-      // 1️⃣ 다음 접수번호 조회
-      int nextReceptionNo = 1001;
-      try (PreparedStatement ps = conn.prepareStatement(qSelectReceptionNo);
-           ResultSet rs = ps.executeQuery()) {
-        if (rs.next()) {
-          nextReceptionNo = rs.getInt("next_no");
-        }
-      }
+      // 1️⃣ [변경] 랜덤 접수코드 생성
+      String prefix = "RCN-" + LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE) + "-";
+      String receptionCode = null;
 
-      // 2️⃣ reception 테이블에 insert
-      try (PreparedStatement ps = conn.prepareStatement(qInsertReception, Statement.RETURN_GENERATED_KEYS)) {
-        ps.setLong(1, memberId);
-        ps.setLong(2, doctorId);
-        ps.setInt(3, nextReceptionNo);
-        ps.setBoolean(4, consentNotice);
-        ps.setString(5, noteToDoctor);
-        ps.executeUpdate();
+      // 최대 20회 재시도 (UNIQUE 충돌 방지)
+      for (int i = 0; i < 20; i++) {
+        String candidate = prefix + String.format("%04d", ThreadLocalRandom.current().nextInt(0, 10000));
+        try (PreparedStatement ps = conn.prepareStatement(qInsertReception, Statement.RETURN_GENERATED_KEYS)) {
+          ps.setLong(1, memberId);
+          ps.setLong(2, doctorId);
+          ps.setString(3, candidate);     // VARCHAR(20)에 저장
+          ps.setBoolean(4, consentNotice);
+          ps.setString(5, noteToDoctor);
+          ps.executeUpdate();
 
-        try (ResultSet rs = ps.getGeneratedKeys()) {
-          if (rs.next()) {
-            receptionId = rs.getLong(1);
+          try (ResultSet rs = ps.getGeneratedKeys()) {
+            if (rs.next()) {
+              receptionId = rs.getLong(1);
+              receptionCode = candidate;
+              break;
+            }
           }
+        } catch (SQLIntegrityConstraintViolationException dup) {
+          // 중복이면 재시도
+          continue;
+        } catch (SQLException ex) {
+          if ("23000".equals(ex.getSQLState()) && ex.getErrorCode() == 1062) {
+            continue;
+          }
+          throw ex;
         }
       }
 
-      // 3️⃣ 선택된 증상 매핑 저장
-      if (symptomIds != null && symptomIds.length > 0 && receptionId != null) {
+      if (receptionId == null)
+        throw new IllegalStateException("접수코드 중복으로 생성 실패");
+
+      // 2️⃣ 선택 증상 매핑
+      if (symptomIds != null && symptomIds.length > 0) {
         try (PreparedStatement ps2 = conn.prepareStatement(qInsertSymptom)) {
           for (String sid : symptomIds) {
             ps2.setLong(1, receptionId);
@@ -84,15 +99,16 @@ public class ReceptionDAO {
         }
       }
 
-      conn.commit(); // 성공 시 커밋
+      conn.commit();
+      return receptionId;
+
     } catch (Exception e) {
       if (conn != null) try { conn.rollback(); } catch (Exception ignored) {}
       e.printStackTrace();
+      throw new RuntimeException(e);
     } finally {
       if (conn != null) try { conn.setAutoCommit(true); conn.close(); } catch (Exception ignored) {}
     }
-
-    return receptionId;
   }
 
   // ✅ receptionId로 접수 상세 조회
@@ -114,7 +130,7 @@ public class ReceptionDAO {
         if (rs.next()) {
           dto = new ReceptionDetailDTO();
           dto.setReceptionId(rs.getLong("reception_id"));
-          dto.setReceptionNo(rs.getInt("reception_no"));
+          dto.setReceptionNo(rs.getString("reception_no")); // ← DTO 필드 타입 String으로 수정
           dto.setStatus(rs.getString("status"));
           dto.setDoctorName(rs.getString("doctor_name"));
           dto.setDepartmentName(rs.getString("department_name"));
